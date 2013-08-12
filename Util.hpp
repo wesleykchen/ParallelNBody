@@ -66,8 +66,6 @@ struct Point {
     return s >> p.x  >> p.y >> p.z;
   }
 };
-
-
 */
 
 // Random number in (0,1)
@@ -81,8 +79,8 @@ inline double get_random(double A, double B) {
 
 // Problem specific
 #define NUMPOINTS 100000
-#define PHIDATA "phiData100k.txt"
-#define SIGMADATA "sigmaData100k.txt"
+#define PHIDATA "data/phiData100k.txt"
+#define SIGMADATA "data/sigmaData100k.txt"
 #define MASTER 0
 #define DATADIM 3
 
