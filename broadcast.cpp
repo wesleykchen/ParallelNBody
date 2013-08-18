@@ -2,18 +2,39 @@
 
 #include "Vec.hpp"
 
-// Broadcast version of n-body algorithm, with 3 points
+// Broadcast version of n-body algorithm
 
-unsigned calcStart (int rank, int numtasks, int N);
-unsigned calcEnd (int rank, int numtasks, int N);
+unsigned calcStart (int rank, int numtasks, int N) {
+  unsigned index;
+  // TODO: better?
+  if (numtasks - rank >= N - numtasks * (N / numtasks)) {
+    index = rank * (N / numtasks);
+  } else {
+    index = rank * (N / numtasks) - numtasks + rank + N % numtasks;
+  }
+  return index;
+}
+
+unsigned calcEnd (int rank, int numtasks, int N) {
+  return calcStart(rank + 1, numtasks, N);
+}
+
 
 int main(int argc, char** argv)
 {
+  MPI_Init(&argc, &argv);
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  int numtasks;
+  MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
+
   if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " PHI_FILE SIGMA_FILE" << std::endl;
-    //exit(1);
-    // XXX: Remove
-    std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+    if (rank == MASTER) {
+      std::cerr << "Usage: " << argv[0] << " PHI_FILE SIGMA_FILE" << std::endl;
+      //exit(1);
+      // XXX: Remove
+      std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+    }
     argc = 3;
     char** new_argv = new char*[3];
     new_argv[0] = argv[0];
@@ -21,12 +42,6 @@ int main(int argc, char** argv)
     new_argv[2] = (char*)& SIGMADATA;
     argv = new_argv;
   }
-
-  MPI_Init(&argc, &argv);
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  int numtasks;
-  MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
 
   typedef Vec<3,double> Point;
   std::vector<Point> data;
@@ -37,6 +52,7 @@ int main(int argc, char** argv)
   Clock commTimer;
   double totalCommTime = 0;
 
+  // Read data on MASTER
   if (rank == MASTER) {
     // Read the data from PHI_FILE interpreted as Points
     std::ifstream data_file(argv[1]);
@@ -50,19 +66,23 @@ int main(int argc, char** argv)
     N = sigma.size();
     std::cout << "N = " << N << std::endl;
   }
+
+  // Broadcast the size of the problem to all processes
   timer.start();
   commTimer.start();
   MPI_Bcast(&N, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
-  // for all processors
+  // Allocate memory on all other processes
+  if (rank != MASTER) {
+    data = std::vector<Point>(N);
+    sigma = std::vector<double>(N);
+  }
 
+  // Broadcast the data to all processes
   unsigned count = Point::size() * N;
-
   commTimer.start();
   MPI_Bcast(&data[0], count, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
-  //printf("rank= %d  Results: %f %f %f %f\n", rank, data[0][0], data[0][1], data[0][2], data[1][0]);
-
   MPI_Bcast(&sigma[0], N, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -75,10 +95,7 @@ int main(int argc, char** argv)
              data.begin() + calcEnd(rank,numtasks,N),
              myphi.begin());
 
-  //printf("Processor %d computes its answer of %e\n", rank, myphi);
-
   // Collect results and display
-
   std::vector<double> phi;
   if (rank == MASTER)
     phi = std::vector<double>(N);
@@ -102,19 +119,4 @@ int main(int argc, char** argv)
 
   MPI_Finalize();
   return 0;
-}
-
-unsigned calcStart (int rank, int numtasks, int N) {
-  unsigned index;
-  // TODO: better?
-  if (numtasks - rank >= N - numtasks * (N / numtasks)) {
-    index = rank * (N / numtasks);
-  } else {
-    index = rank * (N / numtasks) - numtasks + rank + N % numtasks;
-  }
-  return index;
-}
-
-unsigned calcEnd (int rank, int numtasks, int N) {
-  return calcStart(rank + 1, numtasks, N);
 }
