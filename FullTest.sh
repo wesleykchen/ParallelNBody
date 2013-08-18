@@ -2,7 +2,7 @@
 
 ./serial
 
-/usr/bin/mpirun -n 16 ./Broadcast
+/usr/bin/mpirun -n 16 ./broadcast
 
 /usr/bin/mpirun -n 16 ./Scatter
 

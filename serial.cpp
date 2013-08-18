@@ -42,12 +42,8 @@ int main(int argc, char** argv)
 
   Clock timer;
   timer.start();
-  for (unsigned i = 0; i < N; ++i) {
-    for (unsigned j = 0; j < N; ++j) {
-      phi[i] += evaluate(data[i][0], data[i][1], data[i][2],
-                         data[j][0], data[j][1], data[j][2]) * sigma[j];
-    }
-  }
+  block_eval(data.begin(), data.end(), sigma.begin(),
+             data.begin(), data.end(), phi.begin());
   double time = timer.elapsed();
 
   std::cout << "Computed in " << time << " seconds" << std::endl;

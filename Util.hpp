@@ -96,6 +96,71 @@ std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
 }
 
 // 1/R kernel
+template <typename P>
+double evaluate(const P& x, const P& y) {
+  double dx = x[0] - y[0];
+  double dy = x[1] - y[1];
+  double dz = x[2] - y[2];
+  double R = sqrt(dx*dx + dy*dy + dz*dz);
+  double invR = 1.0 / R;
+  if (R < 1e-10) invR = 0;
+  return invR;
+}
+
+#if 0
+// 1/R^2 kernel
+template <typename P>
+double evaluate(const P& x, const P& y) {
+  double dx = x[0] - y[0];
+  double dy = x[1] - y[1];
+  double dz = x[2] - y[2];
+  double R2 = (dx*dx + dy*dy + dz*dz);
+  double invR2 = 1.0 / R2;
+  if (R2 < 1e-20) invR2 = 0;
+  return invR2;
+}
+#endif
+
+
+/** Asymmetric block P2P using the evaluation operator
+ * r_i += sum_j K(t_i, s_j) * c_j
+ *
+ * @param[in] s_first,s_last  Iterator range to sources (s_j)
+ * @param[in] c_first         Associated iterator to charges (c_j)
+ * @param[in] t_first,t_last  Iterator range to targets (t_i)
+ * @param[in,out] r_first     Associated iterator to results (r_i)
+ */
+template <typename SourceIter, typename ChargeIter,
+          typename TargetIter, typename ResultIter>
+inline void
+block_eval(SourceIter s_first, SourceIter s_last, ChargeIter c_first,
+           TargetIter t_first, TargetIter t_last, ResultIter r_first)
+{
+  typedef typename std::iterator_traits<SourceIter>::value_type source_type;
+  typedef typename std::iterator_traits<ChargeIter>::value_type charge_type;
+  typedef typename std::iterator_traits<TargetIter>::value_type target_type;
+  typedef typename std::iterator_traits<ResultIter>::value_type result_type;
+
+  for ( ; t_first != t_last; ++t_first, ++r_first) {
+    const target_type& t = *t_first;
+    result_type& r       = *r_first;
+
+    SourceIter s = s_first;
+    ChargeIter c = c_first;
+    for ( ; s != s_last; ++s, ++c)
+      r += evaluate(t,*s) * (*c);
+  }
+}
+
+
+// Problem specific -- XXX: NOT NEEDED
+#define NUMPOINTS 100
+#define PHIDATA "data/phiDataSmall.txt"
+#define SIGMADATA "data/sigmaDataSmall.txt"
+#define MASTER 0
+#define DATADIM 3
+
+// 1/R kernel
 double evaluate(double x1, double x2, double x3,
 		double y1, double y2, double y3) {
   double dx = x1 - y1;
@@ -120,14 +185,6 @@ double evaluate(double x1, double x2, double x3,
   return invR2;
 }
 #endif
-
-
-// Problem specific -- XXX: NOT NEEDED
-#define NUMPOINTS 100
-#define PHIDATA "data/phiDataSmall.txt"
-#define SIGMADATA "data/sigmaDataSmall.txt"
-#define MASTER 0
-#define DATADIM 3
 
 // tool to help print out phi
 void printPhi (double phi[NUMPOINTS]) {
