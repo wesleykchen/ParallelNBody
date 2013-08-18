@@ -4,19 +4,12 @@
 
 // Broadcast version of n-body algorithm
 
-unsigned calcStart (int rank, int numtasks, int N) {
-  unsigned index;
-  // TODO: better?
-  if (numtasks - rank >= N - numtasks * (N / numtasks)) {
-    index = rank * (N / numtasks);
-  } else {
-    index = rank * (N / numtasks) - numtasks + rank + N % numtasks;
-  }
-  return index;
+inline unsigned calcStart(unsigned r, unsigned P, unsigned N) {
+  return std::min(N, r * idiv_up(N,P));
 }
 
-unsigned calcEnd (int rank, int numtasks, int N) {
-  return calcStart(rank + 1, numtasks, N);
+inline unsigned calcEnd(unsigned r, unsigned P, unsigned N) {
+  return calcStart(r+1, P, N);
 }
 
 
@@ -87,7 +80,7 @@ int main(int argc, char** argv)
   totalCommTime += commTimer.elapsed();
 
   // all processors have a chunk to hold their temporary answers
-  std::vector<double> myphi(N / numtasks);
+  std::vector<double> myphi(idiv_up(N,numtasks));
 
   // evaluate computation
   block_eval(data.begin(), data.end(), sigma.begin(),
@@ -101,8 +94,8 @@ int main(int argc, char** argv)
     phi = std::vector<double>(N);
 
   commTimer.start();
-  MPI_Gather(&myphi[0], N / numtasks, MPI_DOUBLE,
-             &phi[0], N / numtasks, MPI_DOUBLE,
+  MPI_Gather(&myphi[0], idiv_up(N,numtasks), MPI_DOUBLE,
+             &phi[0], idiv_up(N,numtasks), MPI_DOUBLE,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
