@@ -41,30 +41,18 @@ LDFLAGS +=
 # deleting dependencies appended to the file from 'make depend'
 ##################
 
+EXEC += serial
+
 EXEC += Broadcast
 EXEC += Generate
 EXEC += Scatter
-EXEC += Serial
 EXEC += TeamScatter
 
 # 'make' - default rule
 all: $(EXEC)
 
 # Rules for executables
-
-Broadcast: Broadcast.o
-	$(LINK) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
-Generate: Generate.o
-	$(LINK) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
-Scatter: Scatter.o
-	$(LINK) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
-Serial: Serial.o
-	$(LINK) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
-TeamScatter: TeamScatter.o
+$(EXEC): % : %.o
 	$(LINK) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 # suffix replacement rule for building .o's from .cpp's

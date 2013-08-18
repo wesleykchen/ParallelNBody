@@ -6,13 +6,26 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <cmath>
 #include <cassert>
 
+#include <vector>
+#include <iterator>
+#include <numeric>
+#include <algorithm>
+
 #include <mpi.h>
 
-using namespace std;
+// Random number in (0,1)
+inline double get_random() {
+  return drand48();
+}
+// Random number in (A,B)
+inline double get_random(double A, double B) {
+  return A + (B-A)*get_random();
+}
 
 /** Clock class, useful when timing code.
  */
@@ -48,85 +61,39 @@ struct Clock {
   }
 };
 
-/*
-// TODO: maybe use?
-struct Point {
-  double x, y, z;
-
-  Point(double _x, double _y, double _z)
-      : x(_x), y(_y), z(_z) {
-  }
-
-  template <typename Stream>
-  friend Stream& operator<<(Stream& s, const Point& p) {
-    return s << p.x << '\t' << p.y << '\t' << p.z << std::endl;
-  }
-  template <typename Stream>
-  friend Stream& operator>>(Stream& s, Poi) {
-    return s >> p.x  >> p.y >> p.z;
-  }
-};
-*/
-
-// Random number in (0,1)
-inline double get_random() {
-  return drand48();
-}
-// Random number in (A,B)
-inline double get_random(double A, double B) {
-  return A + (B-A)*get_random();
+/** Read a line from @a s, parse it as type T, and store it in @a value.
+ * @param[in]   s      input stream
+ * @param[out]  value  value returned if the line in @a s doesn't parse
+ *
+ * If the line doesn't parse correctly, then @a s is set to the "failed"
+ * state. Ignores blank lines and lines that start with '#'.
+ */
+template <typename T>
+std::istream& getline_parsed(std::istream& s, T& value) {
+  std::string str;
+  do {
+    getline(s, str);
+  } while (s && (str.empty() || str[0] == '#'));
+  std::istringstream is(str);
+  is >> value;
+  if (is.fail())
+    s.setstate(std::istream::failbit);
+  return s;
 }
 
-// Problem specific
-#define NUMPOINTS 100000
-#define PHIDATA "data/phiData100k.txt"
-#define SIGMADATA "data/sigmaData100k.txt"
-#define MASTER 0
-#define DATADIM 3
-
-
-// tool to help print out phi
-void printPhi (double phi[NUMPOINTS]) {
-    ofstream printFile;
-    printFile.open("phi.txt");
-    for (int i = 0; i < NUMPOINTS; ++i) {
-        printFile << phi[i] << "\n";
-    }
-    printFile.close();
+template <typename T>
+std::istream& operator>>(std::istream& s, std::vector<T>& v) {
+  T temp;
+  while (getline_parsed(s, temp))
+    v.push_back(temp);
+  return s;
 }
 
-/*
-double* readData(double phiData[][3]) {
-  string x, y, z;
-  ifstream phiFile("phi.txt");
-  if (phiFile.is_open()) {
-    int index = 0;
-    while ( true ) {
-
-      getline( phiFile, x, '\t');
-      if (phiFile.eof()) {
-	break;
-      }
-      getline( phiFile, y, '\t');
-      getline( phiFile, z, '\n');
-
-      //cout << x << "." << y << "." << z << endl;
-
-      phiData[index][0] = atof(x.c_str());
-      phiData[index][1] = atof(y.c_str());
-      phiData[index][2] = atof(z.c_str());
-
-      ++index;
-    }
-    phiFile.close();
-  }
-  else {
-    printf("Unable to open file");
-  }
-  double** dataPtr = phiData;
-  return dataPtr;
+template <typename T>
+std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
+  std::copy(v.begin(), v.end(), std::ostream_iterator<T>(s,"\n"));
+  return s;
 }
-*/
 
 // 1/R kernel
 double evaluate(double x1, double x2, double x3,
@@ -153,3 +120,11 @@ double evaluate(double x1, double x2, double x3,
   return invR2;
 }
 #endif
+
+
+// Problem specific
+#define NUMPOINTS 100000
+#define PHIDATA "data/phiData100k.txt"
+#define SIGMADATA "data/sigmaData100k.txt"
+#define MASTER 0
+#define DATADIM 3
