@@ -122,9 +122,19 @@ double evaluate(double x1, double x2, double x3,
 #endif
 
 
-// Problem specific
-#define NUMPOINTS 100000
-#define PHIDATA "data/phiData100k.txt"
-#define SIGMADATA "data/sigmaData100k.txt"
+// Problem specific -- XXX: NOT NEEDED
+#define NUMPOINTS 100
+#define PHIDATA "data/phiDataSmall.txt"
+#define SIGMADATA "data/sigmaDataSmall.txt"
 #define MASTER 0
 #define DATADIM 3
+
+// tool to help print out phi
+void printPhi (double phi[NUMPOINTS]) {
+  std::ofstream printFile;
+  printFile.open("phi.txt");
+  for (int i = 0; i < NUMPOINTS; ++i) {
+    printFile << phi[i] << "\n";
+  }
+  printFile.close();
+}

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./Serial
+./serial
 
 /usr/bin/mpirun -n 16 ./Broadcast
 

@@ -21,8 +21,8 @@ int main(int argc, char** argv)
     MPI_Abort(MPI_COMM_WORLD, rc);
     exit(0);
   }
-  string x, y, z;
-  ifstream inputFile(PHIDATA);
+  std::string x, y, z;
+  std::ifstream inputFile(PHIDATA);
 
   // declare data for original as well as chunk
   double xI[NUMPOINTS/numtasks][DATADIM];
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
         getline( inputFile, y, '\t');
         getline( inputFile, z, '\n');
 
-        //cout << x << "." << y << "." << z << endl;
+        //std::cout << x << "." << y << "." << z << std::endl;
 
         data[index][0] = atof(x.c_str());
         data[index][1] = atof(y.c_str());
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
       }
       inputFile.close();
     } else {
-      cout << "Unable to open sigma file";
+      std::cout << "Unable to open sigma file";
     }
 
     commTimer.start();

@@ -7,8 +7,16 @@
 int main(int argc, char** argv)
 {
   if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " PHI_FILE SIGMA_FILE\n";
-    exit(1);
+    std::cerr << "Usage: " << argv[0] << " PHI_FILE SIGMA_FILE" << std::endl;
+    //exit(1);
+    // XXX: Remove
+    std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+    argc = 3;
+    char** new_argv = new char*[3];
+    new_argv[0] = argv[0];
+    new_argv[1] = (char*)& PHIDATA;
+    new_argv[2] = (char*)& SIGMADATA;
+    argv = new_argv;
   }
 
   typedef Vec<3,double> Point;
