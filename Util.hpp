@@ -105,6 +105,18 @@ std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
   return s;
 }
 
+template <class T>
+inline std::string to_string(const T& t) {
+  std::stringstream ss;
+  ss << t;
+  return ss.str();
+}
+
+template <class T>
+inline char* to_char(const T& t) {
+  return const_cast<char*>(to_string(t).c_str());
+}
+
 // 1/R kernel
 template <typename P>
 double evaluate(const P& x, const P& y) {

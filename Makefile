@@ -44,7 +44,7 @@ LDFLAGS +=
 EXEC += serial
 EXEC += broadcast
 
-EXEC += Generate
+EXEC += generate
 EXEC += Scatter
 EXEC += TeamScatter
 
