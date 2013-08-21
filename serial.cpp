@@ -36,7 +36,6 @@ int main(int argc, char** argv)
   unsigned N = sigma.size();
   std::cout << "N = " << N << std::endl;
 
-
   // Compute the matvec
   std::vector<double> phi(N, 0);
 

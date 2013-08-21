@@ -1,17 +1,7 @@
 #include "Util.hpp"
-
 #include "Vec.hpp"
 
-// Broadcast version of n-body algorithm
-
-inline unsigned calcStart(unsigned r, unsigned P, unsigned N) {
-  return std::min(N, r * idiv_up(N,P));
-}
-
-inline unsigned calcEnd(unsigned r, unsigned P, unsigned N) {
-  return calcStart(r+1, P, N);
-}
-
+// Scatter version of the n-body algorithm
 
 int main(int argc, char** argv)
 {
@@ -67,35 +57,64 @@ int main(int argc, char** argv)
   MPI_Bcast(&N, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
-  // Allocate memory on all other processes
-  if (rank != MASTER) {
-    data = std::vector<Point>(N);
-    sigma = std::vector<double>(N);
+  // TODO: How to generalize?
+  if (N % numtasks != 0) {
+    printf("Quitting. The number of processors must divide the total number of tasks.\n");
+    MPI_Abort(MPI_COMM_WORLD, -1);
+    exit(0);
   }
 
-  // Broadcast the data to all processes
+  // Allocate memory all processes
+  std::vector<double> phiI(idiv_up(N,numtasks));
+  std::vector<Point> xI(idiv_up(N,numtasks));
+  std::vector<Point> xJ(idiv_up(N,numtasks));
+  std::vector<double> sigmaJ(idiv_up(N,numtasks));
+
+  // Scatter the data to all processes
   unsigned count = Point::size() * N;
   commTimer.start();
-  MPI_Bcast(&data[0], count, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
-  MPI_Bcast(&sigma[0], N, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
+  MPI_Scatter(&data[0], idiv_up(count,numtasks), MPI_DOUBLE,
+              &xI[0], idiv_up(count,numtasks), MPI_DOUBLE,
+              MASTER, MPI_COMM_WORLD);
+  MPI_Scatter(&sigma[0], idiv_up(N,numtasks), MPI_DOUBLE,
+              &sigmaJ[0], idiv_up(N,numtasks), MPI_DOUBLE,
+              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
-  // all processors have a chunk to hold their temporary answers
-  std::vector<double> myphi(idiv_up(N,numtasks));
+  // Copy xI -> xJ
+  std::copy(xI.begin(), xI.end(), xJ.begin());
 
-  // evaluate computation
-  block_eval(data.begin(), data.end(), sigma.begin(),
-             data.begin() + calcStart(rank,numtasks,N),
-             data.begin() + calcEnd(rank,numtasks,N),
-             myphi.begin());
+  // Calculate the first block
+  block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+             xI.begin(), xI.end(), phiI.begin());
 
-  // Collect results and display
+  MPI_Status status;
+  for (int shiftCount = 1; shiftCount < numtasks; ++shiftCount) {
+    commTimer.start();
+    int prev  = (rank - 1) % numtasks;
+    int next = (rank + 1) % numtasks;
+
+    MPI_Sendrecv_replace(&xJ[0], idiv_up(count,numtasks), MPI_DOUBLE,
+                         next, 0, prev, 0,
+                         MPI_COMM_WORLD, &status);
+    MPI_Sendrecv_replace(&sigmaJ[0], idiv_up(N,numtasks), MPI_DOUBLE,
+                         next, 0, prev, 0,
+                         MPI_COMM_WORLD, &status);
+
+    totalCommTime += commTimer.elapsed();
+
+    // Calculate the current block
+    block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+               xI.begin(), xI.end(), phiI.begin());
+  }
+
   std::vector<double> phi;
   if (rank == MASTER)
-    phi = std::vector<double>(N);
+    phi = std::vector<double>(numtasks*idiv_up(N,numtasks));
 
+  // Collect results and display
   commTimer.start();
-  MPI_Gather(&myphi[0], idiv_up(N,numtasks), MPI_DOUBLE,
+  MPI_Gather(&phiI[0], idiv_up(N,numtasks), MPI_DOUBLE,
              &phi[0], idiv_up(N,numtasks), MPI_DOUBLE,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
@@ -106,7 +125,7 @@ int main(int argc, char** argv)
 
   if (rank == MASTER) {
     double checkSum = std::accumulate(phi.begin(), phi.end(), 0.0);
-    std::cout << "Broadcast - checksum answer is: " << checkSum << std::endl;
+    std::cout << "Scatter - checksum answer is: " << checkSum << std::endl;
     std::ofstream phi_file("data/phi.txt");
     phi_file << phi << std::endl;
   }

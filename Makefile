@@ -41,11 +41,11 @@ LDFLAGS +=
 # deleting dependencies appended to the file from 'make depend'
 ##################
 
+EXEC += generate
 EXEC += serial
 EXEC += broadcast
+EXEC += scatter
 
-EXEC += generate
-EXEC += Scatter
 EXEC += TeamScatter
 
 # 'make' - default rule

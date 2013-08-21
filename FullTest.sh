@@ -2,8 +2,8 @@
 
 ./serial
 
-/usr/bin/mpirun -n 16 ./broadcast
+mpirun -n 16 ./broadcast
 
-/usr/bin/mpirun -n 16 ./Scatter
+mpirun -n 16 ./scatter
 
-/usr/bin/mpirun -n 16 ./TeamScatter
+mpirun -n 16 ./TeamScatter
