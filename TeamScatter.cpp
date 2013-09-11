@@ -1,46 +1,97 @@
 #include "Util.hpp"
-#define TEAMSIZE 1
+#include "Vec.hpp"
 
-// Scatter version of the n-body algorithm
+//XXX: Remove
+#define TEAMSIZE 4
 
-void calculate(int numtasks, double xI[][DATADIM], double xJ[][DATADIM],
-                 double sigmaJ[], double myanswer[]);
+// Team Scatter version of the n-body algorithm
 
 int main(int argc, char** argv)
 {
-  int numtasks, rank, size;
-  int rc = -1;
-  int tag1 = 1;
-
   MPI_Init(&argc, &argv);
+  int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  int numtasks;
   MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
 
+  if (argc < 3) {
+    if (rank == MASTER) {
+      std::cerr << "Usage: " << argv[0] << " PHI_FILE SIGMA_FILE TEAMSIZE" << std::endl;
+      //exit(1);
+      // XXX: Remove
+      std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << " " << TEAMSIZE << std::endl;
+    }
+	// did I edit this block properly? need to allow for TEAMSIZE
+	int teamsize = atoi(argv[3]);
 
-  int Nteams = numtasks / TEAMSIZE;
-  // int c = TEAMSIZE;
+    argc = 4;
+    char** new_argv = new char*[3];
+    new_argv[0] = argv[0];
+    new_argv[1] = (char*)& PHIDATA;
+    new_argv[2] = (char*)& SIGMADATA;
+	//specifically here
+	new_argv[3] = atoi(argv[3]);
+    argv = new_argv;
+  }
 
-  if (NUMPOINTS % numtasks != 0) {
-    printf("Quitting. The number of processors must divide the total number of points.\n");
-    MPI_Abort(MPI_COMM_WORLD, rc);
+  typedef Vec<3,double> Point;
+  std::vector<Point> data;
+  std::vector<double> sigma;
+  unsigned N;
+
+  Clock timer;
+  Clock commTimer;
+  double totalCommTime = 0;
+
+  // Read data on MASTER
+  if (rank == MASTER) {
+    // Read the data from PHI_FILE interpreted as Points
+    std::ifstream data_file(argv[1]);
+    data_file >> data;
+
+    // Read the data from SIGMA_FILE interpreted as doubles
+    std::ifstream sigma_file(argv[2]);
+    sigma_file >> sigma;
+
+    assert(data.size() == sigma.size());
+    N = sigma.size();
+    std::cout << "N = " << N << std::endl;
+    std::cout << "P = " << numtasks << std::endl;
+	std::cout << "Teamsize = " << teamsize << std::endl;
+  }
+
+  // Broadcast the size of the problem to all processes
+  timer.start();
+  commTimer.start();
+  MPI_Bcast(&N, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
+  totalCommTime += commTimer.elapsed();
+
+  // TODO: How to generalize?
+  if (N % numtasks != 0) {
+    printf("Quitting. The number of processors must divide the total number of tasks.\n");
+    MPI_Abort(MPI_COMM_WORLD, -1);
     exit(0);
   }
 
-  if (numtasks % TEAMSIZE != 0) {
+  if (N % teamsize != 0) {
     printf("Quitting. The teamsize (c) must divide the total number of processors (p).\n");
-    MPI_Abort(MPI_COMM_WORLD, rc);
+    MPI_Abort(MPI_COMM_WORLD, -1);
     exit(0);
   }
 
-  if (TEAMSIZE * TEAMSIZE > numtasks) {
+  if (teamsize * teamsize > numtasks) {
     printf("Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).\n");
-    MPI_Abort(MPI_COMM_WORLD, rc);
+    MPI_Abort(MPI_COMM_WORLD, -1);
     exit(0);
   }
+
+
+  int Nteams = numtasks / teamsize;
+
 
   // Determine coordinates in processor team grid
-  int team = rank / TEAMSIZE;
-  int trank = rank % TEAMSIZE;
+  int team = rank / teamsize;
+  int trank = rank % teamsize;
 
 
   // Split comm into row and column communicators
@@ -57,94 +108,57 @@ int main(int argc, char** argv)
 
   // declare data for original as well as chunk
 
+  std::vector<Point> xI(N,Nteams);
+  std::vector<Point> xJ(N,Nteams));
+  std::vector<double> sigmaJ(N,Nteams);
+
+  /*
   double xI[NUMPOINTS/Nteams][DATADIM];
   double xJ[NUMPOINTS/Nteams][DATADIM];
   double sigmaJ[NUMPOINTS/Nteams];
+  */
 
-  // not all processors need this memory declared...
-
+  // not all processors need this memory declared - switch to only team leaders later
   // hold team gathered phi
-  double teamphi[NUMPOINTS/Nteams];
+  std::vector<double> teamPhiI(N/Nteams));
+  //double teamphi[NUMPOINTS/Nteams];
 
   // hold gathered answers
-  double phi[NUMPOINTS];
+  std::vector<double> phiI(idiv_up(N,numtasks));
+  //double phi[NUMPOINTS];
 
-  int teamDataCount = DATADIM * NUMPOINTS / Nteams;
-
-  Clock timer;
-  timer.start();
-
-  Clock commTimer;
-  double totalCommTime = 0;
-  double tempTime;
+  unsigned teamDataCount = Point::size() * N / Nteams;
+  // int teamDataCount = DATADIM * NUMPOINTS / Nteams;
 
   /* Start master tasks */
   if (rank == MASTER) {
-    double data[NUMPOINTS][DATADIM];
-    double sigma[NUMPOINTS];
 
-    if (inputFile.is_open()) {
-      int index = 0;
-      while ( true ) {
-
-        getline( inputFile, x, '\t');
-        if (inputFile.eof()) {
-          break;
-        }
-        getline( inputFile, y, '\t');
-        getline( inputFile, z, '\n');
-
-        //std::cout << x << "." << y << "." << z << std::endl;
-
-        data[index][0] = atof(x.c_str());
-        data[index][1] = atof(y.c_str());
-        data[index][2] = atof(z.c_str());
-
-        ++index;
-      }
-      inputFile.close();
-      inputFile.clear();
-    }
-    else {
-      printf("Unable to open file");
-    }
-
-    inputFile.open(SIGMADATA);
-    if (inputFile.is_open()) {
-      int index = 0;
-      while ( true ) {
-        getline( inputFile, x, '\n');
-        if (inputFile.eof()) {
-          break;
-        }
-        sigma[index] = atof(x.c_str());
-
-        ++index;
-      }
-      inputFile.close();
-    } else {
-      std::cout << "Unable to open sigma file";
-    }
     commTimer.start();
     // Master scatter to team leaders
-    MPI_Scatter(data, teamDataCount, MPI_DOUBLE,
-                xI, teamDataCount, MPI_DOUBLE, MASTER, row_comm);
-    MPI_Scatter(sigma, teamDataCount / DATADIM, MPI_DOUBLE,
-                sigmaJ, teamDataCount / DATADIM, MPI_DOUBLE, MASTER, row_comm);
+    MPI_Scatter(&data[0], teamDataCount, MPI_DOUBLE,
+                &xI[0], teamDataCount, MPI_DOUBLE,
+				MASTER, row_comm);
+    MPI_Scatter(sigma, teamDataCount / Point::size(), MPI_DOUBLE,
+                sigmaJ, teamDataCount / Point::size(), MPI_DOUBLE,
+				MASTER, row_comm);
+
     // printf("Processor %d of team %d  received first xI of %e\n", rank, team, xI[0][0]);
-    tempTime = commTimer.elapsed();
-    totalCommTime += tempTime;
+    totalCommTime += commTimer.elapsed();
+
   } else if (trank == MASTER){
+
     commTimer.start();
     // Receive scattered data
     MPI_Scatter(NULL, 0, MPI_DOUBLE,
-                xI, teamDataCount, MPI_DOUBLE, MASTER, row_comm);
+                &xI[0], teamDataCount, MPI_DOUBLE,
+				MASTER, row_comm);
 
     MPI_Scatter(NULL, 0, MPI_DOUBLE,
-                sigmaJ, teamDataCount / DATADIM, MPI_DOUBLE, MASTER, row_comm);
+                &sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE,
+				MASTER, row_comm);
+
     // printf("Processor %d of team %d  received first xI of %e\n", rank, team, xI[0][0]);
-    tempTime = commTimer.elapsed();
-    totalCommTime += tempTime;
+    totalCommTime += commTimer.elapsed();
   } else {
     // printf("Processor %d of team %d is happy\n", rank, team);
     // do nothing
@@ -152,17 +166,14 @@ int main(int argc, char** argv)
 
   commTimer.start();
   // Team leaders broadcast to team
-  MPI_Bcast(xI, teamDataCount, MPI_DOUBLE, MASTER, team_comm);
-  MPI_Bcast(sigmaJ, teamDataCount / DATADIM, MPI_DOUBLE, MASTER, team_comm);
+  MPI_Bcast(&xI[0], teamDataCount, MPI_DOUBLE, MASTER, team_comm);
+  MPI_Bcast(&sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE, MASTER, team_comm);
 
-  tempTime = commTimer.elapsed();
-  totalCommTime += tempTime;
-
+  totalCommTime += commTimer.elapsed();
   // printf("At first, team %d processor %d has value of %e\n", team, trank, xI[0][0]);
 
-  // initialize xJ with xI
-
-  memcpy(xJ, xI, sizeof(xI));
+  // Copy xI -> xJ
+  std::copy(xI.begin(), xI.end(), xJ.begin());
 
   // printf("Processor %d will now work with data starting this value %e\n with a xI value of %e and a sigmaJ of %e\n", rank, xJ[0][0], xI[0][0], sigmaJ[0]);
 
@@ -172,110 +183,98 @@ int main(int argc, char** argv)
   // perform initial offset by teamrank
   // % is implementation defined, adding Nteams to prevent negative numbers
   int prev = (team - trank + Nteams) % Nteams;
-  int next = (team + trank +Nteams) % Nteams;
-  MPI_Sendrecv_replace(xJ, teamDataCount, MPI_DOUBLE,
+  int next = (team + trank + Nteams) % Nteams;
+  MPI_Sendrecv_replace(&xJ[0], teamDataCount, MPI_DOUBLE,
                          next, tag1, prev, tag1,
                          row_comm, &status);
-  MPI_Sendrecv_replace(sigmaJ, teamDataCount / DATADIM, MPI_DOUBLE,
+  MPI_Sendrecv_replace(&sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE,
                          next, tag1, prev, tag1,
                          row_comm, &status);
 
-  tempTime = commTimer.elapsed();
-  totalCommTime += tempTime;
+  totalCommTime += commTimer.elapsed();
   // printf("After offset, team %d processor %d starting with xJ of %e\n", team, trank, xJ[0][0]);
 
-  double myphi[NUMPOINTS / Nteams];
-  // clear this space
-  for (int i = 0; i < NUMPOINTS / Nteams; ++i) {
-    myphi[i] = 0;
-  }
-
-
   // printf("After shift #0, team %d processor %d xI start: %e\n", team, trank, xJ[0][0]);
-  // calculate using first chunk of data
-  calculate(Nteams, xI, xJ, sigmaJ, myphi);
+
+  // Calculate the current block
+  block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+               xI.begin(), xI.end(), phiI.begin());
 
   // move into the looping process to shift the data between the teams
 
-  int ceilPC2 = (numtasks + TEAMSIZE * TEAMSIZE - 1) / TEAMSIZE / TEAMSIZE;
-  //int ceilPC2 = 2;
+  int ceilPC2 = (numtasks + teamsize * teamsize - 1) / teamsize / teamsize;
+
   for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
     commTimer.start();
     // % is implementation defined, adding Nteams to prevent negative numbers
     int prev = (team - TEAMSIZE + Nteams) % Nteams;
     int next = (team + TEAMSIZE + Nteams) % Nteams;
-    MPI_Sendrecv_replace(xJ, teamDataCount, MPI_DOUBLE,
+    MPI_Sendrecv_replace(&xJ[0], teamDataCount, MPI_DOUBLE,
                        next, tag1, prev, tag1,
                        row_comm, &status);
-    MPI_Sendrecv_replace(sigmaJ, teamDataCount / DATADIM, MPI_DOUBLE,
+    MPI_Sendrecv_replace(&sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE,
                        next, tag1, prev, tag1,
                        row_comm, &status);
-    tempTime = commTimer.elapsed();
-    totalCommTime += tempTime;
+
+    totalCommTime += commTimer.elapsed();
     // printf("After shift #%d, team %d processor %d xI start: %e, prev: %d, next: %d\n", shiftCount, team, trank, xJ[0][0], prev, next);
 
     // test if last iteration to do calculation exceptions
     if ( shiftCount + 1 == ceilPC2) {
       // calculate leftovers to calculate
       if (trank <  Nteams % TEAMSIZE) {
-        calculate(Nteams, xI, xJ, sigmaJ, myphi);
+        // Calculate the current block
+		block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+               xI.begin(), xI.end(), phiI.begin());
       }
       // acount for perfect division
       else if (Nteams % TEAMSIZE == 0) {
-        calculate(Nteams, xI, xJ, sigmaJ, myphi);
+        // Calculate the current block
+		block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+               xI.begin(), xI.end(), phiI.begin());
       }
       else{
         // do nothing
       }
     }
     else {
-      calculate(Nteams, xI, xJ, sigmaJ, myphi);
+        // Calculate the current block
+		block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+               xI.begin(), xI.end(), phiI.begin());
     }
     //myanswer += calculate(xI, xJ, rank, numtasks);
   }
 
+  
+  std::vector<double> phi;
+  if (rank == MASTER)
+    phi = std::vector<double>(numtasks*idiv_up(N,numtasks));
+
   commTimer.start();
   // Sum reduce answers to the team leader
-  MPI_Reduce(myphi, teamphi, teamDataCount / DATADIM, MPI_DOUBLE, MPI_SUM, MASTER, team_comm);
+  MPI_Reduce(&phiI[0], &teamphiI[0], teamDataCount / Point::size(), MPI_DOUBLE, MPI_SUM, MASTER, team_comm);
 
-  tempTime = commTimer.elapsed();
-  totalCommTime += tempTime;
-
+  totalCommTime += commTimer.elapsed();
 
   // Master gathers team leader results (team Master so to speak)
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Gather(teamphi, teamDataCount / DATADIM, MPI_DOUBLE,
-             phi, teamDataCount / DATADIM, MPI_DOUBLE, MASTER, row_comm);
-    tempTime = commTimer.elapsed();
-    totalCommTime += tempTime;
-  }
-
-  if (rank == MASTER) {
-    double checkSum = 0;
-    for ( int i = 0; i < NUMPOINTS; ++i) {
-      checkSum += phi[i];
-    }
-    printf("TeamScatter - the checksum is: %e\n", checkSum);
-    printPhi(phi);
+    MPI_Gather(&teamphiI[0], teamDataCount / Point::size(), MPI_DOUBLE,
+             &phi[0], teamDataCount / Point::size(), MPI_DOUBLE, MASTER, row_comm);
+    totalCommTime += commTimer.elapsed();
   }
 
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
+  if (rank == MASTER) {
+    double checkSum = std::accumulate(phi.begin(), phi.end(), 0.0);
+    std::cout << "Scatter - checksum answer is: " << checkSum << std::endl;
+    std::ofstream phi_file("data/phi.txt");
+    phi_file << phi << std::endl;
+  }
+
   MPI_Finalize();
   return 0;
-}
-
-void calculate(int Nteams, double xI[][DATADIM], double xJ[][DATADIM], double sigmaJ[], double myanswer[])
-{
-  // calculate the n-body portion
-  int blockSize = NUMPOINTS / Nteams;
-  for (int i = 0; i < blockSize; ++i) {
-    for (int j = 0; j < blockSize; ++j) {
-      myanswer[i] += evaluate(xI[i][0], xI[i][1], xI[i][2],
-                         xJ[j][0], xJ[j][1], xJ[j][2]) * sigmaJ[j];
-    }
-  }
 }
