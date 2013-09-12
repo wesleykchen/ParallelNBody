@@ -18,8 +18,8 @@ int main(int argc, char** argv)
   MPI_Init(&argc, &argv);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  int numtasks;
-  MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
+  int P;
+  MPI_Comm_size(MPI_COMM_WORLD, &P);
 
   typedef Vec<3,double> Point;
   std::vector<Point> data;
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     assert(data.size() == sigma.size());
     N = sigma.size();
     std::cout << "N = " << N << std::endl;
-    std::cout << "P = " << numtasks << std::endl;
+    std::cout << "P = " << P << std::endl;
   }
 
   Clock timer;
@@ -78,12 +78,12 @@ int main(int argc, char** argv)
   totalCommTime += commTimer.elapsed();
 
   // all processors have a chunk to hold their temporary answers
-  std::vector<double> myphi(idiv_up(N,numtasks));
+  std::vector<double> myphi(idiv_up(N,P));
 
   // evaluate computation
   block_eval(data.begin(), data.end(), sigma.begin(),
-             data.begin() + calcStart(rank,numtasks,N),
-             data.begin() + calcEnd(rank,numtasks,N),
+             data.begin() + calcStart(rank,P,N),
+             data.begin() + calcEnd(rank,P,N),
              myphi.begin());
 
   // Collect results and display
@@ -92,8 +92,8 @@ int main(int argc, char** argv)
     phi = std::vector<double>(N);
 
   commTimer.start();
-  MPI_Gather(&myphi[0], idiv_up(N,numtasks), MPI_DOUBLE,
-             &phi[0], idiv_up(N,numtasks), MPI_DOUBLE,
+  MPI_Gather(&myphi[0], idiv_up(N,P), MPI_DOUBLE,
+             &phi[0], idiv_up(N,P), MPI_DOUBLE,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 

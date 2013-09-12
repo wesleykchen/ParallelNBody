@@ -176,9 +176,11 @@ block_eval(SourceIter s_first, SourceIter s_last, ChargeIter c_first,
   }
 }
 
+#define MPI_EXIT(a) MPI_Finalize(); exit(a)
+
 
 // Problem specific -- XXX: NOT NEEDED
-#define NUMPOINTS 100
+#define NUMPOINTS 1024
 #define PHIDATA "data/phiDataSmall.txt"
 #define SIGMADATA "data/sigmaDataSmall.txt"
 #define MASTER 0

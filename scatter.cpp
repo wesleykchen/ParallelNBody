@@ -8,8 +8,8 @@ int main(int argc, char** argv)
   MPI_Init(&argc, &argv);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  int numtasks;
-  MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
+  int P;
+  MPI_Comm_size(MPI_COMM_WORLD, &P);
 
   typedef Vec<3,double> Point;
   std::vector<Point> data;
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     assert(data.size() == sigma.size());
     N = sigma.size();
     std::cout << "N = " << N << std::endl;
-    std::cout << "P = " << numtasks << std::endl;
+    std::cout << "P = " << P << std::endl;
   }
 
   // Broadcast the size of the problem to all processes
@@ -55,26 +55,26 @@ int main(int argc, char** argv)
   totalCommTime += commTimer.elapsed();
 
   // TODO: How to generalize?
-  if (N % numtasks != 0) {
+  if (N % P != 0) {
     printf("Quitting. The number of processors must divide the total number of tasks.\n");
     MPI_Abort(MPI_COMM_WORLD, -1);
     exit(0);
   }
 
   // Allocate memory all processes
-  std::vector<double> phiI(idiv_up(N,numtasks));
-  std::vector<Point> xI(idiv_up(N,numtasks));
-  std::vector<Point> xJ(idiv_up(N,numtasks));
-  std::vector<double> sigmaJ(idiv_up(N,numtasks));
+  std::vector<double> phiI(idiv_up(N,P));
+  std::vector<Point> xI(idiv_up(N,P));
+  std::vector<Point> xJ(idiv_up(N,P));
+  std::vector<double> sigmaJ(idiv_up(N,P));
 
   // Scatter the data to all processes
   unsigned count = Point::size() * N;
   commTimer.start();
-  MPI_Scatter(&data[0], idiv_up(count,numtasks), MPI_DOUBLE,
-              &xI[0], idiv_up(count,numtasks), MPI_DOUBLE,
+  MPI_Scatter(&data[0], idiv_up(count,P), MPI_DOUBLE,
+              &xI[0], idiv_up(count,P), MPI_DOUBLE,
               MASTER, MPI_COMM_WORLD);
-  MPI_Scatter(&sigma[0], idiv_up(N,numtasks), MPI_DOUBLE,
-              &sigmaJ[0], idiv_up(N,numtasks), MPI_DOUBLE,
+  MPI_Scatter(&sigma[0], idiv_up(N,P), MPI_DOUBLE,
+              &sigmaJ[0], idiv_up(N,P), MPI_DOUBLE,
               MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -86,15 +86,15 @@ int main(int argc, char** argv)
              xI.begin(), xI.end(), phiI.begin());
 
   MPI_Status status;
-  for (int shiftCount = 1; shiftCount < numtasks; ++shiftCount) {
+  for (int shiftCount = 1; shiftCount < P; ++shiftCount) {
     commTimer.start();
-    int prev  = (rank - 1) % numtasks;
-    int next = (rank + 1) % numtasks;
+    int prev  = (rank - 1) % P;
+    int next = (rank + 1) % P;
 
-    MPI_Sendrecv_replace(&xJ[0], idiv_up(count,numtasks), MPI_DOUBLE,
+    MPI_Sendrecv_replace(&xJ[0], idiv_up(count,P), MPI_DOUBLE,
                          next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
-    MPI_Sendrecv_replace(&sigmaJ[0], idiv_up(N,numtasks), MPI_DOUBLE,
+    MPI_Sendrecv_replace(&sigmaJ[0], idiv_up(N,P), MPI_DOUBLE,
                          next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
 
@@ -107,12 +107,12 @@ int main(int argc, char** argv)
 
   std::vector<double> phi;
   if (rank == MASTER)
-    phi = std::vector<double>(numtasks*idiv_up(N,numtasks));
+    phi = std::vector<double>(P*idiv_up(N,P));
 
   // Collect results and display
   commTimer.start();
-  MPI_Gather(&phiI[0], idiv_up(N,numtasks), MPI_DOUBLE,
-             &phi[0], idiv_up(N,numtasks), MPI_DOUBLE,
+  MPI_Gather(&phiI[0], idiv_up(N,P), MPI_DOUBLE,
+             &phi[0], idiv_up(N,P), MPI_DOUBLE,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
