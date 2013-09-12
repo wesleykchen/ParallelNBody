@@ -45,8 +45,7 @@ EXEC += generate
 EXEC += serial
 EXEC += broadcast
 EXEC += scatter
-
-EXEC += TeamScatter
+EXEC += teamscatter
 
 # 'make' - default rule
 all: $(EXEC)

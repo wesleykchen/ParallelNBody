@@ -70,11 +70,11 @@ int main(int argc, char** argv)
   // Scatter the data to all processes
   unsigned count = Point::size() * N;
   commTimer.start();
-  MPI_Scatter(&data[0], idiv_up(count,P), MPI_DOUBLE,
-              &xI[0], idiv_up(count,P), MPI_DOUBLE,
+  MPI_Scatter(data.data(), idiv_up(count,P), MPI_DOUBLE,
+              xI.data(), idiv_up(count,P), MPI_DOUBLE,
               MASTER, MPI_COMM_WORLD);
-  MPI_Scatter(&sigma[0], idiv_up(N,P), MPI_DOUBLE,
-              &sigmaJ[0], idiv_up(N,P), MPI_DOUBLE,
+  MPI_Scatter(sigma.data(), idiv_up(N,P), MPI_DOUBLE,
+              sigmaJ.data(), idiv_up(N,P), MPI_DOUBLE,
               MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -88,13 +88,13 @@ int main(int argc, char** argv)
   MPI_Status status;
   for (int shiftCount = 1; shiftCount < P; ++shiftCount) {
     commTimer.start();
-    int prev  = (rank - 1) % P;
-    int next = (rank + 1) % P;
-
-    MPI_Sendrecv_replace(&xJ[0], idiv_up(count,P), MPI_DOUBLE,
+    // Add P to prevent negative numbers
+    int prev  = (rank - 1 + P) % P;
+    int next = (rank + 1 + P) % P;
+    MPI_Sendrecv_replace(xJ.data(), idiv_up(count,P), MPI_DOUBLE,
                          next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
-    MPI_Sendrecv_replace(&sigmaJ[0], idiv_up(N,P), MPI_DOUBLE,
+    MPI_Sendrecv_replace(sigmaJ.data(), idiv_up(N,P), MPI_DOUBLE,
                          next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
 
@@ -111,8 +111,8 @@ int main(int argc, char** argv)
 
   // Collect results and display
   commTimer.start();
-  MPI_Gather(&phiI[0], idiv_up(N,P), MPI_DOUBLE,
-             &phi[0], idiv_up(N,P), MPI_DOUBLE,
+  MPI_Gather(phiI.data(), idiv_up(N,P), MPI_DOUBLE,
+             phi.data(), idiv_up(N,P), MPI_DOUBLE,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 

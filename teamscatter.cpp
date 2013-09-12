@@ -117,20 +117,20 @@ int main(int argc, char** argv)
   // Scatter data from master to team leaders
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Scatter(&data[0], teamDataCount, MPI_DOUBLE,
-                &xI[0], teamDataCount, MPI_DOUBLE,
+    MPI_Scatter(data.data(), teamDataCount, MPI_DOUBLE,
+                xI.data(), teamDataCount, MPI_DOUBLE,
                 MASTER, row_comm);
-    MPI_Scatter(&sigma[0], teamDataCount / Point::size(), MPI_DOUBLE,
-                &sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE,
+    MPI_Scatter(sigma.data(), teamDataCount / Point::size(), MPI_DOUBLE,
+                sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
                 MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
 
   // Team leaders broadcast to team
   commTimer.start();
-  MPI_Bcast(&xI[0], teamDataCount, MPI_DOUBLE,
+  MPI_Bcast(xI.data(), teamDataCount, MPI_DOUBLE,
             MASTER, team_comm);
-  MPI_Bcast(&sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE,
+  MPI_Bcast(sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
             MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
@@ -139,14 +139,14 @@ int main(int argc, char** argv)
 
   // Perform initial offset by teamrank
   commTimer.start();
-  // % is implementation defined, adding num_teams to prevent negative numbers
+  // Add num_teams to prevent negative numbers
   int prev = (team - trank + num_teams) % num_teams;
   int next = (team + trank + num_teams) % num_teams;
   MPI_Status status;
-  MPI_Sendrecv_replace(&xJ[0], teamDataCount, MPI_DOUBLE,
+  MPI_Sendrecv_replace(xJ.data(), teamDataCount, MPI_DOUBLE,
                        next, 0, prev, 0,
                        row_comm, &status);
-  MPI_Sendrecv_replace(&sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE,
+  MPI_Sendrecv_replace(sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
                        next, 0, prev, 0,
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
@@ -162,13 +162,13 @@ int main(int argc, char** argv)
   int ceilPC2 = idiv_up(P, teamsize*teamsize);
   for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
     commTimer.start();
-    // % is implementation defined, adding num_teams to prevent negative numbers
+    // Add num_teams to prevent negative numbers
     int prev = (team - teamsize + num_teams) % num_teams;
     int next = (team + teamsize + num_teams) % num_teams;
-    MPI_Sendrecv_replace(&xJ[0], teamDataCount, MPI_DOUBLE,
+    MPI_Sendrecv_replace(xJ.data(), teamDataCount, MPI_DOUBLE,
                          next, 0, prev, 0,
                          row_comm, &status);
-    MPI_Sendrecv_replace(&sigmaJ[0], teamDataCount / Point::size(), MPI_DOUBLE,
+    MPI_Sendrecv_replace(sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
                          next, 0, prev, 0,
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
@@ -184,26 +184,26 @@ int main(int argc, char** argv)
   }
 
   // Allocate teamphiI on team leaders
-  std::vector<double> teamphiI(1);
+  std::vector<double> teamphiI;
   if (trank == MASTER)
     teamphiI = std::vector<double>(idiv_up(N,num_teams));
 
   // Reduce answers to the team leader
   commTimer.start();
-  MPI_Reduce(&phiI[0], &teamphiI[0], teamDataCount / Point::size(), MPI_DOUBLE,
+  MPI_Reduce(phiI.data(), teamphiI.data(), teamDataCount / Point::size(), MPI_DOUBLE,
              MPI_SUM, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Allocate phi on master
-  std::vector<double> phi(1);
+  std::vector<double> phi;
   if (rank == MASTER)
     phi = std::vector<double>(P*idiv_up(N,P));
 
   // Gather team leader answers to master
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Gather(&teamphiI[0], teamDataCount / Point::size(), MPI_DOUBLE,
-               &phi[0], teamDataCount / Point::size(), MPI_DOUBLE,
+    MPI_Gather(teamphiI.data(), teamDataCount / Point::size(), MPI_DOUBLE,
+               phi.data(), teamDataCount / Point::size(), MPI_DOUBLE,
                MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }

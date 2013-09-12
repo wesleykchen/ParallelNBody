@@ -73,8 +73,8 @@ int main(int argc, char** argv)
   // Broadcast the data to all processes
   unsigned count = Point::size() * N;
   commTimer.start();
-  MPI_Bcast(&data[0], count, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
-  MPI_Bcast(&sigma[0], N, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(data.data(), count, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(sigma.data(), N, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // all processors have a chunk to hold their temporary answers
@@ -92,8 +92,8 @@ int main(int argc, char** argv)
     phi = std::vector<double>(N);
 
   commTimer.start();
-  MPI_Gather(&myphi[0], idiv_up(N,P), MPI_DOUBLE,
-             &phi[0], idiv_up(N,P), MPI_DOUBLE,
+  MPI_Gather(myphi.data(), idiv_up(N,P), MPI_DOUBLE,
+             phi.data(), idiv_up(N,P), MPI_DOUBLE,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
