@@ -113,8 +113,10 @@ inline std::string to_string(const T& t) {
 }
 
 template <class T>
-inline char* to_char(const T& t) {
-  return const_cast<char*>(to_string(t).c_str());
+inline T string_to_(const std::string& s) {
+  T val;
+  std::istringstream(s) >> val;
+  return val;
 }
 
 // 1/R kernel

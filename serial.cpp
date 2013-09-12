@@ -6,29 +6,29 @@
 
 int main(int argc, char** argv)
 {
-  if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " PHI_FILE SIGMA_FILE" << std::endl;
-    //exit(1);
-    // XXX: Remove
-    std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
-    argc = 3;
-    char** new_argv = new char*[3];
-    new_argv[0] = argv[0];
-    new_argv[1] = (char*)& PHIDATA;
-    new_argv[2] = (char*)& SIGMADATA;
-    argv = new_argv;
-  }
-
   typedef Vec<3,double> Point;
   std::vector<Point> data;
   std::vector<double> sigma;
 
+  std::vector<std::string> arg(argv, argv+argc);
+
+  if (arg.size() < 3) {
+    std::cerr << "Usage: " << arg[0] << " PHI_FILE SIGMA_FILE" << std::endl;
+    //exit(1);
+    // XXX: Remove
+    std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+
+    arg.resize(1);
+    arg.push_back(PHIDATA);
+    arg.push_back(SIGMADATA);
+  }
+
   // Read the data from PHI_FILE interpreted as Points
-  std::ifstream data_file(argv[1]);
+  std::ifstream data_file(arg[1]);
   data_file >> data;
 
   // Read the data from SIGMA_FILE interpreted as doubles
-  std::ifstream sigma_file(argv[2]);
+  std::ifstream sigma_file(arg[2]);
   sigma_file >> sigma;
 
   // Make sure this makes sense and get metadata

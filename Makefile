@@ -8,7 +8,7 @@
 DEPSDIR := $(shell mkdir -p .deps; echo .deps)
 
 # Define the C compiler to use
-CXX := mpic++
+CXX := mpic++ -std=c++11
 LINK := $(CXX)
 
 # Define any compile-time flags

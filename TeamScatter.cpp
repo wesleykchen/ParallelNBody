@@ -1,9 +1,6 @@
 #include "Util.hpp"
 #include "Vec.hpp"
 
-//XXX: Remove
-#define TEAMSIZE 4
-
 // Team Scatter version of the n-body algorithm
 
 int main(int argc, char** argv)
@@ -13,44 +10,48 @@ int main(int argc, char** argv)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   int numtasks;
   MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
-
-  if (argc < 3) {
-    if (rank == MASTER) {
-      std::cerr << "Usage: " << argv[0] << " PHI_FILE SIGMA_FILE TEAMSIZE" << std::endl;
-      //exit(1);
-      // XXX: Remove
-      std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << " " << TEAMSIZE << std::endl;
-    }
-    // did I edit this block properly? need to allow for TEAMSIZE
-    int teamsize = atoi(argv[3]);
-
-    argc = 4;
-    char** new_argv = new char*[3];
-    new_argv[0] = argv[0];
-    new_argv[1] = (char*)& PHIDATA;
-    new_argv[2] = (char*)& SIGMADATA;
-    //specifically here
-    new_argv[3] = atoi(argv[3]);
-    argv = new_argv;
-  }
+  unsigned teamsize;
 
   typedef Vec<3,double> Point;
   std::vector<Point> data;
   std::vector<double> sigma;
   unsigned N;
 
-  Clock timer;
-  Clock commTimer;
-  double totalCommTime = 0;
-
-  // Read data on MASTER
   if (rank == MASTER) {
+    std::vector<std::string> arg(argv, argv + argc);
+
+    if (arg.size() < 2) {
+      std::cerr << "Usage: " << arg[0] << " PHI_FILE SIGMA_FILE [-c TEAMSIZE]" << std::endl;
+      //exit(1);
+      // XXX: Remove
+      std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+
+      arg.resize(1);  // keep only the executable name
+      arg.push_back(PHIDATA);
+      arg.push_back(SIGMADATA);
+    }
+
+    // Parse optional command line args
+    teamsize = 1;   // Default value
+    for (unsigned i = 1; i < arg.size(); ++i) {
+      if (arg[i] == "-c") {
+        if (i+1 < arg.size()) {
+          teamsize = atoi(arg[i+1]);
+          // Erase these two elements
+          arg.erase(arg.begin() + i, arg.begin() + i + 2);
+        } else {
+          std::cerr << "-c option requires one argument." << std::endl;
+          return 1;
+        }
+      }
+    }
+
     // Read the data from PHI_FILE interpreted as Points
-    std::ifstream data_file(argv[1]);
+    std::ifstream data_file(arg[1]);
     data_file >> data;
 
     // Read the data from SIGMA_FILE interpreted as doubles
-    std::ifstream sigma_file(argv[2]);
+    std::ifstream sigma_file(arg[2]);
     sigma_file >> sigma;
 
     assert(data.size() == sigma.size());
@@ -60,10 +61,20 @@ int main(int argc, char** argv)
     std::cout << "Teamsize = " << teamsize << std::endl;
   }
 
+  Clock timer;
+  Clock commTimer;
+  double totalCommTime = 0;
+
   // Broadcast the size of the problem to all processes
   timer.start();
   commTimer.start();
   MPI_Bcast(&N, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
+  totalCommTime += commTimer.elapsed();
+
+  // Broadcast the teamsize to all processes
+  timer.start();
+  commTimer.start();
+  MPI_Bcast(&teamsize, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // TODO: How to generalize?
@@ -207,8 +218,8 @@ int ceilPC2 = (numtasks + teamsize * teamsize - 1) / teamsize / teamsize;
 for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
   commTimer.start();
   // % is implementation defined, adding Nteams to prevent negative numbers
-  int prev = (team - TEAMSIZE + Nteams) % Nteams;
-  int next = (team + TEAMSIZE + Nteams) % Nteams;
+  int prev = (team - teamsize + Nteams) % Nteams;
+  int next = (team + teamsize + Nteams) % Nteams;
   MPI_Sendrecv_replace(&xJ[0], teamDataCount, MPI_DOUBLE,
                        next, tag1, prev, tag1,
                        row_comm, &status);
@@ -222,13 +233,13 @@ for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
   // test if last iteration to do calculation exceptions
   if ( shiftCount + 1 == ceilPC2) {
     // calculate leftovers to calculate
-    if (trank <  Nteams % TEAMSIZE) {
+    if (trank <  Nteams % teamsize) {
       // Calculate the current block
       block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
                  xI.begin(), xI.end(), phiI.begin());
     }
     // acount for perfect division
-    else if (Nteams % TEAMSIZE == 0) {
+    else if (Nteams % teamsize == 0) {
       // Calculate the current block
       block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
                  xI.begin(), xI.end(), phiI.begin());
