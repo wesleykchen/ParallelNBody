@@ -79,12 +79,12 @@ int main(int argc, char** argv)
 
   // TODO: How to generalize?
   if (N % P != 0) {
-    printf("Quitting. The number of processors must divide the total number of tasks.\n");
+    printf("Quitting. The number of processors must divide the number of points\n");
     MPI_Abort(MPI_COMM_WORLD, -1);
     exit(0);
   }
 
-  if (N % teamsize != 0) {
+  if (P % teamsize != 0) {
     printf("Quitting. The teamsize (c) must divide the total number of processors (p).\n");
     MPI_Abort(MPI_COMM_WORLD, -1);
     exit(0);
