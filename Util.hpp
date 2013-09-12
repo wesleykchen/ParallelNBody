@@ -21,8 +21,7 @@
 /** Integer divide, rounded up
  * @param[in] a Numerator
  * @param[in] b Denominator
- * @returns If b divides a, then a/b
- *                          else a/b + 1
+ * @returns If b divides a, then a/b, else a/b + 1
  */
 inline unsigned idiv_up(unsigned a, unsigned b) {
   return (a+b-1)/b;
