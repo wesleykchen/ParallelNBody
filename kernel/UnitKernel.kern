@@ -1,0 +1,32 @@
+/** @file UnitKernel
+ * @brief Implements the unit kernel defined by
+ * K(t,s) = 1  if t != s
+ * K(t,s) = 0  if t == s
+ *
+ * Note: Mostly for testing purposes.
+ */
+
+#include "Vec.hpp"
+
+struct UnitPotential
+{
+  typedef Vec<3,double>  source_type;
+  typedef double         charge_type;
+  typedef Vec<3,double>  target_type;
+  typedef double         result_type;
+  typedef unsigned       kernel_value_type;
+
+  /** Kernel evaluation
+   * K(t,s) =  1  if s != t,
+   *           0  else
+   */
+  FMMTL_INLINE
+  kernel_value_type operator()(const target_type& t,
+                               const source_type& s) const {
+    return kernel_value_type(!(s == t));
+  }
+  FMMTL_INLINE
+  kernel_value_type transpose(const kernel_value_type& kts) const {
+    return kts;
+  }
+};

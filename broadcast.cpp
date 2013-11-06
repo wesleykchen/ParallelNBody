@@ -71,7 +71,7 @@ int main(int argc, char** argv)
   }
 
   // Broadcast the data to all processes
-  unsigned count = Point::size() * N;
+  unsigned count = Point::size() * data.size();
   commTimer.start();
   MPI_Bcast(data.data(), count, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
   MPI_Bcast(sigma.data(), N, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);

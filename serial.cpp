@@ -2,13 +2,32 @@
 
 #include "Vec.hpp"
 
-// Serial version of n-body algorithm
+#include "kernel/Laplace.kern"
 
+// Serial version of n-body algorithm
 int main(int argc, char** argv)
 {
-  typedef Vec<3,double> Point;
+  // Create a Kernel
+  typedef LaplacePotential kernel_type;
+  kernel_type K;
+
+  static_assert(std::is_same<
+                typename kernel_type::source_type,
+                typename kernel_type::target_type>::value,
+                "source_type != target_type");
+
+  typedef typename kernel_type::source_type Point;
   std::vector<Point> data;
-  std::vector<double> sigma;
+  typedef typename kernel_type::charge_type charge_type;
+  std::vector<charge_type> sigma;
+
+  // TODO: Generalize on source_type, charge_type, and result_type
+  static_assert(std::is_same<typename kernel_type::source_type, Point>::value,
+                "source_type != Vec<3,double>");
+  static_assert(std::is_same<typename kernel_type::charge_type, double>::value,
+                "charge_type != double");
+  static_assert(std::is_same<typename kernel_type::result_type, double>::value,
+                "result_type != double");
 
   std::vector<std::string> arg(argv, argv+argc);
 
@@ -37,12 +56,14 @@ int main(int argc, char** argv)
   std::cout << "N = " << N << std::endl;
 
   // Compute the matvec
-  std::vector<double> phi(N, 0);
+  typedef typename kernel_type::result_type result_type;
+  std::vector<result_type> phi(N);
 
   Clock timer;
   timer.start();
-  block_eval(data.begin(), data.end(), sigma.begin(),
-             data.begin(), data.end(), phi.begin());
+  P2P::block_eval(K,
+                  data.begin(), data.end(), sigma.begin(),
+                  data.begin(), data.end(), phi.begin());
   double time = timer.elapsed();
 
   std::cout << "Computed in " << time << " seconds" << std::endl;

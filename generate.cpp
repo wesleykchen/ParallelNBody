@@ -1,6 +1,8 @@
 #include "Util.hpp"
 #include "Vec.hpp"
 
+#include "meta/random.hpp"
+
 int main(int argc, char** argv)
 {
   std::vector<std::string> arg(argv, argv+argc);
@@ -24,10 +26,10 @@ int main(int argc, char** argv)
   typedef Vec<3,double> source_type;
   std::ofstream data(arg[1]);
   for (unsigned i = 0; i < N; ++i)
-    data << source_type(get_random(), get_random(), get_random()) << std::endl;
+    data << meta::random<source_type>::get() << std::endl;
 
   typedef double        charge_type;
   std::ofstream sigma(arg[2]);
   for (unsigned i = 0; i < N; ++i)
-    sigma << charge_type(get_random()) << std::endl;
+    sigma << meta::random<charge_type>::get() << std::endl;
 }
