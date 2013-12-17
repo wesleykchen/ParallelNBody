@@ -1,8 +1,7 @@
 #include "Util.hpp"
 
-#include "Vec.hpp"
-
 #include "kernel/Laplace.kern"
+#include "meta/kernel_traits.hpp"
 
 // Serial version of n-body algorithm
 int main(int argc, char** argv)
@@ -11,23 +10,15 @@ int main(int argc, char** argv)
   typedef LaplacePotential kernel_type;
   kernel_type K;
 
-  static_assert(std::is_same<
-                typename kernel_type::source_type,
-                typename kernel_type::target_type>::value,
-                "source_type != target_type");
+  // Define source_type, target_type, charge_type, result_type
+  IMPORT_KERNEL_TRAITS(kernel_type);
 
-  typedef typename kernel_type::source_type Point;
-  std::vector<Point> data;
-  typedef typename kernel_type::charge_type charge_type;
+  // We are testing symmetric kernels
+  static_assert(std::is_same<source_type, target_type>::value,
+                "Testing symmetric kernels, need source_type == target_type");
+
+  std::vector<source_type> data;
   std::vector<charge_type> sigma;
-
-  // TODO: Generalize on source_type, charge_type, and result_type
-  static_assert(std::is_same<typename kernel_type::source_type, Point>::value,
-                "source_type != Vec<3,double>");
-  static_assert(std::is_same<typename kernel_type::charge_type, double>::value,
-                "charge_type != double");
-  static_assert(std::is_same<typename kernel_type::result_type, double>::value,
-                "result_type != double");
 
   std::vector<std::string> arg(argv, argv+argc);
 
@@ -56,19 +47,18 @@ int main(int argc, char** argv)
   std::cout << "N = " << N << std::endl;
 
   // Compute the matvec
-  typedef typename kernel_type::result_type result_type;
   std::vector<result_type> phi(N);
 
   Clock timer;
   timer.start();
-  P2P::block_eval(K,
-                  data.begin(), data.end(), sigma.begin(),
-                  data.begin(), data.end(), phi.begin());
+  block_eval(K,
+             data.begin(), data.end(), sigma.begin(),
+             data.begin(), data.end(), phi.begin());
   double time = timer.elapsed();
 
   std::cout << "Computed in " << time << " seconds" << std::endl;
-  double checkSum = std::accumulate(phi.begin(), phi.end(), 0.0);
-  std::cout << "Serial - checksum answer is: " << checkSum << std::endl;
+  result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
+  std::cout << "Serial - checksum answer is: " << check << std::endl;
 
   std::ofstream phi_file("data/phi.txt");
   phi_file << phi << std::endl;

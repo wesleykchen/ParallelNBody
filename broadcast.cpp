@@ -1,6 +1,9 @@
 #include "Util.hpp"
 
-#include "Vec.hpp"
+#include "kernel/Laplace.kern"
+#include "meta/kernel_traits.hpp"
+
+#include <type_traits>
 
 // Broadcast version of n-body algorithm
 
@@ -21,9 +24,18 @@ int main(int argc, char** argv)
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
 
-  typedef Vec<3,double> Point;
-  std::vector<Point> data;
-  std::vector<double> sigma;
+  typedef LaplacePotential kernel_type;
+  kernel_type K;
+
+  // Define source_type, target_type, charge_type, result_type
+  IMPORT_KERNEL_TRAITS(kernel_type);
+
+  // We are testing symmetric kernels
+  static_assert(std::is_same<source_type, target_type>::value,
+                "Testing symmetric kernels, need source_type == target_type");
+
+  std::vector<source_type> data;
+  std::vector<charge_type> sigma;
   unsigned N;
 
   if (rank == MASTER) {
@@ -40,11 +52,11 @@ int main(int argc, char** argv)
       arg.push_back(SIGMADATA);
     }
 
-    // Read the data from PHI_FILE interpreted as Points
+    // Read the data from PHI_FILE interpreted as source_types
     std::ifstream data_file(arg[1]);
     data_file >> data;
 
-    // Read the data from SIGMA_FILE interpreted as doubles
+    // Read the data from SIGMA_FILE interpreted as charge_types
     std::ifstream sigma_file(arg[2]);
     sigma_file >> sigma;
 
@@ -61,39 +73,39 @@ int main(int argc, char** argv)
   // Broadcast the size of the problem to all processes
   timer.start();
   commTimer.start();
-  MPI_Bcast(&N, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(&N, sizeof(N), MPI_CHAR, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // Allocate memory on all other processes
   if (rank != MASTER) {
-    data = std::vector<Point>(N);
-    sigma = std::vector<double>(N);
+    data  = std::vector<source_type>(N);
+    sigma = std::vector<charge_type>(N);
   }
 
   // Broadcast the data to all processes
-  unsigned count = Point::size() * data.size();
   commTimer.start();
-  MPI_Bcast(data.data(), count, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
-  MPI_Bcast(sigma.data(), N, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(data.data(), sizeof(source_type) * data.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(sigma.data(), sizeof(charge_type) * sigma.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // all processors have a chunk to hold their temporary answers
-  std::vector<double> myphi(idiv_up(N,P));
+  std::vector<result_type> myphi(idiv_up(N,P));
 
-  // evaluate computation
-  block_eval(data.begin(), data.end(), sigma.begin(),
+  // Evaluate computation
+  block_eval(K,
+             data.begin(), data.end(), sigma.begin(),
              data.begin() + calcStart(rank,P,N),
              data.begin() + calcEnd(rank,P,N),
              myphi.begin());
 
   // Collect results and display
-  std::vector<double> phi;
+  std::vector<result_type> phi;
   if (rank == MASTER)
-    phi = std::vector<double>(N);
+    phi = std::vector<result_type>(N);
 
   commTimer.start();
-  MPI_Gather(myphi.data(), idiv_up(N,P), MPI_DOUBLE,
-             phi.data(), idiv_up(N,P), MPI_DOUBLE,
+  MPI_Gather(myphi.data(), sizeof(result_type) * myphi.size(), MPI_CHAR,
+             phi.data(), sizeof(result_type) * myphi.size(), MPI_CHAR,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -102,8 +114,8 @@ int main(int argc, char** argv)
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
   if (rank == MASTER) {
-    double checkSum = std::accumulate(phi.begin(), phi.end(), 0.0);
-    std::cout << "Broadcast - checksum answer is: " << checkSum << std::endl;
+    result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
+    std::cout << "Broadcast - checksum answer is: " << check << std::endl;
     std::ofstream phi_file("data/phi.txt");
     phi_file << phi << std::endl;
   }

@@ -1,5 +1,5 @@
 
-#include "Vec.hpp"
+#include "numeric/Vec.hpp"
 
 struct YukawaPotential
 {
@@ -11,26 +11,22 @@ struct YukawaPotential
 
   double kappa;
 
-  FMMTL_INLINE
-  YukawaPotential() : kappa(1) {}
-  FMMTL_INLINE
-  YukawaPotential(double _kappa) : kappa(_kappa) {}
+  inline YukawaPotential() : kappa(1) {}
+  inline YukawaPotential(double _kappa) : kappa(_kappa) {}
 
   /** Kernel evaluation
    * K(t,s) =  exp(-kR)/R  if R >= 1e-10
    *           0           else
    * where k = kappa, R = |s-t|_2
    */
-  FMMTL_INLINE
-  kernel_value_type operator()(const target_type& t,
-                               const source_type& s) const {
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
     double R = norm(s - t);                //   R
     double invR  = 1.0 / R;                //   1.0 / R
     if (R < 1e-10) { R = invR = 0; }       //   Exclude self interaction
     return exp(-kappa*R) * invR;           //   Potential
   }
-  FMMTL_INLINE
-  kernel_value_type transpose(const kernel_value_type& kts) const {
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kts;
   }
 };
@@ -46,19 +42,16 @@ struct YukawaKernel
 
   double kappa;
 
-  FMMTL_INLINE
-  YukawaKernel() : kappa(1) {}
-  FMMTL_INLINE
-  YukawaKernel(double _kappa) : kappa(_kappa) {}
+  inline YukawaKernel() : kappa(1) {}
+  inline YukawaKernel(double _kappa) : kappa(_kappa) {}
 
   /** Kernel evaluation
    * K(t,s) =  {exp(-kR)/R, (s-t)(kR+1)exp(-kR)/R^3}  if R >= 1e-10
    *           {0,0,0,0}                              else
    * where k = kappa, R = |s-t|_2
    */
-  FMMTL_INLINE
-  kernel_value_type operator()(const target_type& t,
-                               const source_type& s) const {
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
     Vec<3,double> dist = s - t;            //   Vector from target to source
     double R2 = normSq(dist);              //   R^2
     double R  = std::sqrt(R2);             //   R
@@ -69,8 +62,7 @@ struct YukawaKernel
     dist *= pot * (kappa*R + 1) * invR2;   //   Force
     return kernel_value_type(pot, dist[0], dist[1], dist[2]);
   }
-  FMMTL_INLINE
-  kernel_value_type transpose(const kernel_value_type& kts) const {
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kernel_value_type(kts[0], -kts[1], -kts[2], -kts[3]);
   }
 };

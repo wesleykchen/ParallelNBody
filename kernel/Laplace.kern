@@ -1,5 +1,5 @@
 
-#include "Vec.hpp"
+#include "numeric/Vec.hpp"
 
 struct LaplacePotential
 {
@@ -14,16 +14,14 @@ struct LaplacePotential
    *           0      else
    * where R = |s-t|_2
    */
-  FMMTL_INLINE
-  kernel_value_type operator()(const target_type& t,
-                               const source_type& s) const {
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
     double R2 = normSq(s - t);             //   R^2
     double invR2 = 1.0 / R2;               //   1 / R^2
     if (R2 < 1e-20) invR2 = 0;             //   Exclude self interaction
     return std::sqrt(invR2);               //   Potential
   }
-  FMMTL_INLINE
-  kernel_value_type transpose(const kernel_value_type& kts) const {
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kts;
   }
 };
@@ -41,9 +39,8 @@ struct LaplaceKernel
    *           {0,0,0,0}         else
    * where R = |s-t|_2
    */
-  FMMTL_INLINE
-  kernel_value_type operator()(const target_type& t,
-                               const source_type& s) const {
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
     Vec<3,double> dist = s - t;            //   Vector from target to source
     double R2 = normSq(dist);              //   R^2
     double invR2 = 1.0 / R2;               //   1 / R^2
@@ -52,8 +49,7 @@ struct LaplaceKernel
     dist *= invR2 * invR;                  //   Force
     return kernel_value_type(invR, dist[0], dist[1], dist[2]);
   }
-  FMMTL_INLINE
-  kernel_value_type transpose(const kernel_value_type& kts) const {
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kernel_value_type(kts[0], -kts[1], -kts[2], -kts[3]);
   }
 };

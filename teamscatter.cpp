@@ -1,5 +1,7 @@
 #include "Util.hpp"
-#include "Vec.hpp"
+
+#include "kernel/Laplace.kern"
+#include "meta/kernel_traits.hpp"
 
 // Team Scatter version of the n-body algorithm
 
@@ -12,9 +14,18 @@ int main(int argc, char** argv)
   MPI_Comm_size(MPI_COMM_WORLD, &P);
   unsigned teamsize;
 
-  typedef Vec<3,double> Point;
-  std::vector<Point> data;
-  std::vector<double> sigma;
+  typedef LaplacePotential kernel_type;
+  kernel_type K;
+
+  // Define source_type, target_type, charge_type, result_type
+  IMPORT_KERNEL_TRAITS(kernel_type);
+
+  // We are testing symmetric kernels
+  static_assert(std::is_same<source_type, target_type>::value,
+                "Testing symmetric kernels, need source_type == target_type");
+
+  std::vector<source_type> data;
+  std::vector<charge_type> sigma;
   unsigned N;
 
   if (rank == MASTER) {
@@ -46,11 +57,11 @@ int main(int argc, char** argv)
       arg.push_back(SIGMADATA);
     }
 
-    // Read the data from PHI_FILE interpreted as Points
+    // Read the data from PHI_FILE interpreted as source_types
     std::ifstream data_file(arg[1]);
     data_file >> data;
 
-    // Read the data from SIGMA_FILE interpreted as doubles
+    // Read the data from SIGMA_FILE interpreted as charge_types
     std::ifstream sigma_file(arg[2]);
     sigma_file >> sigma;
 
@@ -69,18 +80,13 @@ int main(int argc, char** argv)
 
   // Broadcast the size of the problem to all processes
   commTimer.start();
-  MPI_Bcast(&N, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(&N, sizeof(N), MPI_CHAR, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // Broadcast the teamsize to all processes
   commTimer.start();
-  MPI_Bcast(&teamsize, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(&teamsize, sizeof(teamsize), MPI_CHAR, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
-
-  unsigned num_teams = P / teamsize;
-  // Determine coordinates in processor team grid
-  unsigned team  = rank / teamsize;
-  unsigned trank = rank % teamsize;
 
   // TODO: How to generalize?
   if (N % P != 0) {
@@ -101,6 +107,11 @@ int main(int argc, char** argv)
     exit(0);
   }
 
+  unsigned num_teams = P / teamsize;
+  // Determine coordinates in processor team grid
+  unsigned team  = rank / teamsize;
+  unsigned trank = rank % teamsize;
+
   // Split comm into row and column communicators
   MPI_Comm team_comm;
   MPI_Comm_split(MPI_COMM_WORLD, team, rank, &team_comm);
@@ -108,29 +119,27 @@ int main(int argc, char** argv)
   MPI_Comm_split(MPI_COMM_WORLD, trank, rank, &row_comm);
 
   // Declare data for the block computations
-  std::vector<Point> xI(idiv_up(N,num_teams));
-  std::vector<Point> xJ(idiv_up(N,num_teams));
-  std::vector<double> sigmaJ(idiv_up(N,num_teams));
-
-  unsigned teamDataCount = Point::size() * N / num_teams;
+  std::vector<source_type> xI(idiv_up(N,num_teams));
+  std::vector<source_type> xJ(idiv_up(N,num_teams));
+  std::vector<charge_type> sigmaJ(idiv_up(N,num_teams));
 
   // Scatter data from master to team leaders
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Scatter(data.data(), teamDataCount, MPI_DOUBLE,
-                xI.data(), teamDataCount, MPI_DOUBLE,
+    MPI_Scatter(data.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+                xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
                 MASTER, row_comm);
-    MPI_Scatter(sigma.data(), teamDataCount / Point::size(), MPI_DOUBLE,
-                sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
+    MPI_Scatter(sigma.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
+                sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
 
   // Team leaders broadcast to team
   commTimer.start();
-  MPI_Bcast(xI.data(), teamDataCount, MPI_DOUBLE,
+  MPI_Bcast(xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
             MASTER, team_comm);
-  MPI_Bcast(sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
+  MPI_Bcast(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
             MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
@@ -143,11 +152,11 @@ int main(int argc, char** argv)
   int prev = (team - trank + num_teams) % num_teams;
   int next = (team + trank + num_teams) % num_teams;
   MPI_Status status;
-  MPI_Sendrecv_replace(xJ.data(), teamDataCount, MPI_DOUBLE,
-                       next, 0, prev, 0,
+  MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
+                       MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
-  MPI_Sendrecv_replace(sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
-                       next, 0, prev, 0,
+  MPI_Sendrecv_replace(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(),
+                       MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
@@ -155,7 +164,8 @@ int main(int argc, char** argv)
   std::vector<double> phiI(idiv_up(N,num_teams));
 
   // Calculate the current block
-  block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+  block_eval(K,
+             xJ.begin(), xJ.end(), sigmaJ.begin(),
              xI.begin(), xI.end(), phiI.begin());
 
   // Looping process to shift the data between the teams
@@ -165,11 +175,11 @@ int main(int argc, char** argv)
     // Add num_teams to prevent negative numbers
     int prev = (team - teamsize + num_teams) % num_teams;
     int next = (team + teamsize + num_teams) % num_teams;
-    MPI_Sendrecv_replace(xJ.data(), teamDataCount, MPI_DOUBLE,
-                         next, 0, prev, 0,
+    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
+                         MPI_CHAR, next, 0, prev, 0,
                          row_comm, &status);
-    MPI_Sendrecv_replace(sigmaJ.data(), teamDataCount / Point::size(), MPI_DOUBLE,
-                         next, 0, prev, 0,
+    MPI_Sendrecv_replace(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(),
+                         MPI_CHAR, next, 0, prev, 0,
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
@@ -178,32 +188,36 @@ int main(int argc, char** argv)
     // 2) Your team rank is one of the remainders
     if (shiftCount < ceilPC2-1
         || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
-      block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+      block_eval(K,
+                 xJ.begin(), xJ.end(), sigmaJ.begin(),
                  xI.begin(), xI.end(), phiI.begin());
     }
   }
 
   // Allocate teamphiI on team leaders
-  std::vector<double> teamphiI;
+  std::vector<result_type> teamphiI;
   if (trank == MASTER)
-    teamphiI = std::vector<double>(idiv_up(N,num_teams));
+    teamphiI = std::vector<result_type>(idiv_up(N,num_teams));
 
   // Reduce answers to the team leader
   commTimer.start();
-  MPI_Reduce(phiI.data(), teamphiI.data(), teamDataCount / Point::size(), MPI_DOUBLE,
-             MPI_SUM, MASTER, team_comm);
+  // TODO: Generalize
+  static_assert(std::is_same<result_type, double>::value,
+                "Need result_type == double for now");
+  MPI_Reduce(phiI.data(), teamphiI.data(), phiI.size(),
+             MPI_DOUBLE, MPI_SUM, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Allocate phi on master
-  std::vector<double> phi;
+  std::vector<result_type> phi;
   if (rank == MASTER)
-    phi = std::vector<double>(P*idiv_up(N,P));
+    phi = std::vector<result_type>(P*idiv_up(N,P));
 
   // Gather team leader answers to master
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Gather(teamphiI.data(), teamDataCount / Point::size(), MPI_DOUBLE,
-               phi.data(), teamDataCount / Point::size(), MPI_DOUBLE,
+    MPI_Gather(teamphiI.data(), sizeof(result_type) * teamphiI.size(), MPI_CHAR,
+               phi.data(), sizeof(result_type) * teamphiI.size(), MPI_CHAR,
                MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
@@ -213,8 +227,8 @@ int main(int argc, char** argv)
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
   if (rank == MASTER) {
-    double checkSum = std::accumulate(phi.begin(), phi.end(), 0.0);
-    std::cout << "Scatter - checksum answer is: " << checkSum << std::endl;
+    result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
+    std::cout << "Scatter - checksum answer is: " << check << std::endl;
     std::ofstream phi_file("data/phi.txt");
     phi_file << phi << std::endl;
   }

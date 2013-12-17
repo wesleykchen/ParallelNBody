@@ -1,5 +1,7 @@
 #include "Util.hpp"
-#include "Vec.hpp"
+
+#include "kernel/Laplace.kern"
+#include "meta/kernel_traits.hpp"
 
 #include "meta/random.hpp"
 
@@ -23,12 +25,20 @@ int main(int argc, char** argv)
   srand(time(NULL));
   unsigned N = string_to_<int>(arg[3]);
 
-  typedef Vec<3,double> source_type;
+  // Define the Kernel to use
+  typedef LaplacePotential kernel_type;
+
+  // Define source_type, target_type, charge_type, result_type
+  IMPORT_KERNEL_TRAITS(kernel_type);
+
+  // We are testing symmetric kernels
+  static_assert(std::is_same<source_type, target_type>::value,
+                "Testing symmetric kernels, need source_type == target_type");
+
   std::ofstream data(arg[1]);
   for (unsigned i = 0; i < N; ++i)
     data << meta::random<source_type>::get() << std::endl;
 
-  typedef double        charge_type;
   std::ofstream sigma(arg[2]);
   for (unsigned i = 0; i < N; ++i)
     sigma << meta::random<charge_type>::get() << std::endl;

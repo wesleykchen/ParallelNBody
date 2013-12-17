@@ -1,7 +1,9 @@
 #include "Util.hpp"
-#include "Vec.hpp"
 
 // Scatter version of the n-body algorithm
+
+#include "kernel/Laplace.kern"
+#include "meta/kernel_traits.hpp"
 
 int main(int argc, char** argv)
 {
@@ -11,9 +13,14 @@ int main(int argc, char** argv)
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
 
-  typedef Vec<3,double> Point;
-  std::vector<Point> data;
-  std::vector<double> sigma;
+  typedef LaplacePotential kernel_type;
+  kernel_type K;
+
+  // Define source_type, target_type, charge_type, result_type
+  IMPORT_KERNEL_TRAITS(kernel_type);
+
+  std::vector<source_type> data;
+  std::vector<charge_type> sigma;
   unsigned N;
 
   Clock timer;
@@ -46,15 +53,19 @@ int main(int argc, char** argv)
     N = sigma.size();
     std::cout << "N = " << N << std::endl;
     std::cout << "P = " << P << std::endl;
+
+    // Pad with garbage values if needed
+    data.resize(P * idiv_up(N,P));
+    sigma.resize(P * idiv_up(N,P));
   }
 
   // Broadcast the size of the problem to all processes
   timer.start();
   commTimer.start();
-  MPI_Bcast(&N, 1, MPI_UNSIGNED, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(&N, sizeof(N), MPI_CHAR, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
-  // TODO: How to generalize?
+  // TODO: Generalize by excluding the garbage values
   if (N % P != 0) {
     printf("Quitting. The number of processors must divide the total number of tasks.\n");
     MPI_Abort(MPI_COMM_WORLD, -1);
@@ -62,19 +73,18 @@ int main(int argc, char** argv)
   }
 
   // Allocate memory all processes
-  std::vector<double> phiI(idiv_up(N,P));
-  std::vector<Point> xI(idiv_up(N,P));
-  std::vector<Point> xJ(idiv_up(N,P));
-  std::vector<double> sigmaJ(idiv_up(N,P));
+  std::vector<result_type> phiI(idiv_up(N,P));
+  std::vector<source_type> xI(idiv_up(N,P));
+  std::vector<source_type> xJ(idiv_up(N,P));
+  std::vector<charge_type> sigmaJ(idiv_up(N,P));
 
   // Scatter the data to all processes
-  unsigned count = Point::size() * N;
   commTimer.start();
-  MPI_Scatter(data.data(), idiv_up(count,P), MPI_DOUBLE,
-              xI.data(), idiv_up(count,P), MPI_DOUBLE,
+  MPI_Scatter(data.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+              xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
-  MPI_Scatter(sigma.data(), idiv_up(N,P), MPI_DOUBLE,
-              sigmaJ.data(), idiv_up(N,P), MPI_DOUBLE,
+  MPI_Scatter(sigma.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
+              sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -82,7 +92,8 @@ int main(int argc, char** argv)
   std::copy(xI.begin(), xI.end(), xJ.begin());
 
   // Calculate the first block
-  block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+  block_eval(K,
+             xJ.begin(), xJ.end(), sigmaJ.begin(),
              xI.begin(), xI.end(), phiI.begin());
 
   MPI_Status status;
@@ -91,28 +102,28 @@ int main(int argc, char** argv)
     // Add P to prevent negative numbers
     int prev  = (rank - 1 + P) % P;
     int next = (rank + 1 + P) % P;
-    MPI_Sendrecv_replace(xJ.data(), idiv_up(count,P), MPI_DOUBLE,
-                         next, 0, prev, 0,
+    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
+                         MPI_CHAR, next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
-    MPI_Sendrecv_replace(sigmaJ.data(), idiv_up(N,P), MPI_DOUBLE,
-                         next, 0, prev, 0,
+    MPI_Sendrecv_replace(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(),
+                         MPI_CHAR, next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
-
     totalCommTime += commTimer.elapsed();
 
     // Calculate the current block
-    block_eval(xJ.begin(), xJ.end(), sigmaJ.begin(),
+    block_eval(K,
+               xJ.begin(), xJ.end(), sigmaJ.begin(),
                xI.begin(), xI.end(), phiI.begin());
   }
 
-  std::vector<double> phi;
+  std::vector<result_type> phi;
   if (rank == MASTER)
-    phi = std::vector<double>(P*idiv_up(N,P));
+    phi = std::vector<result_type>(P*idiv_up(N,P));
 
   // Collect results and display
   commTimer.start();
-  MPI_Gather(phiI.data(), idiv_up(N,P), MPI_DOUBLE,
-             phi.data(), idiv_up(N,P), MPI_DOUBLE,
+  MPI_Gather(phiI.data(), sizeof(result_type) * phiI.size(), MPI_CHAR,
+             phi.data(), sizeof(result_type) * phiI.size(), MPI_CHAR,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -121,8 +132,8 @@ int main(int argc, char** argv)
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
   if (rank == MASTER) {
-    double checkSum = std::accumulate(phi.begin(), phi.end(), 0.0);
-    std::cout << "Scatter - checksum answer is: " << checkSum << std::endl;
+    result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
+    std::cout << "Scatter - checksum answer is: " << check << std::endl;
     std::ofstream phi_file("data/phi.txt");
     phi_file << phi << std::endl;
   }

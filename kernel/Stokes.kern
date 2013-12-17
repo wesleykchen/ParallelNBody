@@ -1,5 +1,5 @@
 
-#include "Vec.hpp"
+#include "numeric/Vec.hpp"
 
 /** Stokeslet Green's function:
  *
@@ -18,12 +18,9 @@ struct Stokeslet
   /** A compressed struct to represent the rank-1 3x3 stokeslet matrix */
   struct kernel_value_type {
     Vec<3,double> r;
+    inline kernel_value_type(const Vec<3,double>& _r) : r(_r) {}
 
-    FMMTL_INLINE
-    kernel_value_type(const Vec<3,double>& _r) : r(_r) {}
-
-    FMMTL_INLINE
-    result_type operator*(const charge_type& c) const {
+    inline result_type operator*(const charge_type& c) const {
       double invR2 = 1.0 / normSq(r);
       if (invR2 > 1e20) invR2 = 0;
       double invR = std::sqrt(invR2);
@@ -35,14 +32,12 @@ struct Stokeslet
     }
   };
 
-  FMMTL_INLINE
-  kernel_value_type operator()(const target_type& t,
-                               const source_type& s) const {
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
     return kernel_value_type(s-t);
   }
 
-  FMMTL_INLINE
-  kernel_value_type transpose(const kernel_value_type& kts) const {
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kernel_value_type(-kts.r);
   }
 };

@@ -6,4 +6,4 @@ mpirun -n 16 ./broadcast
 
 mpirun -n 16 ./scatter
 
-mpirun -n 16 ./teamscatter
+mpirun -n 16 ./teamscatter -c 2

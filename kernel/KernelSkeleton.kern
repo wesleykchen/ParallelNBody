@@ -25,7 +25,7 @@
  * MORE on Tree Operations.
  */
 
-#include "Vec.hpp"
+#include "numeric/Vec.hpp"
 
 
 /** @struct KernelSkeleton
@@ -60,18 +60,12 @@ struct KernelSkeleton
    * @param[in] t,s  The target and source to evaluate the kernel
    * @return         The Kernel value, K(t,s)
    */
-  FMMTL_INLINE
-  kernel_value_type operator()(const target_type& t,
-                               const source_type& s) const {
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
     (void) t;
     (void) s;
     return kernel_value_type(0);
   }
-
-#if 0
-  /*******************************************************************/
-  /************************* Optional ********************************/
-  /*******************************************************************/
 
   /** Optional Kernel value source and target transposition
    * K(t,s) -> K(s,t)
@@ -85,59 +79,7 @@ struct KernelSkeleton
    * @note           If this function is implemented, then it must
    *                 be the case that std::is_same<source_type,target_type>
    */
-  FMMTL_INLINE
-  kernel_value_type transpose(const kernel_value_type& kts) const {
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kts;
   }
-
-  /** Optional Kernel vectorized asymmetric P2P operation
-   * r_i += sum_j K(t_i,s_j) * c_j
-   *
-   * @param[in] s_first,s_last  Iterator range to the sources
-   * @param[in] c_first         Iterator to charges corresponding to sources
-   * @param[in] t_first,t_last  Iterator range to the targets
-   * @param[in] r_first         Iterator to result accumulators
-   *                             corresponding to targets
-   */
-  template <typename SourceIter, typename ChargeIter,
-            typename TargetIter, typename ResultIter>
-  void P2P(SourceIter s_first, SourceIter s_last, ChargeIter c_first,
-           TargetIter t_first, TargetIter t_last, ResultIter r_first) const {
-    (void) s_first;
-    (void) s_last;
-    (void) c_first;
-    (void) t_first;
-    (void) t_last;
-    (void) r_first;
-  }
-
-  /** Optional Kernel vectorized symmetric P2P operation
-   * This can occur when s_i == t_i for all i.
-   * rt_i += sum_j K(t_i, s_j) * cs_j
-   * rs_j += sum_i K(s_j, t_i) * ct_i
-   *
-   * @param[in] s_first,s_last  Iterator range to the sources
-   * @param[in] cs_first        Iterator to charges corresponding to sources
-   * @param[in] t_first,t_last  Iterator range to the targets
-   * @param[in] ct_first        Iterator to charges corresponding to targets
-   * @param[in] rt_first        Iterator to result accumulators
-   *                             corresponding to targets
-   * @param[in] rs_first        Iterator to result accumulators
-   *                             corresponding to sources
-   */
-  template <typename SourceIter, typename ChargeIter,
-            typename TargetIter, typename ResultIter>
-  void P2P(SourceIter s_first, SourceIter s_last, ChargeIter cs_first,
-           TargetIter t_first, TargetIter t_last, ChargeIter ct_first,
-           ResultIter rt_first, ResultIter rs_first) const {
-    (void) s_first;
-    (void) s_last;
-    (void) cs_first;
-    (void) t_first;
-    (void) t_last;
-    (void) ct_first;
-    (void) rt_first;
-    (void) rs_first;
-  }
-#endif  // By default, exclude optional methods
 };

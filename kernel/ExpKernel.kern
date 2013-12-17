@@ -5,7 +5,7 @@
  * Note: Mostly for testing purposes.
  */
 
-#include "Vec.hpp"
+#include "numeric/Vec.hpp"
 
 struct ExpPotential
 {
@@ -18,14 +18,12 @@ struct ExpPotential
   /** Kernel evaluation
    * K(t,s) = exp(sum_i t_i - s_i)
    */
-  FMMTL_INLINE
-  kernel_value_type operator()(const target_type& t,
-                               const source_type& s) const {
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
     return exp(t[0] + t[1] + t[2]
                - s[0] - s[1] - s[2]);
   }
-  FMMTL_INLINE
-  kernel_value_type transpose(const kernel_value_type& kts) const {
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return 1.0 / kts;
   }
 };
