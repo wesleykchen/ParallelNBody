@@ -24,11 +24,15 @@ int main(int argc, char** argv)
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
 
+  // Define the kernel
   typedef LaplacePotential kernel_type;
   kernel_type K;
 
   // Define source_type, target_type, charge_type, result_type
-  IMPORT_KERNEL_TRAITS(kernel_type);
+  typedef kernel_type::source_type source_type;
+  typedef kernel_type::charge_type charge_type;
+  typedef kernel_type::target_type target_type;
+  typedef kernel_type::result_type result_type;
 
   // We are testing symmetric kernels
   static_assert(std::is_same<source_type, target_type>::value,

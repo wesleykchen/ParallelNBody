@@ -29,7 +29,10 @@ int main(int argc, char** argv)
   typedef LaplacePotential kernel_type;
 
   // Define source_type, target_type, charge_type, result_type
-  IMPORT_KERNEL_TRAITS(kernel_type);
+  typedef kernel_type::source_type source_type;
+  typedef kernel_type::charge_type charge_type;
+  typedef kernel_type::target_type target_type;
+  typedef kernel_type::result_type result_type;
 
   // We are testing symmetric kernels
   static_assert(std::is_same<source_type, target_type>::value,
