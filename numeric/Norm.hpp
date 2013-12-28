@@ -72,12 +72,12 @@ struct norm_type<complex<T> > {
 /** Compute the inner product of two complex numbers */
 template <typename T>
 inline typename norm_type<complex<T> >::type inner_prod(const complex<T>& a,
-                                                 const complex<T>& b) {
+                                                        const complex<T>& b) {
   return inner_prod(a.real(),b.real()) + inner_prod(a.imag(),b.imag());
 }
 template <typename T>
 inline typename norm_type<complex<T> >::type dot(const complex<T>& a,
-                                          const complex<T>& b) {
+                                                 const complex<T>& b) {
   return inner_prod(a,b);
 }
 
@@ -118,7 +118,7 @@ struct norm_type<Vec<N,T> > {
 /** Compute the inner product of two Vecs */
 template <std::size_t N, typename T>
 inline typename norm_type<Vec<N,T> >::type inner_prod(const Vec<N,T>& a,
-                                               const Vec<N,T>& b) {
+                                                      const Vec<N,T>& b) {
   typename norm_type<Vec<N,T> >::type v = inner_prod(a[0],b[0]);
   for (std::size_t i = 1; i != N; ++i)
     v += inner_prod(a[i],b[i]);
@@ -126,7 +126,7 @@ inline typename norm_type<Vec<N,T> >::type inner_prod(const Vec<N,T>& a,
 }
 template <std::size_t N, typename T>
 inline typename norm_type<Vec<N,T> >::type dot(const Vec<N,T>& a,
-                                        const Vec<N,T>& b) {
+                                               const Vec<N,T>& b) {
   return inner_prod(a,b);
 }
 
