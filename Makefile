@@ -42,12 +42,13 @@ LDFLAGS +=
 ##################
 
 EXEC += generate
+
 EXEC += serial
 EXEC += broadcast
 EXEC += scatter
 EXEC += teamscatter
 
-EXEC += test
+EXEC += profile_p2p
 
 # 'make' - default rule
 all: $(EXEC)

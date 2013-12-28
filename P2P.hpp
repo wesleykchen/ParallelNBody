@@ -315,9 +315,9 @@ p2p(const Kernel& K,
     Charge* c_half = c_first + count/2;
     Result* r_half = r_first + count/2;
     p2p(K, p_first, p_half, c_first, r_first);
-    p2p(K, p_half,  p_last, c_half,  r_half);
     p2p(K, p_first, p_half, c_first, r_first,
            p_half,  p_last, c_half,  r_half);
+    p2p(K, p_half,  p_last, c_half,  r_half);
   } else {
     block_eval(K, p_first, p_last, c_first, r_first);
   }
