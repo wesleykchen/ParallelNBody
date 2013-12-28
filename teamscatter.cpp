@@ -167,9 +167,9 @@ int main(int argc, char** argv)
   std::vector<double> phiI(idiv_up(N,num_teams));
 
   // Calculate the current block
-  block_eval(K,
-             xJ.begin(), xJ.end(), sigmaJ.begin(),
-             xI.begin(), xI.end(), phiI.begin());
+  p2p(K,
+      xJ.begin(), xJ.end(), sigmaJ.begin(),
+      xI.begin(), xI.end(), phiI.begin());
 
   // Looping process to shift the data between the teams
   int ceilPC2 = idiv_up(P, teamsize*teamsize);
@@ -191,9 +191,9 @@ int main(int argc, char** argv)
     // 2) Your team rank is one of the remainders
     if (shiftCount < ceilPC2-1
         || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
-      block_eval(K,
-                 xJ.begin(), xJ.end(), sigmaJ.begin(),
-                 xI.begin(), xI.end(), phiI.begin());
+      p2p(K,
+          xJ.begin(), xJ.end(), sigmaJ.begin(),
+          xI.begin(), xI.end(), phiI.begin());
     }
   }
 

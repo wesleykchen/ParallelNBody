@@ -16,14 +16,14 @@ int main() {
   std::vector<charge_type> c(3);
   std::vector<result_type> r(3);
 
-  block_eval(K,
-             s.begin(), s.end(), c.begin(),
-             t.begin(), t.end(), r.begin());
+  p2p(K,
+      s.begin(), s.end(), c.begin(),
+      t.begin(), t.end(), r.begin());
 
-  block_eval(K,
-             s.cbegin(), s.cend(), c.begin(),
-             t.begin(), t.end(), r.begin());
+  p2p(K,
+      s.cbegin(), s.cend(), c.begin(),
+      t.begin(), t.end(), r.begin());
 
-  block_eval([](const target_type&, const source_type&) { return 1; },
-             s.begin(), s.end(), c.begin(), r.begin());
+  p2p([](const target_type&, const source_type&) { return 1; },
+      s.begin(), s.end(), c.begin(), r.begin());
 }

@@ -96,11 +96,11 @@ int main(int argc, char** argv)
   std::vector<result_type> myphi(idiv_up(N,P));
 
   // Evaluate computation
-  block_eval(K,
-             data.begin(), data.end(), sigma.begin(),
-             data.begin() + calcStart(rank,P,N),
-             data.begin() + calcEnd(rank,P,N),
-             myphi.begin());
+  p2p(K,
+      data.begin(), data.end(), sigma.begin(),
+      data.begin() + calcStart(rank,P,N),
+      data.begin() + calcEnd(rank,P,N),
+      myphi.begin());
 
   // Collect results and display
   std::vector<result_type> phi;

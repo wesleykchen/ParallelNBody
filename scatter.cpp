@@ -91,13 +91,13 @@ int main(int argc, char** argv)
               MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
+  // Calculate the symmetric first block
+  p2p(K,
+      xI.begin(), xI.end(),
+      sigmaJ.begin(), phiI.begin());
+
   // Copy xI -> xJ
   std::copy(xI.begin(), xI.end(), xJ.begin());
-
-  // Calculate the first block
-  block_eval(K,
-             xJ.begin(), xJ.end(), sigmaJ.begin(),
-             xI.begin(), xI.end(), phiI.begin());
 
   MPI_Status status;
   for (int shiftCount = 1; shiftCount < P; ++shiftCount) {
@@ -114,9 +114,9 @@ int main(int argc, char** argv)
     totalCommTime += commTimer.elapsed();
 
     // Calculate the current block
-    block_eval(K,
-               xJ.begin(), xJ.end(), sigmaJ.begin(),
-               xI.begin(), xI.end(), phiI.begin());
+    p2p(K,
+        xJ.begin(), xJ.end(), sigmaJ.begin(),
+        xI.begin(), xI.end(), phiI.begin());
   }
 
   std::vector<result_type> phi;

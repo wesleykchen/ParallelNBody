@@ -54,9 +54,9 @@ int main(int argc, char** argv)
 
   Clock timer;
   timer.start();
-  block_eval(K,
-             data.begin(), data.end(), sigma.begin(),
-             data.begin(), data.end(), phi.begin());
+  p2p(K,
+      data.begin(), data.end(),
+      sigma.begin(), phi.begin());
   double time = timer.elapsed();
 
   std::cout << "Computed in " << time << " seconds" << std::endl;
