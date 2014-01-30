@@ -17,7 +17,7 @@ int main() {
   typedef kernel_type::result_type result_type;
 
   std::cout << "Symmetric Diagonal" << std::endl;
-  for (unsigned n = 1; n < 40000; n *= 2) {
+  for (unsigned n = 1; n < 10000; n *= 2) {
     std::vector<source_type> s(n);
     std::vector<charge_type> c(n);
     std::vector<result_type> r(n);
@@ -51,7 +51,7 @@ int main() {
   }
 
   std::cout << "Symmetric Off-Diagonal" << std::endl;
-  for (unsigned n = 1; n < 80000; n *= 2) {
+  for (unsigned n = 1; n < 20000; n *= 2) {
     std::vector<source_type> s(n);
     std::vector<charge_type> c(n);
     std::vector<result_type> r(n);
@@ -86,8 +86,8 @@ int main() {
               << std::setw(10) << new_time << std::endl;
   }
 
-  std::cout << std::endl << "Asymmetric off-diagonal" << std::endl;
-  for (unsigned n = 1; n < 40000; n *= 2) {
+  std::cout << "Asymmetric off-diagonal" << std::endl;
+  for (unsigned n = 1; n < 10000; n *= 2) {
     std::vector<source_type> s(n);
     std::vector<target_type> t(n);
     std::vector<charge_type> c(n);

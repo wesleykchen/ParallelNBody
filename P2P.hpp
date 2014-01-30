@@ -10,6 +10,10 @@
 #include "meta/kernel_traits.hpp"
 #include "meta/trivial_iterator.hpp"
 
+#if !defined(P2P_BLOCK_SIZE)
+#  define P2P_BLOCK_SIZE 128
+#endif
+
 namespace detail {
 
 /** Dual-Evaluation dispatch when K.transpose does not exist */
@@ -204,7 +208,7 @@ p2p(const Kernel& K,
   const int count1 = s_last - s_first;
   const int count2 = t_last - t_first;
 
-  const char flag = ((count1 > 128) << 1) | (count2 > 128);
+  const char flag = ((count1 > P2P_BLOCK_SIZE) << 1) | (count2 > P2P_BLOCK_SIZE);
   switch (flag) {
     case 0: { // Both are small, evaluate
       block_eval(K, s_first, s_last, c_first,
@@ -257,7 +261,7 @@ p2p(const Kernel& K,
   const int count1 = p1_last - p1_first;
   const int count2 = p2_last - p2_first;
 
-  const char flag = ((count1 > 128) << 1) | (count2 > 128);
+  const char flag = ((count1 > P2P_BLOCK_SIZE) << 1) | (count2 > P2P_BLOCK_SIZE);
   switch (flag) {
     case 0: { // Both are small, evaluate
       block_eval(K, p1_first, p1_last, c1_first, r1_first,
@@ -309,7 +313,7 @@ p2p(const Kernel& K,
     Charge* c_first, Result* r_first)
 {
   const int count = p_last - p_first;
-  if (count > 128) {   // TODO: Generalize
+  if (count > P2P_BLOCK_SIZE) {   // TODO: Generalize
     // Split this triangle into two triangles and a square
     Source* p_half = p_first + count/2;
     Charge* c_half = c_first + count/2;
