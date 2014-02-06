@@ -11,13 +11,15 @@ int main() {
   typedef LaplacePotential kernel_type;
   kernel_type K;
 
+  unsigned N = 10000;
+
   typedef kernel_type::source_type source_type;
   typedef kernel_type::charge_type charge_type;
   typedef kernel_type::target_type target_type;
   typedef kernel_type::result_type result_type;
 
   std::cout << "Symmetric Diagonal" << std::endl;
-  for (unsigned n = 1; n < 10000; n *= 2) {
+  for (unsigned n = 1; n < N; n *= 2) {
     std::vector<source_type> s(n);
     std::vector<charge_type> c(n);
     std::vector<result_type> r(n);
@@ -28,14 +30,23 @@ int main() {
       r[i] = meta::random<result_type>::get();
     }
 
+    // Copy to prevent warm cache
+    std::vector<source_type> s1 = s;
+    std::vector<charge_type> c1 = c;
     std::vector<result_type> r1 = r;
+
     Clock timer;
-    detail::block_eval(K, s.begin(), s.end(), c.begin(), r1.begin());
+    timer.start();
+    detail::block_eval(K, s1.begin(), s1.end(), c1.begin(), r1.begin());
     double old_time = timer.elapsed();
 
+    // Copy to prevent warm cache
+    std::vector<source_type> s2 = s;
+    std::vector<charge_type> c2 = c;
     std::vector<result_type> r2 = r;
+
     timer.start();
-    p2p(K, s.begin(), s.end(), c.begin(), r2.begin());
+    p2p(K, s2.begin(), s2.end(), c2.begin(), r2.begin());
     double new_time = timer.elapsed();
 
     double error = 0;
@@ -51,7 +62,7 @@ int main() {
   }
 
   std::cout << "Symmetric Off-Diagonal" << std::endl;
-  for (unsigned n = 1; n < 20000; n *= 2) {
+  for (unsigned n = 1; n < 2*N; n *= 2) {
     std::vector<source_type> s(n);
     std::vector<charge_type> c(n);
     std::vector<result_type> r(n);
@@ -62,16 +73,25 @@ int main() {
       r[i] = meta::random<result_type>::get();
     }
 
+    // Copy to prevent warm cache
+    std::vector<source_type> s1 = s;
+    std::vector<charge_type> c1 = c;
     std::vector<result_type> r1 = r;
+
     Clock timer;
-    detail::block_eval(K, s.begin(), s.begin()+n/2, c.begin(), r1.begin(),
-                          s.begin()+n/2, s.end(), c.begin()+n/2, r1.begin()+n/2);
+    timer.start();
+    detail::block_eval(K, s1.begin(), s1.begin()+n/2, c1.begin(), r1.begin(),
+                          s1.begin()+n/2, s1.end(), c1.begin()+n/2, r1.begin()+n/2);
     double old_time = timer.elapsed();
 
+    // Copy to prevent warm cache
+    std::vector<source_type> s2 = s;
+    std::vector<charge_type> c2 = c;
     std::vector<result_type> r2 = r;
+
     timer.start();
-    p2p(K, s.begin(), s.begin()+n/2, c.begin(), r2.begin(),
-           s.begin()+n/2, s.end(), c.begin()+n/2, r2.begin()+n/2);
+    p2p(K, s2.begin(), s2.begin()+n/2, c2.begin(), r2.begin(),
+           s2.begin()+n/2, s2.end(), c2.begin()+n/2, r2.begin()+n/2);
     double new_time = timer.elapsed();
 
     double error = 0;
@@ -87,7 +107,7 @@ int main() {
   }
 
   std::cout << "Asymmetric off-diagonal" << std::endl;
-  for (unsigned n = 1; n < 10000; n *= 2) {
+  for (unsigned n = 1; n < N; n *= 2) {
     std::vector<source_type> s(n);
     std::vector<target_type> t(n);
     std::vector<charge_type> c(n);
@@ -100,16 +120,27 @@ int main() {
       r[i] = meta::random<result_type>::get();
     }
 
+    // Copy to prevent warm cache
+    std::vector<source_type> s1 = s;
+    std::vector<source_type> t1 = t;
+    std::vector<charge_type> c1 = c;
     std::vector<result_type> r1 = r;
+
     Clock timer;
-    detail::block_eval(K, s.begin(), s.end(), c.begin(),
-                          t.begin(), t.end(), r1.begin());
+    timer.start();
+    detail::block_eval(K, s1.begin(), s1.end(), c1.begin(),
+                          t1.begin(), t1.end(), r1.begin());
     double old_time = timer.elapsed();
 
+    // Copy to prevent warm cache
+    std::vector<source_type> s2 = s;
+    std::vector<source_type> t2 = t;
+    std::vector<charge_type> c2 = c;
     std::vector<result_type> r2 = r;
+
     timer.start();
-    p2p(K, s.begin(), s.end(), c.begin(),
-           t.begin(), t.end(), r2.begin());
+    p2p(K, s2.begin(), s2.end(), c2.begin(),
+           t2.begin(), t2.end(), r2.begin());
     double new_time = timer.elapsed();
 
     double error = 0;
