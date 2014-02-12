@@ -27,8 +27,8 @@ int main(int argc, char** argv)
   static_assert(std::is_same<source_type, target_type>::value,
                 "Testing symmetric kernels, need source_type == target_type");
 
-  std::vector<source_type> data;
-  std::vector<charge_type> sigma;
+  std::vector<source_type> source;
+  std::vector<charge_type> charge;
   unsigned N;
 
   if (rank == MASTER) {
@@ -50,26 +50,26 @@ int main(int argc, char** argv)
     }
 
     if (arg.size() < 2) {
-      std::cerr << "Usage: " << arg[0] << " PHI_FILE SIGMA_FILE [-c TEAMSIZE]" << std::endl;
+      std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE [-c TEAMSIZE]" << std::endl;
       //exit(1);
       // XXX: Remove
-      std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+      std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
 
       arg.resize(1);  // keep only the executable name
-      arg.push_back(PHIDATA);
-      arg.push_back(SIGMADATA);
+      arg.push_back(SOURCE_DATA);
+      arg.push_back(CHARGE_DATA);
     }
 
-    // Read the data from PHI_FILE interpreted as source_types
-    std::ifstream data_file(arg[1]);
-    data_file >> data;
+    // Read the data from SOURCE_FILE interpreted as source_types
+    std::ifstream source_file(arg[1]);
+    source_file >> source;
 
-    // Read the data from SIGMA_FILE interpreted as charge_types
-    std::ifstream sigma_file(arg[2]);
-    sigma_file >> sigma;
+    // Read the data from CHARGE_FILE interpreted as charge_types
+    std::ifstream charge_file(arg[2]);
+    charge_file >> charge;
 
-    assert(data.size() == sigma.size());
-    N = sigma.size();
+    assert(source.size() == charge.size());
+    N = charge.size();
     std::cout << "N = " << N << std::endl;
     std::cout << "P = " << P << std::endl;
     std::cout << "Teamsize = " << teamsize << std::endl;
@@ -129,10 +129,10 @@ int main(int argc, char** argv)
   // Scatter data from master to team leaders
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Scatter(data.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+    MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
                 xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
                 MASTER, row_comm);
-    MPI_Scatter(sigma.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
+    MPI_Scatter(charge.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
                 sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
