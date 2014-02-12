@@ -233,4 +233,4 @@ inline Vec<N,T> sqrt(Vec<N,T> a) {
 #undef for_i
 
 
-#include "numeric/norm.hpp"
+#include "numeric/Norm.hpp"
