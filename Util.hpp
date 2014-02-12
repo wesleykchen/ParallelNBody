@@ -113,6 +113,6 @@ inline T string_to_(const std::string& s) {
 
 // Problem specific -- XXX: NOT NEEDED
 #define NUMPOINTS 1024
-#define PHIDATA "data/phiDataSmall.txt"
-#define SIGMADATA "data/sigmaDataSmall.txt"
+#define SOURCE_DATA "data/sourceDataSmall.txt"
+#define CHARGE_DATA "data/chargeDataSmall.txt"
 #define MASTER 0

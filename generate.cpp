@@ -10,15 +10,15 @@ int main(int argc, char** argv)
   std::vector<std::string> arg(argv, argv+argc);
 
   if (arg.size() < 3) {
-    std::cerr << "Usage: " << arg[0] << " PHI_FILE SIGMA_FILE N" << std::endl;
+    std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE N" << std::endl;
     //exit(1);
     // XXX: Remove
     std::cerr << "Using default "
-              << PHIDATA << " " << SIGMADATA << " " << NUMPOINTS << std::endl;
+              << SOURCE_DATA << " " << CHARGE_DATA << " " << NUMPOINTS << std::endl;
 
     arg.resize(1);
-    arg.push_back(PHIDATA);
-    arg.push_back(SIGMADATA);
+    arg.push_back(SOURCE_DATA);
+    arg.push_back(CHARGE_DATA);
     arg.push_back(to_string(NUMPOINTS));
   }
 
@@ -38,11 +38,11 @@ int main(int argc, char** argv)
   static_assert(std::is_same<source_type, target_type>::value,
                 "Testing symmetric kernels, need source_type == target_type");
 
-  std::ofstream data(arg[1]);
+  std::ofstream source(arg[1]);
   for (unsigned i = 0; i < N; ++i)
-    data << meta::random<source_type>::get() << std::endl;
+    source << meta::random<source_type>::get() << std::endl;
 
-  std::ofstream sigma(arg[2]);
+  std::ofstream charge(arg[2]);
   for (unsigned i = 0; i < N; ++i)
-    sigma << meta::random<charge_type>::get() << std::endl;
+    charge << meta::random<charge_type>::get() << std::endl;
 }

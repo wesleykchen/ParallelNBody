@@ -20,33 +20,33 @@ int main(int argc, char** argv)
   static_assert(std::is_same<source_type, target_type>::value,
                 "Testing symmetric kernels, need source_type == target_type");
 
-  std::vector<source_type> data;
-  std::vector<charge_type> sigma;
+  std::vector<source_type> source;
+  std::vector<charge_type> charge;
 
   std::vector<std::string> arg(argv, argv+argc);
 
   if (arg.size() < 3) {
-    std::cerr << "Usage: " << arg[0] << " PHI_FILE SIGMA_FILE" << std::endl;
+    std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
     //exit(1);
     // XXX: Remove
-    std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+    std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
 
     arg.resize(1);
-    arg.push_back(PHIDATA);
-    arg.push_back(SIGMADATA);
+    arg.push_back(SOURCE_DATA);
+    arg.push_back(CHARGE_DATA);
   }
 
-  // Read the data from PHI_FILE interpreted as Points
-  std::ifstream data_file(arg[1]);
-  data_file >> data;
+  // Read the data from SOURCE_FILE interpreted as Points
+  std::ifstream source_file(arg[1]);
+  source_file >> source;
 
-  // Read the data from SIGMA_FILE interpreted as doubles
-  std::ifstream sigma_file(arg[2]);
-  sigma_file >> sigma;
+  // Read the data from CHARGE_FILE interpreted as doubles
+  std::ifstream charge_file(arg[2]);
+  charge_file >> charge;
 
   // Make sure this makes sense and get metadata
-  assert(data.size() == sigma.size());
-  unsigned N = sigma.size();
+  assert(source.size() == charge.size());
+  unsigned N = charge.size();
   std::cout << "N = " << N << std::endl;
 
   // Compute the matvec
@@ -55,8 +55,8 @@ int main(int argc, char** argv)
   Clock timer;
   timer.start();
   p2p(K,
-      data.begin(), data.end(),
-      sigma.begin(), phi.begin());
+      source.begin(), source.end(),
+      charge.begin(), phi.begin());
   double time = timer.elapsed();
 
   std::cout << "Computed in " << time << " seconds" << std::endl;
