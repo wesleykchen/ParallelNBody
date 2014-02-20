@@ -5,6 +5,10 @@
 
 #include <type_traits>
 
+#if !defined(P2P_DECAY_ITERATOR)
+#  define P2P_DECAY_ITERATOR 1
+#endif
+
 // If Iterator has a base, return it
 // Otherwise, Iterator is returned untouched.
 template <typename Iterator, bool decay>
@@ -64,6 +68,8 @@ struct is_convertible_to_msvc_Ranit
           typename std::iterator_reference<Iterator>::type
         >
       > {};
+
+// TODO: MSC _Iter_base<Iterator, true>
 #endif // _MSC_VER
 
 
@@ -86,16 +92,23 @@ struct is_trivial_iterator
                              > {};
 
 
-// If _Iterator is a __normal_iterator return its base (a plain pointer,
+// If Iterator is a __normal_iterator return its base (a plain pointer,
 // normally) otherwise return it untouched.  See copy, fill, ...
 template <typename Iterator>
 struct _iter_base
     : _Iter_base<Iterator, is_normal_iterator<Iterator>::value> {};
 
 
+#if P2P_DECAY_ITERATOR == 1     // Decay trivial iterators to pointers
 template <typename Iterator>
-inline
-typename _iter_base<Iterator>::iterator_type
+inline typename _iter_base<Iterator>::iterator_type
 iter_base(Iterator it) {
   return _iter_base<Iterator>::base(it);
 }
+#else                           // Return the same iterator
+template <typename Iterator>
+inline Iterator
+iter_base(Iterator it) {
+  return it;
+}
+#endif

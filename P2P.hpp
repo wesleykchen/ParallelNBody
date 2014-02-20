@@ -170,17 +170,16 @@ template <typename Kernel,
           typename TargetIter, typename ResultIter>
 inline void
 p2p(const Kernel& K,
-           SourceIter p1_first, SourceIter p1_last,
-           ChargeIter c1_first, ResultIter r1_first,
-           TargetIter p2_first, TargetIter p2_last,
-           ChargeIter c2_first, ResultIter r2_first)
+    SourceIter p1_first, SourceIter p1_last,
+    ChargeIter c1_first, ResultIter r1_first,
+    TargetIter p2_first, TargetIter p2_last,
+    ChargeIter c2_first, ResultIter r2_first)
 {
   return block_eval(K,
                     p1_first, p1_last,
                     c1_first, r1_first,
                     p2_first, p2_last,
                     c2_first, r2_first);
-
 }
 
 /** Symmetric diagonal block P2P */

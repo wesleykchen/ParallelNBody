@@ -12,7 +12,7 @@ CXX := mpic++ -std=c++11
 LINK := $(CXX)
 
 # Define any compile-time flags
-CFLAGS += -funroll-loops -O3 -W -fopenmp -Wall -Wextra
+CFLAGS := $(XFLAGS) -funroll-loops -O3 -W -fopenmp -Wall -Wextra
 # 'make DEBUG=1' - compile with debug flags
 ifeq ($(DEBUG),1)
 CFLAGS += -g -fno-inline
