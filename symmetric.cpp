@@ -3,7 +3,20 @@
 #include "kernel/Laplace.kern"
 #include "meta/kernel_traits.hpp"
 
-// Team Scatter version of the n-body algorithm
+// Functions to convert between team/member/iteration (T,C,I) and 2D black indexes (X,Y)
+void tci2XY (int t, int c, int i, int T, int C, int &X, int &Y) {
+    X = t;
+    Y = (I + c + i * C) % T;
+}
+
+void tci2XY (int X, int Y, int T, int C, int &t, int &c, int &i) {
+    t = X;
+    intermediate = (Y-X) % T;
+    c = intermediate % C;
+    i = intermediate / C;
+}
+
+// Symmetric Team Scatter version of the n-body algorithm
 
 int main(int argc, char** argv)
 {
@@ -126,6 +139,9 @@ int main(int argc, char** argv)
   std::vector<source_type> xJ(idiv_up(N,num_teams));
   std::vector<charge_type> sigmaJ(idiv_up(N,num_teams));
 
+  // New for symmetric, must store sigmaI as well
+  std::vector<charge_type> sigmaI(idiv_up(N,num_teams));
+
   // Scatter data from master to team leaders
   if (trank == MASTER) {
     commTimer.start();
@@ -149,6 +165,9 @@ int main(int argc, char** argv)
   // Copy xI -> xJ
   std::copy(xI.begin(), xI.end(), xJ.begin());
 
+  // Copy sigmaJ -> sigmaI - new for symmetric
+  std::copy(sigmaJ.begin(), sigmaJ.end(), sigmaI.begin());
+
   // Perform initial offset by teamrank
   commTimer.start();
   // Add num_teams to prevent negative numbers
@@ -166,10 +185,15 @@ int main(int argc, char** argv)
   // Hold accumulated answers
   std::vector<double> phiI(idiv_up(N,num_teams));
 
-  // Calculate the current block
+  // Answers for symmetric part - new
+  std::vector<doudble> phiJ(idiv_up(N,num_teams));
+
+  // Calculate the current block, new for symm using symP2P off diagonal
   p2p(K,
-      xJ.begin(), xJ.end(), sigmaJ.begin(),
-      xI.begin(), xI.end(), phiI.begin());
+      xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
+      xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+
+  // Start adding changes to team scatter
 
   // Looping process to shift the data between the teams
   int ceilPC2 = idiv_up(P, teamsize*teamsize);
@@ -189,11 +213,11 @@ int main(int argc, char** argv)
     // Compute on the last iteration only if
     // 1) The teamsize divides the number of teams (everyone computes)
     // 2) Your team rank is one of the remainders
-    if (shiftCount < ceilPC2-1
+    if (shiftCount < ceilPC2 - 1
         || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
       p2p(K,
-          xJ.begin(), xJ.end(), sigmaJ.begin(),
-          xI.begin(), xI.end(), phiI.begin());
+          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
+          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
     }
   }
 
