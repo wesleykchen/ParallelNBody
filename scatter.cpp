@@ -22,8 +22,8 @@ int main(int argc, char** argv)
   typedef kernel_type::target_type target_type;
   typedef kernel_type::result_type result_type;
 
-  std::vector<source_type> data;
-  std::vector<charge_type> sigma;
+  std::vector<source_type> source;
+  std::vector<charge_type> charge;
   unsigned N;
 
   Clock timer;
@@ -34,32 +34,32 @@ int main(int argc, char** argv)
     std::vector<std::string> arg(argv, argv+argc);
 
     if (arg.size() < 3) {
-      std::cerr << "Usage: " << arg[0] << " PHI_FILE SIGMA_FILE" << std::endl;
+      std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
       //exit(1);
       // XXX: Remove
-      std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+      std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
 
       arg.resize(1);
-      arg.push_back(PHIDATA);
-      arg.push_back(SIGMADATA);
+      arg.push_back(SOURCE_DATA);
+      arg.push_back(CHARGE_DATA);
     }
 
-    // Read the data from PHI_FILE interpreted as Points
-    std::ifstream data_file(arg[1]);
-    data_file >> data;
+    // Read the data from SOURCE_FILE interpreted as Points
+    std::ifstream source_file(arg[1]);
+    source_file >> source;
 
-    // Read the data from SIGMA_FILE interpreted as doubles
-    std::ifstream sigma_file(arg[2]);
-    sigma_file >> sigma;
+    // Read the data from CHARGE_FILE interpreted as doubles
+    std::ifstream charge_file(arg[2]);
+    charge_file >> charge;
 
-    assert(data.size() == sigma.size());
-    N = sigma.size();
+    assert(source.size() == charge.size());
+    N = charge.size();
     std::cout << "N = " << N << std::endl;
     std::cout << "P = " << P << std::endl;
 
     // Pad with garbage values if needed
-    data.resize(P * idiv_up(N,P));
-    sigma.resize(P * idiv_up(N,P));
+    source.resize(P * idiv_up(N,P));
+    charge.resize(P * idiv_up(N,P));
   }
 
   // Broadcast the size of the problem to all processes
@@ -83,10 +83,10 @@ int main(int argc, char** argv)
 
   // Scatter the data to all processes
   commTimer.start();
-  MPI_Scatter(data.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+  MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
               xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
-  MPI_Scatter(sigma.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
+  MPI_Scatter(charge.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
               sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();

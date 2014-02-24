@@ -38,34 +38,34 @@ int main(int argc, char** argv)
   static_assert(std::is_same<source_type, target_type>::value,
                 "Testing symmetric kernels, need source_type == target_type");
 
-  std::vector<source_type> data;
-  std::vector<charge_type> sigma;
+  std::vector<source_type> source;
+  std::vector<charge_type> charge;
   unsigned N;
 
   if (rank == MASTER) {
     std::vector<std::string> arg(argv, argv+argc);
 
     if (arg.size() < 3) {
-      std::cerr << "Usage: " << arg[0] << " PHI_FILE SIGMA_FILE" << std::endl;
+      std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
       //exit(1);
       // XXX: Remove
-      std::cerr << "Using default " << PHIDATA << " " << SIGMADATA << std::endl;
+      std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
 
       arg.resize(1);
-      arg.push_back(PHIDATA);
-      arg.push_back(SIGMADATA);
+      arg.push_back(SOURCE_DATA);
+      arg.push_back(CHARGE_DATA);
     }
 
-    // Read the data from PHI_FILE interpreted as source_types
-    std::ifstream data_file(arg[1]);
-    data_file >> data;
+    // Read the data from SOURCE_FILE interpreted as source_types
+    std::ifstream source_file(arg[1]);
+    source_file >> source;
 
-    // Read the data from SIGMA_FILE interpreted as charge_types
-    std::ifstream sigma_file(arg[2]);
-    sigma_file >> sigma;
+    // Read the data from CHARGE_FILE interpreted as charge_types
+    std::ifstream charge_file(arg[2]);
+    charge_file >> charge;
 
-    assert(data.size() == sigma.size());
-    N = sigma.size();
+    assert(source.size() == charge.size());
+    N = charge.size();
     std::cout << "N = " << N << std::endl;
     std::cout << "P = " << P << std::endl;
   }
@@ -82,14 +82,14 @@ int main(int argc, char** argv)
 
   // Allocate memory on all other processes
   if (rank != MASTER) {
-    data  = std::vector<source_type>(N);
-    sigma = std::vector<charge_type>(N);
+    source  = std::vector<source_type>(N);
+    charge = std::vector<charge_type>(N);
   }
 
   // Broadcast the data to all processes
   commTimer.start();
-  MPI_Bcast(data.data(), sizeof(source_type) * data.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  MPI_Bcast(sigma.data(), sizeof(charge_type) * sigma.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(source.data(), sizeof(source_type) * source.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(charge.data(), sizeof(charge_type) * charge.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // all processors have a chunk to hold their temporary answers
@@ -97,9 +97,9 @@ int main(int argc, char** argv)
 
   // Evaluate computation
   p2p(K,
-      data.begin(), data.end(), sigma.begin(),
-      data.begin() + calcStart(rank,P,N),
-      data.begin() + calcEnd(rank,P,N),
+      source.begin(), source.end(), charge.begin(),
+      source.begin() + calcStart(rank,P,N),
+      source.begin() + calcEnd(rank,P,N),
       myphi.begin());
 
   // Collect results and display
