@@ -152,7 +152,7 @@ int main(int argc, char** argv)
   // Perform initial offset by teamrank
   commTimer.start();
 
-  int prev = (team - trank) % num_teams;
+  int prev = (team - trank + num_teams) % num_teams;
   int next = (team + trank) % num_teams;
   MPI_Status status;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),

@@ -201,6 +201,11 @@ int main(int argc, char** argv)
   // Looping process to shift the data between the teams
   // Now fewer times then before
   int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);
+
+  int myX = 0;
+  int myY = 0;
+  tci2XY(team, trank, num_teams, teamsize, 0, myX, myY);
+  std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
     commTimer.start();
 
@@ -255,7 +260,7 @@ int main(int argc, char** argv)
     // on last iteration, no more need to send or receive
     // TODO make sure of this with test cases
 
-    std::cout<< "Processor: "<< rank << " " << myX<< " " << myY<< " "  << mirrorX<< " " << mirrorY<< " " <<  mirrorT<< " " << mirrorC<< " " << mirrorI<< " " << std::endl;
+    std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
 
     if ( mirrorI != totalIterations - 1) {
 
