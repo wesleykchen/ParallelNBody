@@ -183,7 +183,7 @@ int main(int argc, char** argv)
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
-  // TODO Should this be reseult type?
+  // TODO Should this be result type?
 
   // Hold accumulated answers
   std::vector<double> phiI(idiv_up(N,num_teams));
@@ -200,12 +200,46 @@ int main(int argc, char** argv)
 
   // Looping process to shift the data between the teams
   // Now fewer times then before
-  int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);
+  int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);;
 
-  int myX = 0;
-  int myY = 0;
-  tci2XY(team, trank, num_teams, teamsize, 0, myX, myY);
+
+  // TODO should this be result type?
+  std::vector<double> receivedPhiI(idiv_up(N,num_teams));
+
+  // Calculate where to send to and if it needs to send
+  int myX. myY = 0;
+  tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
+
+  int mirrorX = myY;
+  int mirrorY = myX;
+  int mirrorT, mirrorC, mirrorI;
+  XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
+
+
   std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
+
+  // how to ignore digonal in the send but not the receive
+  if (trank != 0) {
+
+    // Send/receive data
+    // phiJ.size() == xJ.size()
+    commTimer.start();
+    MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
+                 MPI_CHAR, teamsize*mirrorX + mirrorY, 0,
+                 receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
+                 MPI_CHAR, MPI_ANY_SOURCE, 0,
+                 MPI_COMM_WORLD, &status);
+    totalCommTime += commTimer.elapsed();
+
+    std::transform(phiI.begin(), phiI.end(), receivedPhiI.begin(), phiI.begin(), std::plus<double>());
+  }
+
+
+  //clear phiJ
+  phiJ.clear();
+  receivedPhiI.clear();
+
+  // ENTER LOOP
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
     commTimer.start();
 
@@ -220,36 +254,16 @@ int main(int argc, char** argv)
     totalCommTime += commTimer.elapsed();
 
 
-    /* OLD CODE
-    // Compute on the last iteration only if
-    // 1) The teamsize divides the number of teams (everyone computes)
-    // 2) Your team rank is one of the remainders
-    if (shiftCount < ceilPC2 - 1
-        || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
-      p2p(K,
-          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
-          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
-    }
-    */
-
     // Compute block
     p2p(K,
         xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
         xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
-    // New space to receive
-    // TODO should this be result type?
-    std::vector<double> receivedPhiI(idiv_up(N,num_teams));
 
     // Calculate where to send to and if it needs to send
-    int myX = 0;
-    int myY = 0;
-    tci2XY(team, trank, num_teams, teamsize, iteration, myX, myY);
+    tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
 
-    int mirrorX = myY;
-    int mirrorY = myX;
-    int mirrorT = 0;
-    int mirrorC = 0;
-    int mirrorI = 0;
+    mirrorX = myY;
+    mirrorY = myX;
     XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
 
@@ -276,13 +290,13 @@ int main(int argc, char** argv)
 
       // This will only work for doubles
       // TODO Generalize here as well?
-
       std::transform(phiI.begin(), phiI.end(), receivedPhiI.begin(), phiI.begin(), std::plus<double>());
     }
 
 
     //clear phiJ
     phiJ.clear();
+    receivedPhiI.clear();
 
 }
 
