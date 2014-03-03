@@ -1,0 +1,18 @@
+Processor: 1 0 1 1 0 1 1 0
+Processor: 3 1 0 0 1 0 1 0
+Processor: 5 2 1 1 2 1 1 0
+Processor: 7 3 0 0 3 0 1 1
+[7] Timer: 1.452000e-02
+[7] CommTimer: 1.148600e-02
+Processor: 0 0 0 0 0 0 0 0
+Processor: 2 1 1 1 1 1 0 0
+[2] Timer: 1.499000e-02
+[2] CommTimer: 1.191700e-02
+[1] Timer: 1.427100e-02
+[1] CommTimer: 1.117200e-02
+Processor: 4 2 0 0 2 0 0 1
+[3] Timer: 1.442700e-02
+[3] CommTimer: 1.134800e-02
+Processor: 6 3 1 1 3 1 0 1
+[6] Timer: 1.471700e-02
+[6] CommTimer: 1.165300e-02

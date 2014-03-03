@@ -151,9 +151,9 @@ int main(int argc, char** argv)
 
   // Perform initial offset by teamrank
   commTimer.start();
-  // Add num_teams to prevent negative numbers
-  int prev = (team - trank + num_teams) % num_teams;
-  int next = (team + trank + num_teams) % num_teams;
+
+  int prev = (team - trank) % num_teams;
+  int next = (team + trank) % num_teams;
   MPI_Status status;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                        MPI_CHAR, next, 0, prev, 0,

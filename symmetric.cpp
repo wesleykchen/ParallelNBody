@@ -6,13 +6,14 @@
 // Functions to convert between team/member/iteration (T,C,I) and 2D black indexes (X,Y)
 void tci2XY (int t, int c, int i, int T, int C, int &X, int &Y) {
     X = t;
-    Y = (I + c + i * C) % T;
+    Y = (t + c + i * C) % T;
 }
 
 void XY2tci (int X, int Y, int T, int C, int &t, int &c, int &i) {
     t = X;
-    intermediate = (Y-X) % T;
-    c = intermediate % C;
+    int intermediate = (Y-X) % T;
+    // fix from zero
+    c = (intermediate + C)% C;
     i = intermediate / C;
 }
 
@@ -182,6 +183,8 @@ int main(int argc, char** argv)
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
+  // TODO Should this be reseult type?
+
   // Hold accumulated answers
   std::vector<double> phiI(idiv_up(N,num_teams));
 
@@ -190,19 +193,19 @@ int main(int argc, char** argv)
 
   // Calculate the current block, new for symm using symP2P off diagonal
   p2p(K,
-      xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
+      xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
       xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
 
   // Start adding changes to team scatter
 
   // Looping process to shift the data between the teams
   // Now fewer times then before
-  int ceilPC2 = idiv_up(P, teamsize*teamsize);
-  for (int iteration = 1; iteration < ceilPC2; ++iteration) {
+  int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);
+  for (int iteration = 1; iteration < totalIterations; ++iteration) {
     commTimer.start();
-    // Add num_teams to prevent negative numbers
-    int prev = (team - teamsize + num_teams) % num_teams;
-    int next = (team + teamsize + num_teams) % num_teams;
+
+    int prev = (team - teamsize) % num_teams;
+    int next = (team + teamsize) % num_teams;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          row_comm, &status);
@@ -211,25 +214,31 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
+
+    /* OLD CODE
     // Compute on the last iteration only if
     // 1) The teamsize divides the number of teams (everyone computes)
     // 2) Your team rank is one of the remainders
-    /*if (shiftCount < ceilPC2 - 1
+    if (shiftCount < ceilPC2 - 1
         || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
       p2p(K,
           xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
           xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
-    }*/
-
-    p2p(K,
-          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
-          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
     }
+    */
+
+    // Compute block
+    p2p(K,
+        xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
+        xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+    // New space to receive
+    // TODO should this be result type?
+    std::vector<double> receivedPhiI(idiv_up(N,num_teams));
 
     // Calculate where to send to and if it needs to send
     int myX = 0;
     int myY = 0;
-    tci2XY(num_teams, teamsize, iteration, myX, myY);
+    tci2XY(team, trank, num_teams, teamsize, iteration, myX, myY);
 
     int mirrorX = myY;
     int mirrorY = myX;
@@ -238,24 +247,39 @@ int main(int argc, char** argv)
     int mirrorI = 0;
     XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
-    // Send/receive data
-    commTimer.start();
 
-    // This will send data back to itself I believe... may not be optimal?
-    // Do I need to keep a running sum?
-    // If the mirror is in the future
-    if (destI > iteration) {
-      MPI_Send(phiJ.data(), sizeof(source_type) * xJ.size(),
-               MPI_CHAR, teamsize*mirrorX + mirrorY, 0);
+    // Does the p2p already return the transposed version?
+
+    // Checked - everyturn does indeed maximize for one send and 1 recv, what about minimum? TODO
+
+    // on last iteration, no more need to send or receive
+    // TODO make sure of this with test cases
+
+    std::cout<< "Processor: "<< rank << " " << myX<< " " << myY<< " "  << mirrorX<< " " << mirrorY<< " " <<  mirrorT<< " " << mirrorC<< " " << mirrorI<< " " << std::endl;
+
+    if ( mirrorI != totalIterations - 1) {
+
+      // Send/receive data
+      // phiJ.size() == xJ.size()
+      commTimer.start();
+      MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
+                   MPI_CHAR, teamsize*mirrorX + mirrorY, 0,
+                   receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
+                   MPI_CHAR, MPI_ANY_SOURCE, 0,
+                   MPI_COMM_WORLD, &status);
+      totalCommTime += commTimer.elapsed();
+
+      // This will only work for doubles
+      // TODO Generalize here as well?
+
+      std::transform(phiI.begin(), phiI.end(), receivedPhiI.begin(), phiI.begin(), std::plus<double>());
     }
-    else {
-      MPI_Recv(phiJ.data(), sizeof(source_type) * xJ.size(),
-               MPI_CHAR, teamsize*mirrorX + mirrorY, 0);
-    }
 
-    totalCommTime += commTimer.elapsed();
 
-  }
+    //clear phiJ
+    phiJ.clear();
+
+}
 
   // Allocate teamphiI on team leaders
   std::vector<result_type> teamphiI;
@@ -291,7 +315,7 @@ int main(int argc, char** argv)
 
   if (rank == MASTER) {
     result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
-    std::cout << "Scatter - checksum answer is: " << check << std::endl;
+    std::cout << "Symmetric - checksum answer is: " << check << std::endl;
     std::ofstream phi_file("data/phi.txt");
     phi_file << phi << std::endl;
   }

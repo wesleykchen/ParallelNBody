@@ -47,6 +47,7 @@ EXEC += serial
 EXEC += broadcast
 EXEC += scatter
 EXEC += teamscatter
+EXEC += symmetric
 
 EXEC += profile_p2p
 

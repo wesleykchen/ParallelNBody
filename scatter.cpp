@@ -102,9 +102,9 @@ int main(int argc, char** argv)
   MPI_Status status;
   for (int shiftCount = 1; shiftCount < P; ++shiftCount) {
     commTimer.start();
-    // Add P to prevent negative numbers
-    int prev  = (rank - 1 + P) % P;
-    int next = (rank + 1 + P) % P;
+
+    int prev  = (rank - 1) % P;
+    int next = (rank + 1) % P;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
