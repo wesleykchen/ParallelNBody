@@ -9,7 +9,7 @@ void tci2XY (int t, int c, int i, int T, int C, int &X, int &Y) {
     Y = (I + c + i * C) % T;
 }
 
-void tci2XY (int X, int Y, int T, int C, int &t, int &c, int &i) {
+void XY2tci (int X, int Y, int T, int C, int &t, int &c, int &i) {
     t = X;
     intermediate = (Y-X) % T;
     c = intermediate % C;
@@ -186,7 +186,7 @@ int main(int argc, char** argv)
   std::vector<double> phiI(idiv_up(N,num_teams));
 
   // Answers for symmetric part - new
-  std::vector<doudble> phiJ(idiv_up(N,num_teams));
+  std::vector<double> phiJ(idiv_up(N,num_teams));
 
   // Calculate the current block, new for symm using symP2P off diagonal
   p2p(K,
@@ -196,8 +196,9 @@ int main(int argc, char** argv)
   // Start adding changes to team scatter
 
   // Looping process to shift the data between the teams
+  // Now fewer times then before
   int ceilPC2 = idiv_up(P, teamsize*teamsize);
-  for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
+  for (int iteration = 1; iteration < ceilPC2; ++iteration) {
     commTimer.start();
     // Add num_teams to prevent negative numbers
     int prev = (team - teamsize + num_teams) % num_teams;
@@ -213,12 +214,47 @@ int main(int argc, char** argv)
     // Compute on the last iteration only if
     // 1) The teamsize divides the number of teams (everyone computes)
     // 2) Your team rank is one of the remainders
-    if (shiftCount < ceilPC2 - 1
+    /*if (shiftCount < ceilPC2 - 1
         || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
       p2p(K,
           xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
           xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+    }*/
+
+    p2p(K,
+          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
+          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
     }
+
+    // Calculate where to send to and if it needs to send
+    int myX = 0;
+    int myY = 0;
+    tci2XY(num_teams, teamsize, iteration, myX, myY);
+
+    int mirrorX = myY;
+    int mirrorY = myX;
+    int mirrorT = 0;
+    int mirrorC = 0;
+    int mirrorI = 0;
+    XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
+
+    // Send/receive data
+    commTimer.start();
+
+    // This will send data back to itself I believe... may not be optimal?
+    // Do I need to keep a running sum?
+    // If the mirror is in the future
+    if (destI > iteration) {
+      MPI_Send(phiJ.data(), sizeof(source_type) * xJ.size(),
+               MPI_CHAR, teamsize*mirrorX + mirrorY, 0);
+    }
+    else {
+      MPI_Recv(phiJ.data(), sizeof(source_type) * xJ.size(),
+               MPI_CHAR, teamsize*mirrorX + mirrorY, 0);
+    }
+
+    totalCommTime += commTimer.elapsed();
+
   }
 
   // Allocate teamphiI on team leaders
