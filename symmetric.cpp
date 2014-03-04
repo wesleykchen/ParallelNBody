@@ -183,6 +183,8 @@ int main(int argc, char** argv)
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
+  // TODO Should this be result type?
+
   // Hold accumulated answers
   std::vector<result_type> phiI(idiv_up(N,num_teams));
 
@@ -198,38 +200,61 @@ int main(int argc, char** argv)
 
   // Looping process to shift the data between the teams
   // Now fewer times then before
-  int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);
+  int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);;
 
-  int myX, myY;
+  // Declare space for receiving
+  std::vector<result_type> receivedPhiI(idiv_up(N,num_teams));
+
+  // Calculate where to send to and if it needs to send
+  int myX. myY = 0;
   tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
 
   int mirrorX = myY;
   int mirrorY = myX;
+  int mirrorT, mirrorC, mirrorI;
   XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
-    // Does the p2p already return the transposed version?
+  if ( trank != 0) {
 
-    // Checked - everyturn does indeed maximize for one send and 1 recv, what about minimum? TODO
+    // Send/receive data
+    // phiJ.size() == xJ.size()
+    commTimer.start();
+    MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
+                MPI_CHAR, teamsize*mirrorT + mirrorC, 0,
+                receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
+                MPI_CHAR, MPI_ANY_SOURCE, 0,
+                MPI_COMM_WORLD, &status);
+    totalCommTime += commTimer.elapsed();
 
-    // TODO check for diagonal and when to do this
-    if ( trank != 0) {
-
-      // Send/receive data
-      // phiJ.size() == xJ.size()
-      commTimer.start();
-      MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
-                   MPI_CHAR, teamsize*mirrorT + mirrorC, 0,
-                   receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
-                   MPI_CHAR, MPI_ANY_SOURCE, 0,
-                   MPI_COMM_WORLD, &status);
-      totalCommTime += commTimer.elapsed();
-
-      // Accumulate into phiI
-      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
-        *iout += *iin;
+    // Accumulate into phiI
+    for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
+      *iout += *iin;
   }
 
   std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
+
+  // how to ignore digonal in the send but not the receive
+  if (trank != 0) {
+
+    // Send/receive data
+    // phiJ.size() == xJ.size()
+    commTimer.start();
+    MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
+                 MPI_CHAR, teamsize*mirrorX + mirrorY, 0,
+                 receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
+                 MPI_CHAR, MPI_ANY_SOURCE, 0,
+                 MPI_COMM_WORLD, &status);
+    totalCommTime += commTimer.elapsed();
+
+    std::transform(phiI.begin(), phiI.end(), receivedPhiI.begin(), phiI.begin(), std::plus<double>());
+  }
+
+
+  //clear phiJ
+  phiJ.clear();
+  receivedPhiI.clear();
+
+  // ENTER LOOP
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
     commTimer.start();
 
@@ -243,14 +268,12 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Allocate and set to zero
+    // Allocate and phiJ space and set to zero here
 
     // Compute block
     p2p(K,
         xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
         xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
-
-    std::vector<result_type> receivedPhiI(idiv_up(N,num_teams));
 
     // Calculate where to send to and if it needs to send
     tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
@@ -285,7 +308,7 @@ int main(int argc, char** argv)
       for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
         *iout += *iin;
     }
-}
+  }
 
   // Allocate teamphiI on team leaders
   std::vector<result_type> teamphiI;

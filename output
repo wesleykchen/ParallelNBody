@@ -1,18 +1,38 @@
-Processor: 1 0 1 1 0 1 1 0
-Processor: 3 1 0 0 1 0 1 0
-Processor: 5 2 1 1 2 1 1 0
-Processor: 7 3 0 0 3 0 1 1
-[7] Timer: 1.452000e-02
-[7] CommTimer: 1.148600e-02
-Processor: 0 0 0 0 0 0 0 0
-Processor: 2 1 1 1 1 1 0 0
-[2] Timer: 1.499000e-02
-[2] CommTimer: 1.191700e-02
-[1] Timer: 1.427100e-02
-[1] CommTimer: 1.117200e-02
-Processor: 4 2 0 0 2 0 0 1
-[3] Timer: 1.442700e-02
-[3] CommTimer: 1.134800e-02
-Processor: 6 3 1 1 3 1 0 1
-[6] Timer: 1.471700e-02
-[6] CommTimer: 1.165300e-02
+
+Processor: 0
+Team: 0Trank: 0Numteams: 4Teamsize: 2I: 0 0 0
+Processor: 1
+Team: 0Trank: 1Numteams: 4Teamsize: 2I: 0 0 1
+Processor: 2
+Team: 1Trank: 0Numteams: 4Teamsize: 2I: 0 1 1
+Processor: 3
+Team: 1Trank: 1Numteams: 4Teamsize: 2I: 0 1 0
+Processor: 4
+Team: 2Trank: 0Numteams: 4Teamsize: 2I: 0 2 0
+Processor: 5
+Team: 2Trank: 1Numteams: 4Teamsize: 2I: 0 2 1
+Processor: 6
+Team: 3Trank: 0Numteams: 4Teamsize: 2I: 0 3 1
+Processor: 7
+Team: 3Trank: 1Numteams: 4Teamsize: 2I: 0 3 0
+
+
+
+
+
+Processor: 0
+Team: 0Trank: 0Numteams: 4Teamsize: 2I: 1 0 0
+Processor: 1
+Team: 0Trank: 1Numteams: 4Teamsize: 2I: 1 0 1
+Processor: 2
+Team: 1Trank: 0Numteams: 4Teamsize: 2I: 1 1 1
+Processor: 3
+Team: 1Trank: 1Numteams: 4Teamsize: 2I: 1 1 0
+Processor: 4
+Team: 2Trank: 0Numteams: 4Teamsize: 2I: 1 2 0
+Processor: 5
+Team: 2Trank: 1Numteams: 4Teamsize: 2I: 1 2 1
+Processor: 6
+Team: 3Trank: 0Numteams: 4Teamsize: 2I: 1 3 1
+Processor: 7
+Team: 3Trank: 1Numteams: 4Teamsize: 2I: 1 3 0
