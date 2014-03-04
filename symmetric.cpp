@@ -202,8 +202,14 @@ int main(int argc, char** argv)
   // Now fewer times then before
   int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);;
 
+<<<<<<< HEAD
   // Declare space for receiving
   std::vector<result_type> receivedPhiI(idiv_up(N,num_teams));
+=======
+
+  // TODO should this be result type?
+  std::vector<double> receivedPhiI(idiv_up(N,num_teams));
+>>>>>>> 08895d626e5758642892b11c8cdb439377b63619
 
   // Calculate where to send to and if it needs to send
   int myX. myY = 0;
@@ -214,6 +220,7 @@ int main(int argc, char** argv)
   int mirrorT, mirrorC, mirrorI;
   XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
+<<<<<<< HEAD
   if ( trank != 0) {
 
     // Send/receive data
@@ -230,6 +237,8 @@ int main(int argc, char** argv)
     for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
       *iout += *iin;
   }
+=======
+>>>>>>> 08895d626e5758642892b11c8cdb439377b63619
 
   std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
 
@@ -268,7 +277,10 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
+<<<<<<< HEAD
     // Allocate and phiJ space and set to zero here
+=======
+>>>>>>> 08895d626e5758642892b11c8cdb439377b63619
 
     // Compute block
     p2p(K,
@@ -304,11 +316,25 @@ int main(int argc, char** argv)
                    MPI_COMM_WORLD, &status);
       totalCommTime += commTimer.elapsed();
 
+<<<<<<< HEAD
       // Accumulate into phiI
       for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
         *iout += *iin;
     }
   }
+=======
+      // This will only work for doubles
+      // TODO Generalize here as well?
+      std::transform(phiI.begin(), phiI.end(), receivedPhiI.begin(), phiI.begin(), std::plus<double>());
+    }
+
+
+    //clear phiJ
+    phiJ.clear();
+    receivedPhiI.clear();
+
+}
+>>>>>>> 08895d626e5758642892b11c8cdb439377b63619
 
   // Allocate teamphiI on team leaders
   std::vector<result_type> teamphiI;
