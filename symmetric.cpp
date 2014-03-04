@@ -183,13 +183,11 @@ int main(int argc, char** argv)
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
-  // TODO Should this be reseult type?
-
   // Hold accumulated answers
-  std::vector<double> phiI(idiv_up(N,num_teams));
+  std::vector<result_type> phiI(idiv_up(N,num_teams));
 
   // Answers for symmetric part - new
-  std::vector<double> phiJ(idiv_up(N,num_teams));
+  std::vector<result_type> phiJ(idiv_up(N,num_teams));
 
   // Calculate the current block, new for symm using symP2P off diagonal
   p2p(K,
@@ -202,9 +200,35 @@ int main(int argc, char** argv)
   // Now fewer times then before
   int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);
 
-  int myX = 0;
-  int myY = 0;
-  tci2XY(team, trank, num_teams, teamsize, 0, myX, myY);
+  int myX, myY;
+  tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
+
+  int mirrorX = myY;
+  int mirrorY = myX;
+  XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
+
+    // Does the p2p already return the transposed version?
+
+    // Checked - everyturn does indeed maximize for one send and 1 recv, what about minimum? TODO
+
+    // TODO check for diagonal and when to do this
+    if ( trank != 0) {
+
+      // Send/receive data
+      // phiJ.size() == xJ.size()
+      commTimer.start();
+      MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
+                   MPI_CHAR, teamsize*mirrorT + mirrorC, 0,
+                   receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
+                   MPI_CHAR, MPI_ANY_SOURCE, 0,
+                   MPI_COMM_WORLD, &status);
+      totalCommTime += commTimer.elapsed();
+
+      // Accumulate into phiI
+      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
+        *iout += *iin;
+  }
+
   std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
     commTimer.start();
@@ -219,37 +243,20 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-
-    /* OLD CODE
-    // Compute on the last iteration only if
-    // 1) The teamsize divides the number of teams (everyone computes)
-    // 2) Your team rank is one of the remainders
-    if (shiftCount < ceilPC2 - 1
-        || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
-      p2p(K,
-          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin()
-          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
-    }
-    */
+    // Allocate and set to zero
 
     // Compute block
     p2p(K,
         xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
         xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
-    // New space to receive
-    // TODO should this be result type?
-    std::vector<double> receivedPhiI(idiv_up(N,num_teams));
+
+    std::vector<result_type> receivedPhiI(idiv_up(N,num_teams));
 
     // Calculate where to send to and if it needs to send
-    int myX = 0;
-    int myY = 0;
-    tci2XY(team, trank, num_teams, teamsize, iteration, myX, myY);
+    tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
 
-    int mirrorX = myY;
-    int mirrorY = myX;
-    int mirrorT = 0;
-    int mirrorC = 0;
-    int mirrorI = 0;
+    mirrorX = myY;
+    mirrorY = myX;
     XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
 
@@ -268,22 +275,16 @@ int main(int argc, char** argv)
       // phiJ.size() == xJ.size()
       commTimer.start();
       MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
-                   MPI_CHAR, teamsize*mirrorX + mirrorY, 0,
+                   MPI_CHAR, teamsize*mirrorT + mirrorC, 0,
                    receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
                    MPI_CHAR, MPI_ANY_SOURCE, 0,
                    MPI_COMM_WORLD, &status);
       totalCommTime += commTimer.elapsed();
 
-      // This will only work for doubles
-      // TODO Generalize here as well?
-
-      std::transform(phiI.begin(), phiI.end(), receivedPhiI.begin(), phiI.begin(), std::plus<double>());
+      // Accumulate into phiI
+      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
+        *iout += *iin;
     }
-
-
-    //clear phiJ
-    phiJ.clear();
-
 }
 
   // Allocate teamphiI on team leaders
