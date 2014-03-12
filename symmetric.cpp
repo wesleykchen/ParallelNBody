@@ -189,19 +189,15 @@ int main(int argc, char** argv)
   // Answers for symmetric part - new
   std::vector<result_type> phiJ(idiv_up(N,num_teams));
 
-  // Calculate the current block, new for symm using symP2P off diagonal
-  p2p(K,
-      xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
-      xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
-
-  // Start adding changes to team scatter
-
   // Looping process to shift the data between the teams
   // Now fewer times then before
   int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);;
 
   // Declare space for receiving
   std::vector<result_type> receivedPhiI(idiv_up(N,num_teams));
+
+  // Variable for MPI
+  MPI_Request request;
 
   // Calculate where to send to and if it needs to send
   int myX. myY = 0;
@@ -212,31 +208,37 @@ int main(int argc, char** argv)
   int mirrorT, mirrorC, mirrorI;
   XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
-  MPI_Request request;
-  /* first case is diagonal - to look at below */
-  if ( trank != 0) {
+  // Below will have things send to itself - along main diagonal - is this okay? TODO ask
 
-    // Send/receive data
-    // phiJ.size() == xJ.size()
-    commTimer.start();
-    MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
-                MPI_CHAR, teamsize*mirrorT + mirrorC, 0,
-                receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
-                MPI_CHAR, MPI_ANY_SOURCE, 0,
-                MPI_COMM_WORLD, &status);
-    totalCommTime += commTimer.elapsed();
+  if (mirrorI < iteration) {
+      // receive from earlier calculation
+      commTimer.start();
+      MPI_Recv(receivedPhiI.data(), sizeof(source_type) * receivedPhiI.size(),
+               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &status);
+      totalCommTime += commTimer.elapsed();
+      // Accumulate into phiI - no noed to use the transform magic thing
+      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
+        *iout += *iin;
+      }
+    }
+    else {
+      // Compute block which will put into phiI alerady
+      p2p(K,
+          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
+          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
 
-    // Accumulate into phiI
-    for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
-      *iout += *iin;
+      }
+
+      // Send to mirror
+      commTimer.start();
+      MPI_Ibsend(phiJ.data(), sizeof(source_type) * phiJ.size(),
+               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &request);
+      totalCommTime += commTimer.elapsed();
   }
-
-  // start the iterations
 
 
   std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << 0 << " " << myX<< " " << myY << std::endl;
 
-  // ENTER LOOP
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
 
     // shift data
