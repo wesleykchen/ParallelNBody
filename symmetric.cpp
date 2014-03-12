@@ -15,6 +15,7 @@ void XY2tci (int X, int Y, int T, int C, int &t, int &c, int &i) {
     // fix from zero
     c = (intermediate + C)% C;
     i = intermediate / C;
+
 }
 
 // Symmetric Team Scatter version of the n-body algorithm
@@ -183,11 +184,8 @@ int main(int argc, char** argv)
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
-  // TODO Should this be result type?
-
   // Hold accumulated answers
   std::vector<result_type> phiI(idiv_up(N,num_teams));
-
   // Answers for symmetric part - new
   std::vector<result_type> phiJ(idiv_up(N,num_teams));
 
@@ -214,6 +212,8 @@ int main(int argc, char** argv)
   int mirrorT, mirrorC, mirrorI;
   XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
+  MPI_Request request;
+  /* first case is diagonal - to look at below */
   if ( trank != 0) {
 
     // Send/receive data
@@ -231,12 +231,16 @@ int main(int argc, char** argv)
       *iout += *iin;
   }
 
+  // start the iterations
+
+
   std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << 0 << " " << myX<< " " << myY << std::endl;
 
   // ENTER LOOP
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
-    commTimer.start();
 
+    // shift data
+    commTimer.start();
     int prev = (team - teamsize) % num_teams;
     int next = (team + teamsize) % num_teams;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
@@ -247,39 +251,49 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Allocate and phiJ space and set to zero here
-    // TODO
+    // Set phiJ to zero so that there is no accumulation from previous
+    // TODO optimize? does this need to be run every turn
 
-    // Compute block
-    p2p(K,
-        xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
-        xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+    for (auto it = phiJ.begin(); it != phiJ.end(); ++it) {
+      *it = 0;
+    }
 
     // Calculate where to send to and if it needs to send
     tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
 
+    // Calculate symmetric mirror
     mirrorX = myY;
     mirrorY = myX;
+
+    // Get info of symemtric mirror
     XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
     std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
 
-    if ( mirrorI != totalIterations - 1) {
-
-      // Send/receive data
-      // phiJ.size() == xJ.size()
+    if (mirrorI < iteration) {
+      // receive from earlier calculation
       commTimer.start();
-      MPI_Sendrecv(phiJ.data(), sizeof(result_type) * phiJ.size(),
-                   MPI_CHAR, teamsize*mirrorT + mirrorC, 0,
-                   receivedPhiI.data(), sizeof(result_type) * phiJ.size(),
-                   MPI_CHAR, MPI_ANY_SOURCE, 0,
-                   MPI_COMM_WORLD, &status);
+      MPI_Recv(receivedPhiI.data(), sizeof(source_type) * receivedPhiI.size(),
+               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &status);
       totalCommTime += commTimer.elapsed();
-
-      // Accumulate into phiI
-      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin)
+      // Accumulate into phiI - no noed to use the transform magic thing
+      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
         *iout += *iin;
+      }
     }
+    else {
+      // Compute block which will put into phiI alerady
+      p2p(K,
+          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
+          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+
+      }
+
+      // Send to mirror
+      commTimer.start();
+      MPI_Ibsend(phiJ.data(), sizeof(source_type) * phiJ.size(),
+               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &request);
+      totalCommTime += commTimer.elapsed();
   }
 
   // Allocate teamphiI on team leaders
