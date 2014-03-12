@@ -11,9 +11,9 @@ void tci2XY (int t, int c, int i, int T, int C, int &X, int &Y) {
 
 void XY2tci (int X, int Y, int T, int C, int &t, int &c, int &i) {
     t = X;
-    int intermediate = (Y-X) % T;
+    int intermediate = (Y - X + T) % T;
     // fix from zero
-    c = (intermediate + C)% C;
+    c = (intermediate + C) % C;
     i = intermediate / C;
 
 }
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 
     if (arg.size() < 2) {
       std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE [-c TEAMSIZE]" << std::endl;
-      //exit(1);
+      // exit(1);
       // XXX: Remove
       std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
 
@@ -200,44 +200,33 @@ int main(int argc, char** argv)
   MPI_Request request;
 
   // Calculate where to send to and if it needs to send
-  int myX. myY = 0;
-  tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
+  int myX, myY = 0;
+  tci2XY(team, trank, 0, num_teams, teamsize, myX, myY);
 
   int mirrorX = myY;
   int mirrorY = myX;
   int mirrorT, mirrorC, mirrorI;
   XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
-  // Below will have things send to itself - along main diagonal - is this okay? TODO ask
+  // std::cout<< "Processor: "<< rank << " Team: " << team<< " Trank: " << trank << " I: " << 0 << "\n" << myX << " " << myY << " MirrorT " << mirrorT<< " MirrorC " << mirrorC << " MirrorI " << mirrorI << std::endl;
 
-  if (mirrorI < iteration) {
-      // receive from earlier calculation
-      commTimer.start();
-      MPI_Recv(receivedPhiI.data(), sizeof(source_type) * receivedPhiI.size(),
-               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &status);
-      totalCommTime += commTimer.elapsed();
-      // Accumulate into phiI - no noed to use the transform magic thing
-      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
-        *iout += *iin;
-      }
-    }
-    else {
-      // Compute block which will put into phiI alerady
-      p2p(K,
-          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
-          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+  // Compute block which will put into phiI alerady
+  p2p(K,
+    xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
+    xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
 
-      }
+  if (trank != 0) {
+    // Send to mirror
+    std::cout<<"Processor: " << rank << "is about to send at iteration " << 0 << std::endl;
 
-      // Send to mirror
-      commTimer.start();
-      MPI_Ibsend(phiJ.data(), sizeof(source_type) * phiJ.size(),
-               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &request);
-      totalCommTime += commTimer.elapsed();
+    commTimer.start();
+    MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
+               MPI_CHAR, mirrorT * teamsize + mirrorC, 0, MPI_COMM_WORLD, &request );
+    totalCommTime += commTimer.elapsed();
+
+    std::cout<<"Processor: " << rank << "has sent at iteration " << 0 << std::endl;
+
   }
-
-
-  std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << 0 << " " << myX<< " " << myY << std::endl;
 
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
 
@@ -270,14 +259,17 @@ int main(int argc, char** argv)
     // Get info of symemtric mirror
     XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
 
-    std::cout<< "Processor: "<< rank << "Team: " << team<< "Trank: " << trank<< "Numteams: " << num_teams<< "Teamsize: " << teamsize<< "I: " << iteration<< " " << myX<< " " << myY << std::endl;
-
     if (mirrorI < iteration) {
+      std::cout<<"Processor: " << rank << "is about to receive at iteration " << iteration << std::endl;
+
       // receive from earlier calculation
       commTimer.start();
-      MPI_Recv(receivedPhiI.data(), sizeof(source_type) * receivedPhiI.size(),
-               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &status);
+      MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
+               MPI_CHAR, 1, 0, MPI_COMM_WORLD, &status);
       totalCommTime += commTimer.elapsed();
+
+      std::cout<<"Processor: " << rank << "has finished receiving receive at iteration " << iteration << std::endl;
+
       // Accumulate into phiI - no noed to use the transform magic thing
       for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
         *iout += *iin;
@@ -289,14 +281,28 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
           xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
 
+      // just a print out debug
+      if (mirrorI == iteration) {
+        std::cout << "Processor: " << rank << "is done computing and no comm needed for iteration " << iteration << std::endl;
       }
 
-      // Send to mirror
-      commTimer.start();
-      MPI_Ibsend(phiJ.data(), sizeof(source_type) * phiJ.size(),
-               MPI_CHAR, team * teamsize + trank, 0, MPI_COMM_WORLD, &request);
-      totalCommTime += commTimer.elapsed();
+
+      // send only if future processors need info, not current
+      if (mirrorI != iteration) {
+        std::cout<<"Processor: " << rank << "is about to send at iteration " << iteration << std::endl;
+
+        commTimer.start();
+        MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
+                  MPI_CHAR, mirrorT * teamsize + mirrorC, 0, MPI_COMM_WORLD, &request);
+        totalCommTime += commTimer.elapsed();
+
+        std::cout<<"Processor: " << rank << "has sent at iteration " << iteration << std::endl;
+
+      }
+    }
   }
+
+  std::cout << "Processor: " << rank << " is now ready for final reduction" << std::endl;
 
   // Allocate teamphiI on team leaders
   std::vector<result_type> teamphiI;

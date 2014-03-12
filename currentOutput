@@ -1,0 +1,41 @@
+Using default data/sourceDataSmall.txt data/chargeDataSmall.txt
+N = 1024
+P = 8
+Teamsize = 2
+Processor: 1is about to send at iteration 0
+Processor: 1has sent at iteration 0
+Processor: 3is about to send at iteration 0
+Processor: 3has sent at iteration 0
+Processor: 5is about to send at iteration 0
+Processor: 5has sent at iteration 0
+Processor: 7is about to send at iteration 0
+Processor: 7has sent at iteration 0
+
+Processor: 1is about to receive at iteration 1
+ERROR: 1 has not received anything
+Processor: 3is about to receive at iteration 1
+Processor: 3has finished receiving receive at iteration 1
+Processor: 5is about to receive at iteration 1
+ERROR: 5 has not received anything
+Processor: 7is about to receive at iteration 1
+ERROR: 7 has not received anything
+
+Processor: 0is done computing and no comm needed for iteration 1
+Processor: 2is done computing and no comm needed for iteration 1
+Processor: 4is done computing and no comm needed for iteration 1
+Processor: 6is done computing and no comm needed for iteration 1
+
+Processor: 0 is now ready for final reduction
+Processor: 2 is now ready for final reduction
+Processor: 3 is now ready for final reduction
+Processor: 4 is now ready for final reduction
+Processor: 6 is now ready for final reduction
+
+[2] Timer: 1.442900e-02
+[2] CommTimer: 1.129600e-02
+[3] Timer: 1.346900e-02
+[3] CommTimer: 1.175200e-02
+
+we only see 2/3 print times because 0/4/6 are team leaders waiting to reduce from 1/5/7 info.
+
+
