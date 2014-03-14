@@ -265,7 +265,7 @@ int main(int argc, char** argv)
       // receive from earlier calculation
       commTimer.start();
       MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
-               MPI_CHAR, 1, 0, MPI_COMM_WORLD, &status);
+               MPI_CHAR, mirrorT * teamsize + mirrorC, 0, MPI_COMM_WORLD, &status);
       totalCommTime += commTimer.elapsed();
 
       std::cout<<"Processor: " << rank << "has finished receiving receive at iteration " << iteration << std::endl;
