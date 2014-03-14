@@ -1,22 +1,40 @@
+#include <tuple>
+typedef std::tuple<int,int> xy_pair;
+typedef std::tuple<int,int,int> tci_tuple;
+
 #include "Util.hpp"
 
 #include "kernel/Laplace.kern"
 #include "meta/kernel_traits.hpp"
 
-// Functions to convert between team/member/iteration (T,C,I) and 2D black indexes (X,Y)
-void tci2XY (int t, int c, int i, int T, int C, int &X, int &Y) {
-    X = t;
-    Y = (t + c + i * C) % T;
-}
 
-void XY2tci (int X, int Y, int T, int C, int &t, int &c, int &i) {
-    t = X;
+struct IndexTransformer {
+  IndexTransformer(int num_teams, int team_size)
+      : T(num_teams), C(team_size) {
+  }
+
+  /** Convert from team/member/iteration (t,c,i) to 2D block index (X,Y) */
+  xy_pair tci2XY(int t, int c, int i) {
+    int X = t;
+    int Y = (t + c + i * C) % T;
+    return xy_pair(X, Y);
+  }
+
+  /** Convert from 2D block index (X,Y) to team/member/iteration (t,c,i) */
+  tci_tuple XY2tci(int X, int Y) {
+    int t = X;
     int intermediate = (Y - X + T) % T;
     // fix from zero
-    c = (intermediate + C) % C;
-    i = intermediate / C;
+    int c = (intermediate + C) % C;
+    int i = intermediate / C;
+    return tci_tuple(t,c,i);
+  }
 
-}
+ private:
+  int T;   // The number of process teams in the computation
+  int C;   // The size of the process teams in the computation
+};
+
 
 // Symmetric Team Scatter version of the n-body algorithm
 
@@ -136,6 +154,9 @@ int main(int argc, char** argv)
   MPI_Comm row_comm;
   MPI_Comm_split(MPI_COMM_WORLD, trank, rank, &row_comm);
 
+  // Create transformer to help us convert between block idx and proc index
+  IndexTransformer transformer(num_teams, teamsize);
+
   // Declare data for the block computations
   std::vector<source_type> xI(idiv_up(N,num_teams));
   std::vector<source_type> xJ(idiv_up(N,num_teams));
@@ -199,38 +220,35 @@ int main(int argc, char** argv)
   // Variable for MPI
   MPI_Request request;
 
-  // Calculate where to send to and if it needs to send
-  int myX, myY = 0;
-  tci2XY(team, trank, 0, num_teams, teamsize, myX, myY);
-
-  int mirrorX = myY;
-  int mirrorY = myX;
-  int mirrorT, mirrorC, mirrorI;
-  XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
-
-  // std::cout<< "Processor: "<< rank << " Team: " << team<< " Trank: " << trank << " I: " << 0 << "\n" << myX << " " << myY << " MirrorT " << mirrorT<< " MirrorC " << mirrorC << " MirrorI " << mirrorI << std::endl;
-
   // Compute block which will put into phiI alerady
   p2p(K,
-    xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
-    xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+      xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
+      xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
 
   if (trank != 0) {
     // Send to mirror
-    std::cout<<"Processor: " << rank << "is about to send at iteration " << 0 << std::endl;
+    std::cout << "Processor: " << rank
+              << " is about to send at iteration " << 0 << std::endl;
+
+    // Calculate where to send the symmetric computation
+    int myX, myY;
+    std::tie(myX,myY) = transformer.tci2XY(team, trank, 0);
+    // Get rank, team, etc transposed block
+    int mirrorT, mirrorC, mirrorI;
+    std::tie(mirrorT, mirrorC, mirrorI) = transformer.XY2tci(myY, myX);
 
     commTimer.start();
     MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
-               MPI_CHAR, mirrorT * teamsize + mirrorC, 0, MPI_COMM_WORLD, &request );
+               MPI_CHAR, mirrorT * teamsize + mirrorC, 0,
+              MPI_COMM_WORLD, &request );
     totalCommTime += commTimer.elapsed();
 
-    std::cout<<"Processor: " << rank << "has sent at iteration " << 0 << std::endl;
-
+    std::cout << "Processor: " << rank
+              << " has sent at iteration " << 0 << std::endl;
   }
 
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
-
-    // shift data
+    // Shift data to the next process to compute the next block
     commTimer.start();
     int prev = (team - teamsize) % num_teams;
     int next = (team + teamsize) % num_teams;
@@ -242,41 +260,19 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Set phiJ to zero so that there is no accumulation from previous
-    // TODO optimize? does this need to be run every turn
+    // Set phiJ to zero
+    phiJ.assign(phiJ.size(), result_type());
 
-    for (auto it = phiJ.begin(); it != phiJ.end(); ++it) {
-      *it = 0;
-    }
+    // Calculate where to send the symmetric computation
+    int myX, myY;
+    std::tie(myX,myY) = transformer.tci2XY(team, trank, 0);
+    // Get rank, team, etc transposed block
+    int mirrorT, mirrorC, mirrorI;
+    std::tie(mirrorT, mirrorC, mirrorI) = transformer.XY2tci(myY, myX);
 
-    // Calculate where to send to and if it needs to send
-    tci2XY(team, trank, iteration, num_teams, teamsize, myX, myY);
-
-    // Calculate symmetric mirror
-    mirrorX = myY;
-    mirrorY = myX;
-
-    // Get info of symemtric mirror
-    XY2tci(mirrorX, mirrorY, num_teams, teamsize, mirrorT, mirrorC, mirrorI);
-
-    if (mirrorI < iteration) {
-      std::cout<<"Processor: " << rank << "is about to receive at iteration " << iteration << std::endl;
-
-      // receive from earlier calculation
-      commTimer.start();
-      MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
-               MPI_CHAR, mirrorT * teamsize + mirrorC, 0, MPI_COMM_WORLD, &status);
-      totalCommTime += commTimer.elapsed();
-
-      std::cout<<"Processor: " << rank << "has finished receiving receive at iteration " << iteration << std::endl;
-
-      // Accumulate into phiI - no noed to use the transform magic thing
-      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
-        *iout += *iin;
-      }
-    }
-    else {
-      // Compute block which will put into phiI alerady
+    // If the transposed block will be responsible for this block AFTER us
+    if (iteration <= mirrorI) {
+      // Compute the block and send result to transpose block
       p2p(K,
           xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
           xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
@@ -286,21 +282,40 @@ int main(int argc, char** argv)
         std::cout << "Processor: " << rank << "is done computing and no comm needed for iteration " << iteration << std::endl;
       }
 
-
       // send only if future processors need info, not current
       if (mirrorI != iteration) {
-        std::cout<<"Processor: " << rank << "is about to send at iteration " << iteration << std::endl;
+        std::cout<<"Processor: " << rank
+                 << " is about to send at iteration " << iteration << std::endl;
 
         commTimer.start();
         MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
-                  MPI_CHAR, mirrorT * teamsize + mirrorC, 0, MPI_COMM_WORLD, &request);
+                  MPI_CHAR, mirrorT * teamsize + mirrorC, 0,
+                  MPI_COMM_WORLD, &request);
         totalCommTime += commTimer.elapsed();
 
         std::cout<<"Processor: " << rank << "has sent at iteration " << iteration << std::endl;
-
       }
-    }
-  }
+    } else {     // If the transposed block was computed BEFORE this iteration
+      // Receive the data from the transposed computation
+      std::cout<<"Processor: " << rank
+               << " is about to receive at iteration " << iteration << std::endl;
+
+      // Receive from earlier calculation
+      commTimer.start();
+
+      MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
+               MPI_CHAR, mirrorT * teamsize + mirrorC, 0,
+               MPI_COMM_WORLD, &status);
+      totalCommTime += commTimer.elapsed();
+
+      std::cout<<"Processor: " << rank << "has finished receiving receive at iteration " << iteration << std::endl;
+
+      // Accumulate into phiI - no noed to use the transform magic thing
+      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
+        *iout += *iin;
+      }
+    }   //  end if iteration <= mirrorI
+  }  //  end for iteration
 
   std::cout << "Processor: " << rank << " is now ready for final reduction" << std::endl;
 
