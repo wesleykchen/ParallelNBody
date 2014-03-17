@@ -206,7 +206,15 @@ int main(int argc, char** argv)
   totalCommTime += commTimer.elapsed();
 
   // Computer future states in xy
-  std::set<>;
+  std::set<std:tuple<int, int>> myXY;
+
+  // if no symmetry, max interation number
+  int maxIterations = idiv_up(P, teamsize*teamsize); // equal to idiv_up(num_teams, teamsize)
+
+  // Populate myXY set with all future states except first - everyone calculates the first
+  for (int futureIteration = 1; futureIteraion < maxIterations; futureIteration++) {
+    myXY.insert(transformer.tci2XY(team, trank, futureIteration));
+  }
 
   // Hold accumulated answers
   std::vector<result_type> phiI(idiv_up(N,num_teams));
@@ -214,7 +222,7 @@ int main(int argc, char** argv)
   std::vector<result_type> phiJ(idiv_up(N,num_teams));
 
   // Looping process to shift the data between the teams
-  // Now fewer times then before
+  // Now fewer times then before as we're accounting for symmetry
   int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);;
 
   // Declare space for receiving
@@ -228,26 +236,68 @@ int main(int argc, char** argv)
       xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
       xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
 
-  if (trank != 0) {
-    // Send to mirror
+  // Calculate where to send the symmetric computation
+  int myX, myY;
+  std::tie(myX,myY) = transformer.tci2XY(team, trank, 0);
+  // Get rank, team, etc transposed block
+  int transposeT, transposeC, transposeI;
+  std::tie(transposeT, transposeC, transposeI) = transformer.XY2tci(myY, myX);
+
+  // only send if tranpose its not also t be computed at iteration 0 (diagonals, small cases)
+  if (tranposeI > 0) {
+
     std::cout << "Processor: " << rank
               << " is about to send at iteration " << 0 << std::endl;
 
-    // Calculate where to send the symmetric computation
-    int myX, myY;
-    std::tie(myX,myY) = transformer.tci2XY(team, trank, 0);
-    // Get rank, team, etc transposed block
-    int mirrorT, mirrorC, mirrorI;
-    std::tie(mirrorT, mirrorC, mirrorI) = transformer.XY2tci(myY, myX);
-
     commTimer.start();
     MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
-               MPI_CHAR, mirrorT * teamsize + mirrorC, 0,
+               MPI_CHAR, transposeT * teamsize + transposeC, 0,
               MPI_COMM_WORLD, &request );
     totalCommTime += commTimer.elapsed();
 
     std::cout << "Processor: " << rank
               << " has sent at iteration " << 0 << std::endl;
+  }
+
+  // all search to see if need to receive any
+  auto it = myXY.begin()
+  while (it != myXy.end()) {
+    // if needing to receive from more than one source, will keep update in counter and print error
+    int counter = 0;
+    if (counter > 1) {
+      std::cerr << "Processor: " << rank
+           << " has calculated to receive from multiple at iteration " << 0 << std::endl;
+    }
+
+    // analyze each step in future list for needing to receive
+    int futureTransposeT, futureTransposeC, futureTransposeI;
+    std::tie(futureTransposeT, futureTransposeC, futureTransposeI) = transformer.XY2tci(std::get<1>(*it), std::get<0>(*it));
+
+    // search for who to receive from at this iteration
+    if (futureTransposeI == 0) {
+      std::cout<<"Processor: " << rank
+               << " is about to receive at iteration " << 0 << std::endl;
+
+      // Receive from earlier calculation
+      commTimer.start();
+
+      MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
+               MPI_CHAR, futureTransposeT * teamsize + futureTransposeC, 0,
+               MPI_COMM_WORLD, &status);
+      totalCommTime += commTimer.elapsed();
+
+      std::cout<<"Processor: " << rank
+               << "has finished receiving receive at iteration " << 0 << std::endl;
+
+      // remove from possible receive position list in future
+      myXY.erase(it++);
+
+      // counter to keep track of multiple receives in a round
+      ++counter;
+    }
+    else {
+      ++it;
+    }
   }
 
   for (int iteration = 1; iteration < totalIterations; ++iteration) {
@@ -266,61 +316,81 @@ int main(int argc, char** argv)
     // Set phiJ to zero
     phiJ.assign(phiJ.size(), result_type());
 
+    // compute own block
+    p2p(K,
+        xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
+        xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+
     // Calculate where to send the symmetric computation
     int myX, myY;
     std::tie(myX,myY) = transformer.tci2XY(team, trank, 0);
     // Get rank, team, etc transposed block
-    int mirrorT, mirrorC, mirrorI;
-    std::tie(mirrorT, mirrorC, mirrorI) = transformer.XY2tci(myY, myX);
+    int transposeT, transposeC, transposeI;
+    std::tie(transposeT, transposeC, transposeI) = transformer.XY2tci(myY, myX);
 
-    // If the transposed block will be responsible for this block AFTER us
-    if (iteration <= mirrorI) {
-      // Compute the block and send result to transpose block
-      p2p(K,
-          xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
-          xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+    // communication is needed if not last iteration
+    if (iteration < totalIterations - 1) {
 
-      // just a print out debug
-      if (mirrorI == iteration) {
-        std::cout << "Processor: " << rank << "is done computing and no comm needed for iteration " << iteration << std::endl;
-      }
-
-      // send only if future processors need info, not current
-      else {
-        std::cout<<"Processor: " << rank
+      // send if necessary
+      if (iteration < transposeI) {
+        std::cout<< "Processor: " << rank
                  << " is about to send at iteration " << iteration << std::endl;
 
         commTimer.start();
         MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
-                  MPI_CHAR, mirrorT * teamsize + mirrorC, 0,
+                  MPI_CHAR, transposeT * teamsize + transposeC, 0,
                   MPI_COMM_WORLD, &request);
         totalCommTime += commTimer.elapsed();
 
-        std::cout<<"Processor: " << rank << "has sent at iteration " << iteration << std::endl;
+        std::cout<<"Processor: " << rank
+                 << "has sent at iteration " << iteration << std::endl;
       }
-    } else {     // If the transposed block was computed BEFORE this iteration
-      // Receive the data from the transposed computation
-      std::cout<<"Processor: " << rank
-               << " is about to receive at iteration " << iteration << std::endl;
 
-      // Receive from earlier calculation
-      commTimer.start();
+      // all search to see if need to receive any
+      auto it = myXY.begin()
+      while (it != myXy.end()) {
+        // if needing to receive from more than one source, will keep update in counter
+        int counter = 0;
+        if (counter > 1) {
+          std::cerr << "Processor: " << rank
+               << " has calculated to receive from multiple at iteration " << 0 << std::endl;
+        }
 
-      MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
-               MPI_CHAR, mirrorT * teamsize + mirrorC, 0,
-               MPI_COMM_WORLD, &status);
-      totalCommTime += commTimer.elapsed();
+        // analyze each step in future list for needing to receive
+        int futureT, futureC, futureI;
+        std::tie(futureT, futureC, futureI) = transformer.XY2tci(std::get<0>(*it), std::get<1>(*it));
+        int futureTransposeT, futureTransposeC, futureTransposeI;
+        std::tie(futureTransposeT, futureTransposeC, futureTransposeI) = transformer.XY2tci(std::get<1>(*it), std::get<0>(*it));
+        // search for who to receive from at this iteration
+        if (futureI > futureTranposeI && futureTransposeI == iteration) {
+          std::cout<<"Processor: " << rank
+                   << " is about to receive at iteration " << iteration << std::endl;
 
-      std::cout<<"Processor: " << rank << "has finished receiving receive at iteration " << iteration << std::endl;
+          // Receive from earlier calculation
+          commTimer.start();
 
-      // Accumulate into phiI - no noed to use the transform magic thing
+          MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
+                   MPI_CHAR, futureTransposeT * teamsize + futureTransposeC, 0,
+                   MPI_COMM_WORLD, &status);
+          totalCommTime += commTimer.elapsed();
+
+          std::cout<<"Processor: " << rank << "has finished receiving receive at iteration " << iteration << std::endl;
+          myXY.erase(it++);
+        }
+        else {
+          ++it;
+        }
+      } // end iteration through myXY
+
+      // Accumulate into phiI - no need to use the transform magic thing
       for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
         *iout += *iin;
       }
-    }   //  end if iteration <= mirrorI
+    } // end iteration < totalIterations - 1
   }  //  end for iteration
 
-  std::cout << "Processor: " << rank << " is now ready for final reduction" << std::endl;
+  std::cout << "Processor: " << rank
+            << " is now ready for final reduction" << std::endl;
 
   // Allocate teamphiI on team leaders
   std::vector<result_type> teamphiI;
