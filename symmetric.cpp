@@ -205,6 +205,9 @@ int main(int argc, char** argv)
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
+  // Computer future states in xy
+  std::set<>;
+
   // Hold accumulated answers
   std::vector<result_type> phiI(idiv_up(N,num_teams));
   // Answers for symmetric part - new
@@ -283,7 +286,7 @@ int main(int argc, char** argv)
       }
 
       // send only if future processors need info, not current
-      if (mirrorI != iteration) {
+      else {
         std::cout<<"Processor: " << rank
                  << " is about to send at iteration " << iteration << std::endl;
 
