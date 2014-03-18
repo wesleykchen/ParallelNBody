@@ -1,4 +1,5 @@
 #include <tuple>
+#include <set>
 typedef std::tuple<int,int> xy_pair;
 typedef std::tuple<int,int,int> tci_tuple;
 
@@ -206,13 +207,13 @@ int main(int argc, char** argv)
   totalCommTime += commTimer.elapsed();
 
   // Computer future states in xy
-  std::set<std:tuple<int, int>> myXY;
+  std::set<std::tuple<int, int>> myXY;
 
   // if no symmetry, max interation number
   int maxIterations = idiv_up(P, teamsize*teamsize); // equal to idiv_up(num_teams, teamsize)
 
   // Populate myXY set with all future states except first - everyone calculates the first
-  for (int futureIteration = 1; futureIteraion < maxIterations; futureIteration++) {
+  for (int futureIteration = 1; futureIteration < maxIterations; futureIteration++) {
     myXY.insert(transformer.tci2XY(team, trank, futureIteration));
   }
 
@@ -243,8 +244,8 @@ int main(int argc, char** argv)
   int transposeT, transposeC, transposeI;
   std::tie(transposeT, transposeC, transposeI) = transformer.XY2tci(myY, myX);
 
-  // only send if tranpose its not also t be computed at iteration 0 (diagonals, small cases)
-  if (tranposeI > 0) {
+  // only send if transpose its not also t be computed at iteration 0 (diagonals, small cases)
+  if (transposeI > 0) {
 
     std::cout << "Processor: " << rank
               << " is about to send at iteration " << 0 << std::endl;
@@ -260,8 +261,8 @@ int main(int argc, char** argv)
   }
 
   // all search to see if need to receive any
-  auto it = myXY.begin()
-  while (it != myXy.end()) {
+  auto it = myXY.begin();
+  while (it != myXY.end()) {
     // if needing to receive from more than one source, will keep update in counter and print error
     int counter = 0;
     if (counter > 1) {
@@ -347,8 +348,8 @@ int main(int argc, char** argv)
       }
 
       // all search to see if need to receive any
-      auto it = myXY.begin()
-      while (it != myXy.end()) {
+      auto it = myXY.begin();
+      while (it != myXY.end()) {
         // if needing to receive from more than one source, will keep update in counter
         int counter = 0;
         if (counter > 1) {
@@ -362,7 +363,7 @@ int main(int argc, char** argv)
         int futureTransposeT, futureTransposeC, futureTransposeI;
         std::tie(futureTransposeT, futureTransposeC, futureTransposeI) = transformer.XY2tci(std::get<1>(*it), std::get<0>(*it));
         // search for who to receive from at this iteration
-        if (futureI > futureTranposeI && futureTransposeI == iteration) {
+        if (futureI > futureTransposeI && futureTransposeI == iteration) {
           std::cout<<"Processor: " << rank
                    << " is about to receive at iteration " << iteration << std::endl;
 
