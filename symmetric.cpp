@@ -324,7 +324,7 @@ int main(int argc, char** argv)
 
     // Calculate where to send the symmetric computation
     int myX, myY;
-    std::tie(myX,myY) = transformer.tci2XY(team, trank, 0);
+    std::tie(myX,myY) = transformer.tci2XY(team, trank, iteration);
     // Get rank, team, etc transposed block
     int transposeT, transposeC, transposeI;
     std::tie(transposeT, transposeC, transposeI) = transformer.XY2tci(myY, myX);
@@ -375,7 +375,7 @@ int main(int argc, char** argv)
                    MPI_COMM_WORLD, &status);
           totalCommTime += commTimer.elapsed();
 
-          std::cout<<"Processor: " << rank << "has finished receiving receive at iteration " << iteration << std::endl;
+          std::cout<<"Processor: " << rank << " has finished receiving receive at iteration " << iteration << std::endl;
           myXY.erase(it++);
         }
         else {
