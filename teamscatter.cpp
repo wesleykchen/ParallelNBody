@@ -7,12 +7,36 @@
 
 int main(int argc, char** argv)
 {
+  bool checkErrors = true;
+  unsigned teamsize = 1;
+
+  // Parse optional command line args
+  std::vector<std::string> arg(argv, argv + argc);
+  for (unsigned i = 1; i < arg.size(); ++i) {
+    if (arg[i] == "-c") {
+      if (i+1 < arg.size()) {
+        teamsize = string_to_<unsigned>(arg[i+1]);
+        arg.erase(arg.begin() + i, arg.begin() + i + 2);  // Erase these two
+        --i;                                              // Reset index
+      } else {
+        std::cerr << "-c option requires one argument." << std::endl;
+        return 1;
+      }
+    }
+    if (arg[i] == "-nocheck") {
+      checkErrors = false;
+      arg.erase(arg.begin() + i, arg.begin() + i + 1);  // Erase this arg
+      --i;                                              // Reset index
+    }
+  }
+
   MPI_Init(&argc, &argv);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
-  unsigned teamsize;
+  // Scratch status for MPI
+  MPI_Status status;
 
   typedef LaplacePotential kernel_type;
   kernel_type K;
@@ -32,24 +56,7 @@ int main(int argc, char** argv)
   unsigned N;
 
   if (rank == MASTER) {
-    std::vector<std::string> arg(argv, argv + argc);
-
-    // Parse optional command line args
-    teamsize = 1;   // Default value
-    for (unsigned i = 1; i < arg.size(); ++i) {
-      if (arg[i] == "-c") {
-        if (i+1 < arg.size()) {
-          teamsize = string_to_<unsigned>(arg[i+1]);
-          arg.erase(arg.begin() + i, arg.begin() + i + 2);  // Erase these two
-          --i;                                              // Reset index
-        } else {
-          std::cerr << "-c option requires one argument." << std::endl;
-          return 1;
-        }
-      }
-    }
-
-    if (arg.size() < 2) {
+    if (arg.size() < 3) {
       std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE [-c TEAMSIZE]" << std::endl;
       //exit(1);
       // XXX: Remove
@@ -129,8 +136,8 @@ int main(int argc, char** argv)
   // Scatter data from master to team leaders
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
-                xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+    MPI_Scatter(source.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
@@ -140,21 +147,20 @@ int main(int argc, char** argv)
 
   // Team leaders broadcast to team
   commTimer.start();
-  MPI_Bcast(xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+  MPI_Bcast(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
             MASTER, team_comm);
   MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
             MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
-  // Copy xI -> xJ
-  std::copy(xI.begin(), xI.end(), xJ.begin());
+  // Copy xJ -> xI
+  std::copy(xJ.begin(), xJ.end(), xI.begin());
 
   // Perform initial offset by teamrank
   commTimer.start();
 
   int prev = (team - trank + num_teams) % num_teams;
-  int next = (team + trank) % num_teams;
-  MPI_Status status;
+  int next = (team + trank + num_teams) % num_teams;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                        MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
@@ -166,10 +172,16 @@ int main(int argc, char** argv)
   // Hold accumulated answers
   std::vector<double> rI(idiv_up(N,num_teams));
 
-  // Calculate the current block
-  p2p(K,
-      xJ.begin(), xJ.end(), cJ.begin(),
-      xI.begin(), xI.end(), rI.begin());
+  if (trank == MASTER) {
+    // If this is the team leader, compute the symmetric diagonal block
+    p2p(K,
+        xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
+  } else {
+    // Else, compute the off-diagonal block
+    p2p(K,
+        xJ.begin(), xJ.end(), cJ.begin(),
+        xI.begin(), xI.end(), rI.begin());
+  }
 
   // Looping process to shift the data between the teams
   int ceilPC2 = idiv_up(P, teamsize*teamsize);
@@ -229,10 +241,19 @@ int main(int argc, char** argv)
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
+  // Check the result
+  if (rank == MASTER && checkErrors) {
+    std::cout << "Computing direct matvec..." << std::endl;
+
+    std::vector<result_type> exact(N);
+
+    // Compute the result with a direct matrix-vector multiplication
+    p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+
+    print_error(exact, result);
+  }
+
   if (rank == MASTER) {
-    std::cout << "Driscoll  - checksum answer is: "
-              << std::accumulate(result.begin(), result.end(), result_type())
-              << std::endl;
     std::ofstream result_file("data/result.txt");
     result_file << result << std::endl;
   }

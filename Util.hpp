@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include <vector>
+#include <tuple>
 #include <iterator>
 #include <numeric>
 #include <algorithm>
@@ -19,6 +20,7 @@
 #include <mpi.h>
 
 #include "P2P.hpp"
+#include "numeric/Norm.hpp"
 
 /** Integer divide, rounded up
  * @param[in] a Numerator
@@ -97,6 +99,27 @@ std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
   return s;
 }
 
+template<typename Type, unsigned N, unsigned Last>
+struct tuple_printer {
+  static void print(std::ostream& out, const Type& value) {
+    out << std::get<N>(value) << ", ";
+    tuple_printer<Type, N + 1, Last>::print(out, value);
+  }
+};
+template<typename Type, unsigned N>
+struct tuple_printer<Type, N, N> {
+  static void print(std::ostream& out, const Type& value) {
+    out << std::get<N>(value);
+  }
+};
+template<typename... Types>
+std::ostream& operator<<(std::ostream& out, const std::tuple<Types...>& value) {
+  out << "(";
+  tuple_printer<std::tuple<Types...>, 0, sizeof...(Types) - 1>::print(out, value);
+  out << ")";
+  return out;
+}
+
 template <class T>
 inline std::string to_string(const T& t) {
   std::stringstream ss;
@@ -109,6 +132,37 @@ inline T string_to_(const std::string& s) {
   T val;
   std::istringstream(s) >> val;
   return val;
+}
+
+template <typename result_type>
+void print_error(const std::vector<result_type>& exact,
+                 const std::vector<result_type>& result) {
+  assert(exact.size() == result.size());
+
+  double tot_error_sq = 0;
+  double tot_norm_sq = 0;
+  double tot_ind_rel_err = 0;
+  double max_ind_rel_err = 0;
+  for (unsigned k = 0; k < result.size(); ++k) {
+    // Individual relative error
+    double rel_error = norm(exact[k] - result[k]) / norm(exact[k]);
+    tot_ind_rel_err += rel_error;
+    // Maximum relative error
+    max_ind_rel_err  = std::max(max_ind_rel_err, rel_error);
+
+    // Total relative error
+    tot_error_sq += normSq(exact[k] - result[k]);
+    tot_norm_sq  += normSq(exact[k]);
+
+    //if (rel_error > 1e-10) std::cout << k << ": " << result[k] << "\t" << exact[k] << std::endl;
+  }
+  double tot_rel_err = sqrt(tot_error_sq/tot_norm_sq);
+  std::cout << "Vector  relative error: " << tot_rel_err << std::endl;
+
+  double ave_rel_err = tot_ind_rel_err / result.size();
+  std::cout << "Average relative error: " << ave_rel_err << std::endl;
+
+  std::cout << "Maximum relative error: " << max_ind_rel_err << std::endl;
 }
 
 // Problem specific -- XXX: NOT NEEDED

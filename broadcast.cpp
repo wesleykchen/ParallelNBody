@@ -18,6 +18,18 @@ inline unsigned calcEnd(unsigned r, unsigned P, unsigned N) {
 
 int main(int argc, char** argv)
 {
+  bool checkErrors = true;
+
+  // Parse optional command line args
+  std::vector<std::string> arg(argv, argv + argc);
+  for (unsigned i = 1; i < arg.size(); ++i) {
+    if (arg[i] == "-nocheck") {
+      checkErrors = false;
+      arg.erase(arg.begin() + i);  // Erase this arg
+      --i;                         // Reset index
+    }
+  }
+
   MPI_Init(&argc, &argv);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -43,8 +55,6 @@ int main(int argc, char** argv)
   unsigned N;
 
   if (rank == MASTER) {
-    std::vector<std::string> arg(argv, argv+argc);
-
     if (arg.size() < 3) {
       std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
       //exit(1);
@@ -119,10 +129,19 @@ int main(int argc, char** argv)
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
+  // Check the result
+  if (rank == MASTER && checkErrors) {
+    std::cout << "Computing direct matvec..." << std::endl;
+
+    std::vector<result_type> exact(N);
+
+    // Compute the result with a direct matrix-vector multiplication
+    p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+
+    print_error(exact, result);
+  }
+
   if (rank == MASTER) {
-    std::cout << "Broadcast - checksum answer is: "
-              << std::accumulate(result.begin(), result.end(), result_type())
-              << std::endl;
     std::ofstream result_file("data/result.txt");
     result_file << result << std::endl;
   }
