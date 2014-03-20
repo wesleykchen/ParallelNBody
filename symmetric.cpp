@@ -161,10 +161,8 @@ int main(int argc, char** argv)
   // Declare data for the block computations
   std::vector<source_type> xI(idiv_up(N,num_teams));
   std::vector<source_type> xJ(idiv_up(N,num_teams));
-  std::vector<charge_type> sigmaJ(idiv_up(N,num_teams));
-
-  // New for symmetric, must store sigmaI as well
-  std::vector<charge_type> sigmaI(idiv_up(N,num_teams));
+  std::vector<charge_type> cJ(idiv_up(N,num_teams));
+  std::vector<charge_type> cI(idiv_up(N,num_teams));
 
   // Scatter data from master to team leaders
   if (trank == MASTER) {
@@ -172,8 +170,8 @@ int main(int argc, char** argv)
     MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
                 xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
                 MASTER, row_comm);
-    MPI_Scatter(charge.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
-                sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
+    MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+                cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
@@ -182,15 +180,15 @@ int main(int argc, char** argv)
   commTimer.start();
   MPI_Bcast(xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
             MASTER, team_comm);
-  MPI_Bcast(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
+  MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
             MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Copy xI -> xJ
   std::copy(xI.begin(), xI.end(), xJ.begin());
 
-  // Copy sigmaJ -> sigmaI - new for symmetric
-  std::copy(sigmaJ.begin(), sigmaJ.end(), sigmaI.begin());
+  // Copy cJ -> cI
+  std::copy(cJ.begin(), cJ.end(), cI.begin());
 
   // Perform initial offset by teamrank
   commTimer.start();
@@ -201,7 +199,7 @@ int main(int argc, char** argv)
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                        MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
-  MPI_Sendrecv_replace(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(),
+  MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
                        MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
@@ -218,24 +216,24 @@ int main(int argc, char** argv)
   }
 
   // Hold accumulated answers
-  std::vector<result_type> phiI(idiv_up(N,num_teams));
+  std::vector<result_type> rI(idiv_up(N,num_teams));
   // Answers for symmetric part - new
-  std::vector<result_type> phiJ(idiv_up(N,num_teams));
+  std::vector<result_type> rJ(idiv_up(N,num_teams));
 
   // Looping process to shift the data between the teams
   // Now fewer times then before as we're accounting for symmetry
   int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);;
 
   // Declare space for receiving
-  std::vector<result_type> receivedPhiI(idiv_up(N,num_teams));
+  std::vector<result_type> temp_rI(idiv_up(N,num_teams));
 
   // Variable for MPI
   MPI_Request request;
 
-  // Compute block which will put into phiI alerady
+  // Compute block which will put into rI already
   p2p(K,
-      xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
-      xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+      xJ.begin(), xJ.end(), cJ.begin(), rI.begin(),
+      xI.begin(), xI.end(), cI.begin(), rJ.begin());
 
   // Calculate where to send the symmetric computation
   int myX, myY;
@@ -251,7 +249,7 @@ int main(int argc, char** argv)
               << " is about to send at iteration " << 0 << std::endl;
 
     commTimer.start();
-    MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
+    MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
                MPI_CHAR, transposeT * teamsize + transposeC, 0,
               MPI_COMM_WORLD, &request );
     totalCommTime += commTimer.elapsed();
@@ -282,7 +280,7 @@ int main(int argc, char** argv)
       // Receive from earlier calculation
       commTimer.start();
 
-      MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
+      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
                MPI_CHAR, futureTransposeT * teamsize + futureTransposeC, 0,
                MPI_COMM_WORLD, &status);
       totalCommTime += commTimer.elapsed();
@@ -309,18 +307,18 @@ int main(int argc, char** argv)
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          row_comm, &status);
-    MPI_Sendrecv_replace(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(),
+    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Set phiJ to zero
-    phiJ.assign(phiJ.size(), result_type());
+    // Set rJ to zero
+    rJ.assign(rJ.size(), result_type());
 
     // compute own block
     p2p(K,
-        xJ.begin(), xJ.end(), sigmaJ.begin(), phiI.begin(),
-        xI.begin(), xI.end(), sigmaI.begin(), phiJ.begin());
+        xJ.begin(), xJ.end(), cJ.begin(), rI.begin(),
+        xI.begin(), xI.end(), cI.begin(), rJ.begin());
 
     // Calculate where to send the symmetric computation
     int myX, myY;
@@ -338,7 +336,7 @@ int main(int argc, char** argv)
                  << " is about to send at iteration " << iteration << std::endl;
 
         commTimer.start();
-        MPI_Isend(phiJ.data(), sizeof(result_type) * phiJ.size(),
+        MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
                   MPI_CHAR, transposeT * teamsize + transposeC, 0,
                   MPI_COMM_WORLD, &request);
         totalCommTime += commTimer.elapsed();
@@ -370,7 +368,7 @@ int main(int argc, char** argv)
           // Receive from earlier calculation
           commTimer.start();
 
-          MPI_Recv(receivedPhiI.data(), sizeof(result_type) * receivedPhiI.size(),
+          MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
                    MPI_CHAR, futureTransposeT * teamsize + futureTransposeC, 0,
                    MPI_COMM_WORLD, &status);
           totalCommTime += commTimer.elapsed();
@@ -383,8 +381,8 @@ int main(int argc, char** argv)
         }
       } // end iteration through myXY
 
-      // Accumulate into phiI - no need to use the transform magic thing
-      for (auto iout = phiI.begin(), iin = receivedPhiI.begin(); iout != phiI.end(); ++iout, ++iin) {
+      // Accumulate into rI - no need to use the transform magic thing
+      for (auto iout = rI.begin(), iin = temp_rI.begin(); iout != rI.end(); ++iout, ++iin) {
         *iout += *iin;
       }
     } // end iteration < totalIterations - 1
@@ -393,30 +391,30 @@ int main(int argc, char** argv)
   std::cout << "Processor: " << rank
             << " is now ready for final reduction" << std::endl;
 
-  // Allocate teamphiI on team leaders
-  std::vector<result_type> teamphiI;
+  // Allocate teamrI on team leaders
+  std::vector<result_type> teamrI;
   if (trank == MASTER)
-    teamphiI = std::vector<result_type>(idiv_up(N,num_teams));
+    teamrI = std::vector<result_type>(idiv_up(N,num_teams));
 
   // Reduce answers to the team leader
   commTimer.start();
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
-  MPI_Reduce(phiI.data(), teamphiI.data(), phiI.size(),
+  MPI_Reduce(rI.data(), teamrI.data(), rI.size(),
              MPI_DOUBLE, MPI_SUM, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Allocate phi on master
-  std::vector<result_type> phi;
+  std::vector<result_type> result;
   if (rank == MASTER)
-    phi = std::vector<result_type>(P*idiv_up(N,P));
+    result = std::vector<result_type>(P*idiv_up(N,P));
 
   // Gather team leader answers to master
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Gather(teamphiI.data(), sizeof(result_type) * teamphiI.size(), MPI_CHAR,
-               phi.data(), sizeof(result_type) * teamphiI.size(), MPI_CHAR,
+    MPI_Gather(teamrI.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
+               result.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
                MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
@@ -426,10 +424,11 @@ int main(int argc, char** argv)
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
   if (rank == MASTER) {
-    result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
-    std::cout << "Symmetric - checksum answer is: " << check << std::endl;
-    std::ofstream phi_file("data/phi.txt");
-    phi_file << phi << std::endl;
+    std::cout << "Symmetric - checksum answer is: "
+              << std::accumulate(result.begin(), result.end(), result_type())
+              << std::endl;
+    std::ofstream result_file("data/result.txt");
+    result_file << result << std::endl;
   }
 
   MPI_Finalize();

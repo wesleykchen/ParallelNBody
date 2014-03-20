@@ -76,25 +76,25 @@ int main(int argc, char** argv)
   }
 
   // Allocate memory all processes
-  std::vector<result_type> phiI(idiv_up(N,P));
+  std::vector<result_type> rI(idiv_up(N,P));
   std::vector<source_type> xI(idiv_up(N,P));
   std::vector<source_type> xJ(idiv_up(N,P));
-  std::vector<charge_type> sigmaJ(idiv_up(N,P));
+  std::vector<charge_type> cJ(idiv_up(N,P));
 
   // Scatter the data to all processes
   commTimer.start();
   MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
               xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
-  MPI_Scatter(charge.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
-              sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(), MPI_CHAR,
+  MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+              cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // Calculate the symmetric first block
   p2p(K,
       xI.begin(), xI.end(),
-      sigmaJ.begin(), phiI.begin());
+      cJ.begin(), rI.begin());
 
   // Copy xI -> xJ
   std::copy(xI.begin(), xI.end(), xJ.begin());
@@ -108,25 +108,25 @@ int main(int argc, char** argv)
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
-    MPI_Sendrecv_replace(sigmaJ.data(), sizeof(charge_type) * sigmaJ.size(),
+    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          MPI_COMM_WORLD, &status);
     totalCommTime += commTimer.elapsed();
 
     // Calculate the current block
     p2p(K,
-        xJ.begin(), xJ.end(), sigmaJ.begin(),
-        xI.begin(), xI.end(), phiI.begin());
+        xJ.begin(), xJ.end(), cJ.begin(),
+        xI.begin(), xI.end(), rI.begin());
   }
 
-  std::vector<result_type> phi;
+  std::vector<result_type> result;
   if (rank == MASTER)
-    phi = std::vector<result_type>(P*idiv_up(N,P));
+    result = std::vector<result_type>(P*idiv_up(N,P));
 
   // Collect results and display
   commTimer.start();
-  MPI_Gather(phiI.data(), sizeof(result_type) * phiI.size(), MPI_CHAR,
-             phi.data(), sizeof(result_type) * phiI.size(), MPI_CHAR,
+  MPI_Gather(rI.data(), sizeof(result_type) * rI.size(), MPI_CHAR,
+             result.data(), sizeof(result_type) * rI.size(), MPI_CHAR,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -135,10 +135,11 @@ int main(int argc, char** argv)
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
   if (rank == MASTER) {
-    result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
-    std::cout << "Scatter - checksum answer is: " << check << std::endl;
-    std::ofstream phi_file("data/phi.txt");
-    phi_file << phi << std::endl;
+    std::cout << "Scatter - checksum answer is: "
+              << std::accumulate(result.begin(), result.end(), result_type())
+              << std::endl;
+    std::ofstream result_file("data/result.txt");
+    result_file << result << std::endl;
   }
 
   MPI_Finalize();

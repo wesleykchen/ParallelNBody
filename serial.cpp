@@ -50,19 +50,19 @@ int main(int argc, char** argv)
   std::cout << "N = " << N << std::endl;
 
   // Compute the matvec
-  std::vector<result_type> phi(N);
+  std::vector<result_type> result(N);
 
   Clock timer;
   timer.start();
   p2p(K,
       source.begin(), source.end(),
-      charge.begin(), phi.begin());
+      charge.begin(), result.begin());
   double time = timer.elapsed();
 
   std::cout << "Computed in " << time << " seconds" << std::endl;
-  result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
+  result_type check = std::accumulate(result.begin(), result.end(), result_type());
   std::cout << "Serial - checksum answer is: " << check << std::endl;
 
-  std::ofstream phi_file("data/phi.txt");
-  phi_file << phi << std::endl;
+  std::ofstream result_file("data/result.txt");
+  result_file << result << std::endl;
 }

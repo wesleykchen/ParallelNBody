@@ -82,34 +82,36 @@ int main(int argc, char** argv)
 
   // Allocate memory on all other processes
   if (rank != MASTER) {
-    source  = std::vector<source_type>(N);
+    source = std::vector<source_type>(N);
     charge = std::vector<charge_type>(N);
   }
 
   // Broadcast the data to all processes
   commTimer.start();
-  MPI_Bcast(source.data(), sizeof(source_type) * source.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  MPI_Bcast(charge.data(), sizeof(charge_type) * charge.size(), MPI_CHAR, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(source.data(), sizeof(source_type) * source.size(),
+            MPI_CHAR, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(charge.data(), sizeof(charge_type) * charge.size(),
+            MPI_CHAR, MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
-  // all processors have a chunk to hold their temporary answers
-  std::vector<result_type> myphi(idiv_up(N,P));
+  // All processors have a chunk to hold their temporary answers
+  std::vector<result_type> rI(idiv_up(N,P));
 
   // Evaluate computation
   p2p(K,
       source.begin(), source.end(), charge.begin(),
       source.begin() + calcStart(rank,P,N),
       source.begin() + calcEnd(rank,P,N),
-      myphi.begin());
+      rI.begin());
 
   // Collect results and display
-  std::vector<result_type> phi;
+  std::vector<result_type> result;
   if (rank == MASTER)
-    phi = std::vector<result_type>(N);
+    result = std::vector<result_type>(N);
 
   commTimer.start();
-  MPI_Gather(myphi.data(), sizeof(result_type) * myphi.size(), MPI_CHAR,
-             phi.data(), sizeof(result_type) * myphi.size(), MPI_CHAR,
+  MPI_Gather(rI.data(), sizeof(result_type) * rI.size(), MPI_CHAR,
+             result.data(), sizeof(result_type) * rI.size(), MPI_CHAR,
              MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
@@ -118,10 +120,11 @@ int main(int argc, char** argv)
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
   if (rank == MASTER) {
-    result_type check = std::accumulate(phi.begin(), phi.end(), result_type());
-    std::cout << "Broadcast - checksum answer is: " << check << std::endl;
-    std::ofstream phi_file("data/phi.txt");
-    phi_file << phi << std::endl;
+    std::cout << "Broadcast - checksum answer is: "
+              << std::accumulate(result.begin(), result.end(), result_type())
+              << std::endl;
+    std::ofstream result_file("data/result.txt");
+    result_file << result << std::endl;
   }
 
   MPI_Finalize();
