@@ -1,7 +1,5 @@
 #include <tuple>
-#include <set>
-typedef std::tuple<int,int> xy_pair;
-typedef std::tuple<int,int,int> tci_tuple;
+#include <deque>
 
 #include "Util.hpp"
 
@@ -9,26 +7,46 @@ typedef std::tuple<int,int,int> tci_tuple;
 #include "meta/kernel_traits.hpp"
 
 
+typedef std::tuple<int,int>      xy_pair;
+typedef std::tuple<int,int,int>  itc_tuple;
+typedef std::tuple<int,int>      ir_pair;
+
 struct IndexTransformer {
   IndexTransformer(int num_teams, int team_size)
       : T(num_teams), C(team_size) {
   }
 
-  /** Convert from team/member/iteration (t,c,i) to 2D block index (X,Y) */
-  xy_pair tci2XY(int t, int c, int i) {
+  /** Convert from iteration/team/member (i,t,c) to 2D block index (X,Y) */
+  xy_pair itc2xy(int i, int t, int c) const {
     int X = t;
     int Y = (t + c + i * C) % T;
     return xy_pair(X, Y);
   }
 
-  /** Convert from 2D block index (X,Y) to team/member/iteration (t,c,i) */
-  tci_tuple XY2tci(int X, int Y) {
+  /** Convert from 2D block index (X,Y) to iteration/team/member (i,t,c) */
+  itc_tuple xy2itc(int X, int Y) const {
     int t = X;
     int intermediate = (Y - X + T) % T;
     // fix from zero
     int c = (intermediate + C) % C;
     int i = intermediate / C;
-    return tci_tuple(t,c,i);
+    return itc_tuple(i,t,c);
+  }
+
+  /** Convert a TC pair to a process rank */
+  int tc2r(int t, int c) const {
+    return t * C + c;
+  }
+
+  /** Convert ITC tuple to IR pair */
+  ir_pair itc2ir(const itc_tuple& itc) const {
+    return ir_pair(std::get<0>(itc), tc2r(std::get<1>(itc), std::get<2>(itc)));
+  }
+
+  xy_pair ir2xy(int i, int r) const {
+    int t = r / C;
+    int c = r % C;
+    return itc2xy(i, t, c);
   }
 
  private:
@@ -41,12 +59,36 @@ struct IndexTransformer {
 
 int main(int argc, char** argv)
 {
+  bool checkErrors = true;
+  unsigned teamsize = 1;
+
+  // Parse optional command line args
+  std::vector<std::string> arg(argv, argv + argc);
+  for (unsigned i = 1; i < arg.size(); ++i) {
+    if (arg[i] == "-c") {
+      if (i+1 < arg.size()) {
+        teamsize = string_to_<unsigned>(arg[i+1]);
+        arg.erase(arg.begin() + i, arg.begin() + i + 2);  // Erase these two
+        --i;                                              // Reset index
+      } else {
+        std::cerr << "-c option requires one argument." << std::endl;
+        return 1;
+      }
+    }
+    if (arg[i] == "-nocheck") {
+      checkErrors = false;
+      arg.erase(arg.begin() + i, arg.begin() + i + 1);  // Erase this arg
+      --i;                                              // Reset index
+    }
+  }
+
   MPI_Init(&argc, &argv);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
-  unsigned teamsize;
+  // Scratch request for MPI
+  MPI_Request request;
 
   typedef LaplacePotential kernel_type;
   kernel_type K;
@@ -66,24 +108,7 @@ int main(int argc, char** argv)
   unsigned N;
 
   if (rank == MASTER) {
-    std::vector<std::string> arg(argv, argv + argc);
-
-    // Parse optional command line args
-    teamsize = 1;   // Default value
-    for (unsigned i = 1; i < arg.size(); ++i) {
-      if (arg[i] == "-c") {
-        if (i+1 < arg.size()) {
-          teamsize = string_to_<unsigned>(arg[i+1]);
-          arg.erase(arg.begin() + i, arg.begin() + i + 2);  // Erase these two
-          --i;                                              // Reset index
-        } else {
-          std::cerr << "-c option requires one argument." << std::endl;
-          return 1;
-        }
-      }
-    }
-
-    if (arg.size() < 2) {
+    if (arg.size() < 3) {
       std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE [-c TEAMSIZE]" << std::endl;
       // exit(1);
       // XXX: Remove
@@ -144,6 +169,10 @@ int main(int argc, char** argv)
     exit(0);
   }
 
+  /***********/
+  /** SETUP **/
+  /***********/
+
   unsigned num_teams = P / teamsize;
   // Determine coordinates in processor team grid
   unsigned team  = rank / teamsize;
@@ -158,11 +187,44 @@ int main(int argc, char** argv)
   // Create transformer to help us convert between block idx and proc index
   IndexTransformer transformer(num_teams, teamsize);
 
+
+
+  // TODO: Remove, just for proof of concept and testing
+
+  // Compute the rank and iteration of the our symmetric blocks
+  std::vector<ir_pair> iter_rank_trans;
+
+  for (unsigned iter = 0; iter < idiv_up(num_teams, teamsize); ++iter) {
+    // Get our future block coordinates
+    xy_pair xy = transformer.itc2xy(iter, team, trank);
+    // Get the ITC of the process responsible for the symmtric block
+    itc_tuple itc = transformer.xy2itc(std::get<1>(xy), std::get<0>(xy));
+    // Convert ITC to IR
+    iter_rank_trans.push_back(transformer.itc2ir(itc));
+  }
+
+  // Copy and sort by iteration
+  std::deque<ir_pair> iter_rank_deque(iter_rank_trans.begin(), iter_rank_trans.end());
+  // Just for now... make sure this is sorted by iteration
+  // TODO: Avoid this sort by computing them in the right order?
+  std::sort(iter_rank_deque.begin(), iter_rank_deque.end(),
+            [](const ir_pair& ir1, const ir_pair& ir2)
+            { return std::get<0>(ir1) < std::get<0>(ir2); });
+
+
+  /********************/
+  /** INITIALIZATION **/
+  /********************/
+
   // Declare data for the block computations
   std::vector<source_type> xI(idiv_up(N,num_teams));
   std::vector<source_type> xJ(idiv_up(N,num_teams));
-  std::vector<charge_type> cJ(idiv_up(N,num_teams));
   std::vector<charge_type> cI(idiv_up(N,num_teams));
+  std::vector<charge_type> cJ(idiv_up(N,num_teams));
+  std::vector<result_type> rI(idiv_up(N,num_teams));
+  std::vector<result_type> rJ(idiv_up(N,num_teams));
+  // Declare space for receiving
+  std::vector<result_type> temp_rI(idiv_up(N,num_teams));
 
   // Scatter data from master to team leaders
   if (trank == MASTER) {
@@ -170,25 +232,25 @@ int main(int argc, char** argv)
     MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
                 xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
                 MASTER, row_comm);
-    MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
-                cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+    MPI_Scatter(charge.data(), sizeof(charge_type) * cI.size(), MPI_CHAR,
+                cI.data(), sizeof(charge_type) * cI.size(), MPI_CHAR,
                 MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
 
   // Team leaders broadcast to team
   commTimer.start();
-  MPI_Bcast(xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
-            MASTER, team_comm);
-  MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
-            MASTER, team_comm);
+  MPI_Bcast(xI.data(), sizeof(source_type) * xI.size(),
+            MPI_CHAR, MASTER, team_comm);
+  MPI_Bcast(cI.data(), sizeof(charge_type) * cI.size(),
+            MPI_CHAR, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Copy xI -> xJ
   std::copy(xI.begin(), xI.end(), xJ.begin());
 
-  // Copy cJ -> cI
-  std::copy(cJ.begin(), cJ.end(), cI.begin());
+  // Copy cI -> cJ
+  std::copy(cI.begin(), cI.end(), cJ.begin());
 
   // Perform initial offset by teamrank
   commTimer.start();
@@ -204,106 +266,88 @@ int main(int argc, char** argv)
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
-  // Computer future states in xy
-  std::set<std::tuple<int, int>> myXY;
+  /**********************/
+  /** ZEROTH ITERATION **/
+  /**********************/
 
-  // if no symmetry, max interation number
-  int maxIterations = idiv_up(P, teamsize*teamsize); // equal to idiv_up(num_teams, teamsize)
+  int curr_iter = 0;
 
-  // Populate myXY set with all future states except first - everyone calculates the first
-  for (int futureIteration = 1; futureIteration < maxIterations; futureIteration++) {
-    myXY.insert(transformer.tci2XY(team, trank, futureIteration));
-  }
+  if (trank == MASTER) {
+    // If this is the team leader, compute the symmetric diagonal block
+    p2p(K,
+        xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
 
-  // Hold accumulated answers
-  std::vector<result_type> rI(idiv_up(N,num_teams));
-  // Answers for symmetric part - new
-  std::vector<result_type> rJ(idiv_up(N,num_teams));
+    // The front of the list should be this process
+    assert(iter_rank_deque.front() == ir_pair(curr_iter, rank));
+    iter_rank_deque.pop_front();
+  } else {
+    // Compute and send if this IR < transpose IR
+    if (std::tie(curr_iter, rank) < iter_rank_trans[curr_iter]) {
+      // Set rJ to zero
+      rJ.assign(rJ.size(), result_type());
 
-  // Looping process to shift the data between the teams
-  // Now fewer times then before as we're accounting for symmetry
-  int totalIterations = idiv_up(num_teams + 1, 2 * teamsize);;
+      // Compute
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-  // Declare space for receiving
-  std::vector<result_type> temp_rI(idiv_up(N,num_teams));
+      std::cout << "Process " << rank << " " << transformer.ir2xy(curr_iter, rank)
+                << " sending to " << std::get<1>(iter_rank_trans[curr_iter])
+                << " at iter " << curr_iter << std::endl;
 
-  // Variable for MPI
-  MPI_Request request;
-
-  // Compute block which will put into rI already
-  p2p(K,
-      xJ.begin(), xJ.end(), cJ.begin(), rI.begin(),
-      xI.begin(), xI.end(), cI.begin(), rJ.begin());
-
-  // Calculate where to send the symmetric computation
-  int myX, myY;
-  std::tie(myX,myY) = transformer.tci2XY(team, trank, 0);
-  // Get rank, team, etc transposed block
-  int transposeT, transposeC, transposeI;
-  std::tie(transposeT, transposeC, transposeI) = transformer.XY2tci(myY, myX);
-
-  // only send if transpose its not also t be computed at iteration 0 (diagonals, small cases)
-  if (transposeI > 0) {
-
-    std::cout << "Processor: " << rank
-              << " is about to send at iteration " << 0 << std::endl;
-
-    commTimer.start();
-    MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
-               MPI_CHAR, transposeT * teamsize + transposeC, 0,
-              MPI_COMM_WORLD, &request );
-    totalCommTime += commTimer.elapsed();
-
-    std::cout << "Processor: " << rank
-              << " has sent at iteration " << 0 << std::endl;
-  }
-
-  // all search to see if need to receive any
-  auto it = myXY.begin();
-  while (it != myXY.end()) {
-    // if needing to receive from more than one source, will keep update in counter and print error
-    int counter = 0;
-    if (counter > 1) {
-      std::cerr << "Processor: " << rank
-           << " has calculated to receive from multiple at iteration " << 0 << std::endl;
-    }
-
-    // analyze each step in future list for needing to receive
-    int futureTransposeT, futureTransposeC, futureTransposeI;
-    std::tie(futureTransposeT, futureTransposeC, futureTransposeI) = transformer.XY2tci(std::get<1>(*it), std::get<0>(*it));
-
-    // search for who to receive from at this iteration
-    if (futureTransposeI == 0) {
-      std::cout<<"Processor: " << rank
-               << " is about to receive at iteration " << 0 << std::endl;
-
-      // Receive from earlier calculation
+      // Send
       commTimer.start();
-
-      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
-               MPI_CHAR, futureTransposeT * teamsize + futureTransposeC, 0,
-               MPI_COMM_WORLD, &status);
+      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
+                MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
+                MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
 
-      std::cout<<"Processor: " << rank
-               << "has finished receiving receive at iteration " << 0 << std::endl;
-
-      // remove from possible receive position list in future
-      myXY.erase(it++);
-
-      // counter to keep track of multiple receives in a round
-      ++counter;
+      // Find and remove from receive list  YUCK HACK
+      // Get our block coordinates
+      xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
+      // Get the ITC of the process responsible for the symmtric block
+      itc_tuple itc = transformer.xy2itc(std::get<1>(xy), std::get<0>(xy));
+      // Convert ITC to IR
+      ir_pair ir = transformer.itc2ir(itc);
+      // Remove -- YUCK!
+      auto it = std::find(iter_rank_deque.begin(), iter_rank_deque.end(), ir);
+      assert(it != iter_rank_deque.end());
+      iter_rank_deque.erase(it);
     }
-    else {
-      ++it;
+
+    // Recieve all symmetric blocks computed at this iteration
+    while (!iter_rank_deque.empty()
+           && std::get<0>(iter_rank_deque.front()) == curr_iter) {
+      std::cout << "Process " << rank
+                << " receiving from " << std::get<1>(iter_rank_deque.front())
+                << " at iter " << curr_iter << std::endl;
+
+      // Recv
+      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
+               MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
+               MPI_COMM_WORLD, &status);
+      // Accumulate
+      for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+        *r += *tr;
+      // Pop
+      iter_rank_deque.pop_front();
+
+      std::cout << "Process " << rank
+                << " RECEIVED" << std::endl;
     }
   }
 
-  for (int iteration = 1; iteration < totalIterations; ++iteration) {
+  /********************/
+  /** ALL ITERATIONS **/
+  /********************/
+
+  int last_iter = idiv_up(num_teams + 1, 2*teamsize);
+
+  for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
     // Shift data to the next process to compute the next block
     commTimer.start();
-    int prev = (team - teamsize) % num_teams;
-    int next = (team + teamsize) % num_teams;
+    int prev = (team - teamsize + num_teams) % num_teams;
+    int next = (team + teamsize + num_teams) % num_teams;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          row_comm, &status);
@@ -312,100 +356,78 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Set rJ to zero
-    rJ.assign(rJ.size(), result_type());
+    // Compute and send if this IR < transpose IR
+    if (std::tie(curr_iter, rank) < iter_rank_trans[curr_iter]) {
+      // Set rJ to zero
+      rJ.assign(rJ.size(), result_type());
 
-    // compute own block
-    p2p(K,
-        xJ.begin(), xJ.end(), cJ.begin(), rI.begin(),
-        xI.begin(), xI.end(), cI.begin(), rJ.begin());
+      // Compute
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-    // Calculate where to send the symmetric computation
-    int myX, myY;
-    std::tie(myX,myY) = transformer.tci2XY(team, trank, iteration);
-    // Get rank, team, etc transposed block
-    int transposeT, transposeC, transposeI;
-    std::tie(transposeT, transposeC, transposeI) = transformer.XY2tci(myY, myX);
+      std::cout << "Process " << rank << " " << transformer.ir2xy(curr_iter, rank)
+                << " sending to " << std::get<1>(iter_rank_trans[curr_iter])
+                << " at iter " << curr_iter << std::endl;
 
-    // communication is needed if not last iteration
-    if (iteration < totalIterations - 1) {
+      // Send
+      commTimer.start();
+      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
+                MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
+                MPI_COMM_WORLD, &request);
+      totalCommTime += commTimer.elapsed();
 
-      // send if necessary
-      if (iteration < transposeI) {
-        std::cout<< "Processor: " << rank
-                 << " is about to send at iteration " << iteration << std::endl;
+      // Find and remove from receive list  YUCK HACK
+      // Get our block coordinates
+      xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
+      // Get the ITC of the process responsible for the symmtric block
+      itc_tuple itc = transformer.xy2itc(std::get<1>(xy), std::get<0>(xy));
+      // Convert ITC to IR
+      ir_pair ir = transformer.itc2ir(itc);
+      // Remove -- YUCK!
+      auto it = std::find(iter_rank_deque.begin(), iter_rank_deque.end(), ir);
+      assert(it != iter_rank_deque.end());
+      iter_rank_deque.erase(it);
+    }
 
-        commTimer.start();
-        MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
-                  MPI_CHAR, transposeT * teamsize + transposeC, 0,
-                  MPI_COMM_WORLD, &request);
-        totalCommTime += commTimer.elapsed();
+    // Recieve all symmetric blocks computed at this iteration
+    while (!iter_rank_deque.empty()
+           && std::get<0>(iter_rank_deque.front()) == curr_iter) {
+      std::cout << "Process " << rank
+                << " receiving from " << std::get<1>(iter_rank_deque.front())
+                << " at iter " << curr_iter << std::endl;
 
-        std::cout<<"Processor: " << rank
-                 << "has sent at iteration " << iteration << std::endl;
-      }
+      // Recv
+      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
+               MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
+               MPI_COMM_WORLD, &status);
+      // Accumulate
+      for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+        *r += *tr;
+      // Pop
+      iter_rank_deque.pop_front();
 
-      // all search to see if need to receive any
-      auto it = myXY.begin();
-      while (it != myXY.end()) {
-        // if needing to receive from more than one source, will keep update in counter
-        int counter = 0;
-        if (counter > 1) {
-          std::cerr << "Processor: " << rank
-               << " has calculated to receive from multiple at iteration " << 0 << std::endl;
-        }
-
-        // analyze each step in future list for needing to receive
-        int futureT, futureC, futureI;
-        std::tie(futureT, futureC, futureI) = transformer.XY2tci(std::get<0>(*it), std::get<1>(*it));
-        int futureTransposeT, futureTransposeC, futureTransposeI;
-        std::tie(futureTransposeT, futureTransposeC, futureTransposeI) = transformer.XY2tci(std::get<1>(*it), std::get<0>(*it));
-        // search for who to receive from at this iteration
-        if (futureI > futureTransposeI && futureTransposeI == iteration) {
-          std::cout<<"Processor: " << rank
-                   << " is about to receive at iteration " << iteration << std::endl;
-
-          // Receive from earlier calculation
-          commTimer.start();
-
-          MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
-                   MPI_CHAR, futureTransposeT * teamsize + futureTransposeC, 0,
-                   MPI_COMM_WORLD, &status);
-          totalCommTime += commTimer.elapsed();
-
-          std::cout<<"Processor: " << rank << " has finished receiving receive at iteration " << iteration << std::endl;
-          myXY.erase(it++);
-        }
-        else {
-          ++it;
-        }
-      } // end iteration through myXY
-
-      // Accumulate into rI - no need to use the transform magic thing
-      for (auto iout = rI.begin(), iin = temp_rI.begin(); iout != rI.end(); ++iout, ++iin) {
-        *iout += *iin;
-      }
-    } // end iteration < totalIterations - 1
+      std::cout << "Process " << rank
+                << " RECEIVED" << std::endl;
+    }
   }  //  end for iteration
+
+  // Make sure all the blocks are accounted for
+  assert(iter_rank_deque.empty());
 
   std::cout << "Processor: " << rank
             << " is now ready for final reduction" << std::endl;
-
-  // Allocate teamrI on team leaders
-  std::vector<result_type> teamrI;
-  if (trank == MASTER)
-    teamrI = std::vector<result_type>(idiv_up(N,num_teams));
 
   // Reduce answers to the team leader
   commTimer.start();
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
-  MPI_Reduce(rI.data(), teamrI.data(), rI.size(),
+  MPI_Reduce(rI.data(), temp_rI.data(), rI.size(),
              MPI_DOUBLE, MPI_SUM, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
-  // Allocate phi on master
+  // Allocate result on master
   std::vector<result_type> result;
   if (rank == MASTER)
     result = std::vector<result_type>(P*idiv_up(N,P));
@@ -413,8 +435,8 @@ int main(int argc, char** argv)
   // Gather team leader answers to master
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Gather(teamrI.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
-               result.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
+    MPI_Gather(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+               result.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
@@ -423,10 +445,19 @@ int main(int argc, char** argv)
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
 
+  // Check the result
+  if (rank == MASTER && checkErrors) {
+    std::cout << "Computing direct matvec..." << std::endl;
+
+    std::vector<result_type> exact(N);
+
+    // Compute the result with a direct matrix-vector multiplication
+    p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+
+    print_error(exact, result);
+  }
+
   if (rank == MASTER) {
-    std::cout << "Symmetric - checksum answer is: "
-              << std::accumulate(result.begin(), result.end(), result_type())
-              << std::endl;
     std::ofstream result_file("data/result.txt");
     result_file << result << std::endl;
   }

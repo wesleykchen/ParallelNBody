@@ -6,6 +6,29 @@
 // Serial version of n-body algorithm
 int main(int argc, char** argv)
 {
+  bool checkErrors = true;
+
+  // Parse optional command line args
+  std::vector<std::string> arg(argv, argv + argc);
+  for (unsigned i = 1; i < arg.size(); ++i) {
+    if (arg[i] == "-nocheck") {
+      checkErrors = false;
+      arg.erase(arg.begin() + i);  // Erase this arg
+      --i;                         // Reset index
+    }
+  }
+
+  if (arg.size() < 3) {
+    std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
+    //exit(1);
+    // XXX: Remove
+    std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
+
+    arg.resize(1);
+    arg.push_back(SOURCE_DATA);
+    arg.push_back(CHARGE_DATA);
+  }
+
   // Create a Kernel
   typedef LaplacePotential kernel_type;
   kernel_type K;
@@ -22,19 +45,6 @@ int main(int argc, char** argv)
 
   std::vector<source_type> source;
   std::vector<charge_type> charge;
-
-  std::vector<std::string> arg(argv, argv+argc);
-
-  if (arg.size() < 3) {
-    std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
-    //exit(1);
-    // XXX: Remove
-    std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
-
-    arg.resize(1);
-    arg.push_back(SOURCE_DATA);
-    arg.push_back(CHARGE_DATA);
-  }
 
   // Read the data from SOURCE_FILE interpreted as Points
   std::ifstream source_file(arg[1]);
@@ -54,14 +64,21 @@ int main(int argc, char** argv)
 
   Clock timer;
   timer.start();
-  p2p(K,
-      source.begin(), source.end(),
-      charge.begin(), result.begin());
+  p2p(K, source.begin(), source.end(), charge.begin(), result.begin());
   double time = timer.elapsed();
 
   std::cout << "Computed in " << time << " seconds" << std::endl;
-  result_type check = std::accumulate(result.begin(), result.end(), result_type());
-  std::cout << "Serial - checksum answer is: " << check << std::endl;
+
+  if (checkErrors) {
+    std::cout << "Computing direct matvec..." << std::endl;
+
+    std::vector<result_type> exact(N);
+
+    // Compute the result with a direct matrix-vector multiplication
+    p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+
+    print_error(exact, result);
+  }
 
   std::ofstream result_file("data/result.txt");
   result_file << result << std::endl;
