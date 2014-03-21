@@ -281,6 +281,7 @@ int main(int argc, char** argv)
 
     std::cout << "Process " << rank
               << " computing " << transformer.ir2xy(iter_rank_deque.front())
+              << " = " << rI[0]
               << " at iter " << curr_iter << std::endl;
 
     // The front of the list should be this process
@@ -368,8 +369,8 @@ int main(int argc, char** argv)
 
     // Shift data to the next process to compute the next block
     commTimer.start();
-    int prev = (team - teamsize + num_teams) % num_teams;
-    int next = (team + teamsize + num_teams) % num_teams;
+    int prev = (team + teamsize + num_teams) % num_teams;
+    int next = (team - teamsize + num_teams) % num_teams;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                          MPI_CHAR, next, 0, prev, 0,
                          row_comm, &status);
@@ -397,8 +398,11 @@ int main(int argc, char** argv)
           xI.begin(), xI.end(), cI.begin(),
           xJ.begin(), xJ.end(), rJ.begin());
 
+      //assert(rJ.size() == 1);
+
       std::cout << "Process " << rank
                 << " sending " << transformer.ir2xy(curr_iter, rank)
+                << " = " << rJ[0]
                 << " to " << std::get<1>(iter_rank_trans[curr_iter])
                 << " at iter " << curr_iter << std::endl;
 
@@ -489,6 +493,9 @@ int main(int argc, char** argv)
     p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
 
     print_error(exact, result);
+
+    std::ofstream exact_file("data/exact.txt");
+    exact_file << exact << std::endl;
   }
 
   if (rank == MASTER) {
