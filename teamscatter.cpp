@@ -160,7 +160,7 @@ int main(int argc, char** argv)
   commTimer.start();
 
   int prev = (team - trank + num_teams) % num_teams;
-  int next = (team + trank) % num_teams;
+  int next = (team + trank + num_teams) % num_teams;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                        MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);

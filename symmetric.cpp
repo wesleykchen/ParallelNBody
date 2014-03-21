@@ -317,27 +317,27 @@ int main(int argc, char** argv)
       assert(it != iter_rank_deque.end());
       iter_rank_deque.erase(it);
     }
+  }
 
-    // Recieve all symmetric blocks computed at this iteration
-    while (!iter_rank_deque.empty()
-           && std::get<0>(iter_rank_deque.front()) == curr_iter) {
-      std::cout << "Process " << rank
-                << " receiving from " << std::get<1>(iter_rank_deque.front())
-                << " at iter " << curr_iter << std::endl;
+  // Recieve all symmetric blocks computed at this iteration
+  while (!iter_rank_deque.empty()
+         && std::get<0>(iter_rank_deque.front()) == curr_iter) {
+    std::cout << "Process " << rank
+              << " receiving from " << std::get<1>(iter_rank_deque.front())
+              << " at iter " << curr_iter << std::endl;
 
-      // Recv
-      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
-               MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
-               MPI_COMM_WORLD, &status);
-      // Accumulate
-      for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
-        *r += *tr;
-      // Pop
-      iter_rank_deque.pop_front();
+    // Recv
+    MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
+             MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
+             MPI_COMM_WORLD, &status);
+    // Accumulate
+    for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+      *r += *tr;
+    // Pop
+    iter_rank_deque.pop_front();
 
-      std::cout << "Process " << rank
-                << " RECEIVED" << std::endl;
-    }
+    std::cout << "Process " << rank
+              << " RECEIVED" << std::endl;
   }
 
   /********************/
