@@ -89,6 +89,8 @@ int main(int argc, char** argv)
   MPI_Comm_size(MPI_COMM_WORLD, &P);
   // Scratch request for MPI
   MPI_Request request;
+  // Scratch status for MPI
+  MPI_Status status;
 
   typedef LaplacePotential kernel_type;
   kernel_type K;
@@ -257,7 +259,6 @@ int main(int argc, char** argv)
   // Add num_teams to prevent negative numbers
   int prev = (team - trank + num_teams) % num_teams;
   int next = (team + trank + num_teams) % num_teams;
-  MPI_Status status;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                        MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
@@ -300,6 +301,8 @@ int main(int argc, char** argv)
       MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
                 MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
                 MPI_COMM_WORLD, &request);
+      // HACK CHECK
+      MPI_Wait(&request, &status);
       totalCommTime += commTimer.elapsed();
 
       // Find and remove from receive list  YUCK HACK
@@ -375,6 +378,8 @@ int main(int argc, char** argv)
       MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
                 MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
                 MPI_COMM_WORLD, &request);
+      // HACK CHECK
+      MPI_Wait(&request, &status);
       totalCommTime += commTimer.elapsed();
 
       // Find and remove from receive list  YUCK HACK
