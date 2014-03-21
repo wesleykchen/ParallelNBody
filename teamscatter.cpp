@@ -136,8 +136,8 @@ int main(int argc, char** argv)
   // Scatter data from master to team leaders
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
-                xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+    MPI_Scatter(source.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
@@ -147,14 +147,14 @@ int main(int argc, char** argv)
 
   // Team leaders broadcast to team
   commTimer.start();
-  MPI_Bcast(xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+  MPI_Bcast(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
             MASTER, team_comm);
   MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
             MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
-  // Copy xI -> xJ
-  std::copy(xI.begin(), xI.end(), xJ.begin());
+  // Copy xJ -> xI
+  std::copy(xJ.begin(), xJ.end(), xI.begin());
 
   // Perform initial offset by teamrank
   commTimer.start();

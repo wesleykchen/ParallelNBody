@@ -137,6 +137,8 @@ inline T string_to_(const std::string& s) {
 template <typename result_type>
 void print_error(const std::vector<result_type>& exact,
                  const std::vector<result_type>& result) {
+  assert(exact.size() == result.size());
+
   double tot_error_sq = 0;
   double tot_norm_sq = 0;
   double tot_ind_rel_err = 0;
@@ -151,6 +153,8 @@ void print_error(const std::vector<result_type>& exact,
     // Total relative error
     tot_error_sq += normSq(exact[k] - result[k]);
     tot_norm_sq  += normSq(exact[k]);
+
+    //if (rel_error > 1e-10) std::cout << k << ": " << result[k] << "\t" << exact[k] << std::endl;
   }
   double tot_rel_err = sqrt(tot_error_sq/tot_norm_sq);
   std::cout << "Vector  relative error: " << tot_rel_err << std::endl;

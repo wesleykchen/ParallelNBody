@@ -46,7 +46,11 @@ struct IndexTransformer {
   xy_pair ir2xy(int i, int r) const {
     int t = r / C;
     int c = r % C;
-    return itc2xy(i, t, c);
+    return itc2xy(i,t,c);
+  }
+
+  xy_pair ir2xy(const ir_pair& ir) const {
+    return ir2xy(std::get<0>(ir), std::get<1>(ir));
   }
 
  private:
@@ -209,9 +213,7 @@ int main(int argc, char** argv)
   std::deque<ir_pair> iter_rank_deque(iter_rank_trans.begin(), iter_rank_trans.end());
   // Just for now... make sure this is sorted by iteration
   // TODO: Avoid this sort by computing them in the right order?
-  std::sort(iter_rank_deque.begin(), iter_rank_deque.end(),
-            [](const ir_pair& ir1, const ir_pair& ir2)
-            { return std::get<0>(ir1) < std::get<0>(ir2); });
+  std::sort(iter_rank_deque.begin(), iter_rank_deque.end());
 
 
   /********************/
@@ -231,28 +233,27 @@ int main(int argc, char** argv)
   // Scatter data from master to team leaders
   if (trank == MASTER) {
     commTimer.start();
-    MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
-                xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+    MPI_Scatter(source.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 MASTER, row_comm);
-    MPI_Scatter(charge.data(), sizeof(charge_type) * cI.size(), MPI_CHAR,
-                cI.data(), sizeof(charge_type) * cI.size(), MPI_CHAR,
+    MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+                cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     totalCommTime += commTimer.elapsed();
   }
 
   // Team leaders broadcast to team
   commTimer.start();
-  MPI_Bcast(xI.data(), sizeof(source_type) * xI.size(),
+  MPI_Bcast(xJ.data(), sizeof(source_type) * xJ.size(),
             MPI_CHAR, MASTER, team_comm);
-  MPI_Bcast(cI.data(), sizeof(charge_type) * cI.size(),
+  MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(),
             MPI_CHAR, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
-  // Copy xI -> xJ
-  std::copy(xI.begin(), xI.end(), xJ.begin());
-
-  // Copy cI -> cJ
-  std::copy(cI.begin(), cI.end(), cJ.begin());
+  // Copy xJ -> xI
+  std::copy(xJ.begin(), xJ.end(), xI.begin());
+  // Copy cJ -> cI
+  std::copy(cJ.begin(), cJ.end(), cI.begin());
 
   // Perform initial offset by teamrank
   commTimer.start();
@@ -278,6 +279,10 @@ int main(int argc, char** argv)
     p2p(K,
         xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
 
+    std::cout << "Process " << rank
+              << " computing " << transformer.ir2xy(iter_rank_deque.front())
+              << " at iter " << curr_iter << std::endl;
+
     // The front of the list should be this process
     assert(iter_rank_deque.front() == ir_pair(curr_iter, rank));
     iter_rank_deque.pop_front();
@@ -288,21 +293,28 @@ int main(int argc, char** argv)
       rJ.assign(rJ.size(), result_type());
 
       // Compute
-      p2p(K,
-          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-          xI.begin(), xI.end(), cI.begin(), rI.begin());
+      //p2p(K,
+      //    xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+      //    xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-      std::cout << "Process " << rank << " " << transformer.ir2xy(curr_iter, rank)
-                << " sending to " << std::get<1>(iter_rank_trans[curr_iter])
+      // Sanity
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(),
+          xI.begin(), xI.end(), rI.begin());
+      p2p(K,
+          xI.begin(), xI.end(), cI.begin(),
+          xJ.begin(), xJ.end(), rJ.begin());
+
+      std::cout << "Process " << rank
+                << " sending " << transformer.ir2xy(curr_iter, rank)
+                << " to " << std::get<1>(iter_rank_trans[curr_iter])
                 << " at iter " << curr_iter << std::endl;
 
       // Send
       commTimer.start();
       MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
-                MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
-                MPI_COMM_WORLD, &request);
-      // HACK CHECK
-      MPI_Wait(&request, &status);
+               MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
+               MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
 
       // Find and remove from receive list  YUCK HACK
@@ -316,14 +328,16 @@ int main(int argc, char** argv)
       auto it = std::find(iter_rank_deque.begin(), iter_rank_deque.end(), ir);
       assert(it != iter_rank_deque.end());
       iter_rank_deque.erase(it);
+      assert(std::is_sorted(iter_rank_deque.begin(), iter_rank_deque.end()));
     }
   }
 
-  // Recieve all symmetric blocks computed at this iteration
+  // Receive all symmetric blocks computed at this iteration
   while (!iter_rank_deque.empty()
          && std::get<0>(iter_rank_deque.front()) == curr_iter) {
     std::cout << "Process " << rank
-              << " receiving from " << std::get<1>(iter_rank_deque.front())
+              << " receiving " << transformer.ir2xy(iter_rank_deque.front())
+              << " from " << std::get<1>(iter_rank_deque.front())
               << " at iter " << curr_iter << std::endl;
 
     // Recv
@@ -344,9 +358,14 @@ int main(int argc, char** argv)
   /** ALL ITERATIONS **/
   /********************/
 
-  int last_iter = idiv_up(num_teams + 1, 2*teamsize);
+  //int last_iter = idiv_up(num_teams + 1, 2*teamsize);
 
-  for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
+  //for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
+
+  while (!iter_rank_deque.empty()) {
+    ++curr_iter;
+    MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race
+
     // Shift data to the next process to compute the next block
     commTimer.start();
     int prev = (team - teamsize + num_teams) % num_teams;
@@ -360,17 +379,27 @@ int main(int argc, char** argv)
     totalCommTime += commTimer.elapsed();
 
     // Compute and send if this IR < transpose IR
+    assert(std::tie(curr_iter, rank) != iter_rank_trans[curr_iter]);
     if (std::tie(curr_iter, rank) < iter_rank_trans[curr_iter]) {
       // Set rJ to zero
       rJ.assign(rJ.size(), result_type());
 
       // Compute
-      p2p(K,
-          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-          xI.begin(), xI.end(), cI.begin(), rI.begin());
+      //p2p(K,
+      //    xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+      //    xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-      std::cout << "Process " << rank << " " << transformer.ir2xy(curr_iter, rank)
-                << " sending to " << std::get<1>(iter_rank_trans[curr_iter])
+      // Sanity
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(),
+          xI.begin(), xI.end(), rI.begin());
+      p2p(K,
+          xI.begin(), xI.end(), cI.begin(),
+          xJ.begin(), xJ.end(), rJ.begin());
+
+      std::cout << "Process " << rank
+                << " sending " << transformer.ir2xy(curr_iter, rank)
+                << " to " << std::get<1>(iter_rank_trans[curr_iter])
                 << " at iter " << curr_iter << std::endl;
 
       // Send
@@ -378,8 +407,6 @@ int main(int argc, char** argv)
       MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
                 MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
                 MPI_COMM_WORLD, &request);
-      // HACK CHECK
-      MPI_Wait(&request, &status);
       totalCommTime += commTimer.elapsed();
 
       // Find and remove from receive list  YUCK HACK
@@ -393,13 +420,15 @@ int main(int argc, char** argv)
       auto it = std::find(iter_rank_deque.begin(), iter_rank_deque.end(), ir);
       assert(it != iter_rank_deque.end());
       iter_rank_deque.erase(it);
+      assert(std::is_sorted(iter_rank_deque.begin(), iter_rank_deque.end()));
     }
 
-    // Recieve all symmetric blocks computed at this iteration
+    // Receive all symmetric blocks computed at this iteration
     while (!iter_rank_deque.empty()
            && std::get<0>(iter_rank_deque.front()) == curr_iter) {
       std::cout << "Process " << rank
-                << " receiving from " << std::get<1>(iter_rank_deque.front())
+                << " receiving " << transformer.ir2xy(iter_rank_deque.front())
+                << " from " << std::get<1>(iter_rank_deque.front())
                 << " at iter " << curr_iter << std::endl;
 
       // Recv
