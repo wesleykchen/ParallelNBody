@@ -279,11 +279,6 @@ int main(int argc, char** argv)
     p2p(K,
         xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
 
-    std::cout << "Process " << rank
-              << " computing " << transformer.ir2xy(iter_rank_deque.front())
-              << " = " << rI[0]
-              << " at iter " << curr_iter << std::endl;
-
     // The front of the list should be this process
     assert(iter_rank_deque.front() == ir_pair(curr_iter, rank));
     iter_rank_deque.pop_front();
@@ -297,11 +292,6 @@ int main(int argc, char** argv)
       p2p(K,
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
-
-      std::cout << "Process " << rank
-                << " sending " << transformer.ir2xy(curr_iter, rank)
-                << " to " << std::get<1>(iter_rank_trans[curr_iter])
-                << " at iter " << curr_iter << std::endl;
 
       // Send
       commTimer.start();
@@ -328,11 +318,6 @@ int main(int argc, char** argv)
   // Receive all symmetric blocks computed at this iteration
   while (!iter_rank_deque.empty()
          && std::get<0>(iter_rank_deque.front()) == curr_iter) {
-    std::cout << "Process " << rank
-              << " receiving " << transformer.ir2xy(iter_rank_deque.front())
-              << " from " << std::get<1>(iter_rank_deque.front())
-              << " at iter " << curr_iter << std::endl;
-
     // Recv
     MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
              MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
@@ -342,9 +327,6 @@ int main(int argc, char** argv)
       *r += *tr;
     // Pop
     iter_rank_deque.pop_front();
-
-    std::cout << "Process " << rank
-              << " RECEIVED" << std::endl;
   }
 
   /********************/
@@ -382,12 +364,6 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-      std::cout << "Process " << rank
-                << " sending " << transformer.ir2xy(curr_iter, rank)
-                << " = " << rJ[0]
-                << " to " << std::get<1>(iter_rank_trans[curr_iter])
-                << " at iter " << curr_iter << std::endl;
-
       // Send
       commTimer.start();
       MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
@@ -412,11 +388,6 @@ int main(int argc, char** argv)
     // Receive all symmetric blocks computed at this iteration
     while (!iter_rank_deque.empty()
            && std::get<0>(iter_rank_deque.front()) == curr_iter) {
-      std::cout << "Process " << rank
-                << " receiving " << transformer.ir2xy(iter_rank_deque.front())
-                << " from " << std::get<1>(iter_rank_deque.front())
-                << " at iter " << curr_iter << std::endl;
-
       // Recv
       MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
                MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
@@ -426,17 +397,11 @@ int main(int argc, char** argv)
         *r += *tr;
       // Pop
       iter_rank_deque.pop_front();
-
-      std::cout << "Process " << rank
-                << " RECEIVED" << std::endl;
     }
   }  //  end for iteration
 
   // Make sure all the blocks are accounted for
   assert(iter_rank_deque.empty());
-
-  std::cout << "Processor: " << rank
-            << " is now ready for final reduction" << std::endl;
 
   // Reduce answers to the team leader
   commTimer.start();
