@@ -258,8 +258,8 @@ int main(int argc, char** argv)
   // Perform initial offset by teamrank
   commTimer.start();
   // Add num_teams to prevent negative numbers
-  int prev = (team - trank + num_teams) % num_teams;
-  int next = (team + trank + num_teams) % num_teams;
+  int prev = (team + trank + num_teams) % num_teams;
+  int next = (team - trank + num_teams) % num_teams;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
                        MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
@@ -351,12 +351,12 @@ int main(int argc, char** argv)
   /** ALL ITERATIONS **/
   /********************/
 
-  //int last_iter = idiv_up(num_teams + 1, 2*teamsize);
+  int last_iter = idiv_up(num_teams + 1, 2*teamsize);
 
-  //for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
+  for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
 
-  while (!iter_rank_deque.empty()) {
-    ++curr_iter;
+  //while (!iter_rank_deque.empty()) {
+  //  ++curr_iter;
     MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race?
 
     // Shift data to the next process to compute the next block
