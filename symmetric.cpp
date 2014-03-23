@@ -336,9 +336,6 @@ int main(int argc, char** argv)
   int last_iter = idiv_up(num_teams + 1, 2*teamsize);
 
   for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
-
-  //while (!iter_rank_deque.empty()) {
-  //  ++curr_iter;
     MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race?
 
     // Shift data to the next process to compute the next block
