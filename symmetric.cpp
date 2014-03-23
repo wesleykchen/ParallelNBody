@@ -294,17 +294,9 @@ int main(int argc, char** argv)
       rJ.assign(rJ.size(), result_type());
 
       // Compute
-      //p2p(K,
-      //    xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-      //    xI.begin(), xI.end(), cI.begin(), rI.begin());
-
-      // Sanity
       p2p(K,
-          xJ.begin(), xJ.end(), cJ.begin(),
-          xI.begin(), xI.end(), rI.begin());
-      p2p(K,
-          xI.begin(), xI.end(), cI.begin(),
-          xJ.begin(), xJ.end(), rJ.begin());
+          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
 
       std::cout << "Process " << rank
                 << " sending " << transformer.ir2xy(curr_iter, rank)
@@ -365,7 +357,7 @@ int main(int argc, char** argv)
 
   while (!iter_rank_deque.empty()) {
     ++curr_iter;
-    MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race
+    MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race?
 
     // Shift data to the next process to compute the next block
     commTimer.start();
@@ -386,19 +378,9 @@ int main(int argc, char** argv)
       rJ.assign(rJ.size(), result_type());
 
       // Compute
-      //p2p(K,
-      //    xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-      //    xI.begin(), xI.end(), cI.begin(), rI.begin());
-
-      // Sanity
       p2p(K,
-          xJ.begin(), xJ.end(), cJ.begin(),
-          xI.begin(), xI.end(), rI.begin());
-      p2p(K,
-          xI.begin(), xI.end(), cI.begin(),
-          xJ.begin(), xJ.end(), rJ.begin());
-
-      //assert(rJ.size() == 1);
+          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
 
       std::cout << "Process " << rank
                 << " sending " << transformer.ir2xy(curr_iter, rank)
