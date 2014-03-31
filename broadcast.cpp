@@ -98,10 +98,10 @@ int main(int argc, char** argv)
 
   // Broadcast the data to all processes
   commTimer.start();
-  MPI_Bcast(source.data(), sizeof(source_type) * source.size(),
-            MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  MPI_Bcast(charge.data(), sizeof(charge_type) * charge.size(),
-            MPI_CHAR, MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(source.data(), sizeof(source_type) * source.size(), MPI_CHAR,
+            MASTER, MPI_COMM_WORLD);
+  MPI_Bcast(charge.data(), sizeof(charge_type) * charge.size(), MPI_CHAR,
+            MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
   // All processors have a chunk to hold their temporary answers

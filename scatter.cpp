@@ -88,39 +88,37 @@ int main(int argc, char** argv)
   }
 
   // Allocate memory all processes
-  std::vector<result_type> rI(idiv_up(N,P));
-  std::vector<source_type> xI(idiv_up(N,P));
   std::vector<source_type> xJ(idiv_up(N,P));
   std::vector<charge_type> cJ(idiv_up(N,P));
 
   // Scatter the data to all processes
   commTimer.start();
-  MPI_Scatter(source.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
-              xI.data(), sizeof(source_type) * xI.size(), MPI_CHAR,
+  MPI_Scatter(source.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+              xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
   MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
               cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
               MASTER, MPI_COMM_WORLD);
   totalCommTime += commTimer.elapsed();
 
-  // Calculate the symmetric first block
-  p2p(K,
-      xI.begin(), xI.end(),
-      cJ.begin(), rI.begin());
+  // Copy xJ -> xI
+  std::vector<source_type> xI = xJ;
+  // Initialize block results rI
+  std::vector<result_type> rI(idiv_up(N,P));
 
-  // Copy xI -> xJ
-  std::copy(xI.begin(), xI.end(), xJ.begin());
+  // Calculate the symmetric first block
+  p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
 
   for (int shiftCount = 1; shiftCount < P; ++shiftCount) {
     commTimer.start();
 
-    int prev  = (rank - 1 + P) % P;
-    int next = (rank + 1) % P;
-    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
-                         MPI_CHAR, next, 0, prev, 0,
+    int dst = (rank - 1 + P) % P;
+    int src = (rank + 1 + P) % P;
+    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                         src, 0, dst, 0,
                          MPI_COMM_WORLD, &status);
-    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
-                         MPI_CHAR, next, 0, prev, 0,
+    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+                         src, 0, dst, 0,
                          MPI_COMM_WORLD, &status);
     totalCommTime += commTimer.elapsed();
 

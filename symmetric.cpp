@@ -239,10 +239,10 @@ int main(int argc, char** argv)
 
   // Team leaders broadcast to team
   commTimer.start();
-  MPI_Bcast(xJ.data(), sizeof(source_type) * xJ.size(),
-            MPI_CHAR, MASTER, team_comm);
-  MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(),
-            MPI_CHAR, MASTER, team_comm);
+  MPI_Bcast(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+            MASTER, team_comm);
+  MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+            MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Copy xJ -> xI
@@ -257,13 +257,13 @@ int main(int argc, char** argv)
   // Perform initial offset by teamrank
   commTimer.start();
   // Add num_teams to prevent negative numbers
-  int prev = (team + trank + num_teams) % num_teams;
-  int next = (team - trank + num_teams) % num_teams;
-  MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
-                       MPI_CHAR, next, 0, prev, 0,
+  int dst = (team + trank + num_teams) % num_teams;
+  int src = (team - trank + num_teams) % num_teams;
+  MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                       src, 0, dst, 0,
                        row_comm, &status);
-  MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
-                       MPI_CHAR, next, 0, prev, 0,
+  MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+                       src, 0, dst, 0,
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
@@ -275,8 +275,7 @@ int main(int argc, char** argv)
 
   if (trank == MASTER) {
     // If this is the team leader, compute the symmetric diagonal block
-    p2p(K,
-        xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
+    p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
 
     // The front of the list should be this process
     assert(iter_rank_deque.front() == ir_pair(curr_iter, rank));
@@ -294,9 +293,9 @@ int main(int argc, char** argv)
 
       // Send
       commTimer.start();
-      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
-               MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
-               MPI_COMM_WORLD, &request);
+      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
+                std::get<1>(iter_rank_trans[curr_iter]), 0,
+                MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
 
       // Find and remove from receive list  YUCK HACK
@@ -318,8 +317,8 @@ int main(int argc, char** argv)
   while (!iter_rank_deque.empty()
          && std::get<0>(iter_rank_deque.front()) == curr_iter) {
     // Recv
-    MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
-             MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
+    MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+             std::get<1>(iter_rank_deque.front()), 0,
              MPI_COMM_WORLD, &status);
     // Accumulate
     for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
@@ -339,13 +338,13 @@ int main(int argc, char** argv)
 
     // Shift data to the next process to compute the next block
     commTimer.start();
-    int prev = (team + teamsize + num_teams) % num_teams;
-    int next = (team - teamsize + num_teams) % num_teams;
-    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
-                         MPI_CHAR, next, 0, prev, 0,
+    int dst = (team + teamsize + num_teams) % num_teams;
+    int src = (team - teamsize + num_teams) % num_teams;
+    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                         src, 0, dst, 0,
                          row_comm, &status);
-    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
-                         MPI_CHAR, next, 0, prev, 0,
+    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+                         src, 0, dst, 0,
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
@@ -362,8 +361,8 @@ int main(int argc, char** argv)
 
       // Send
       commTimer.start();
-      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(),
-                MPI_CHAR, std::get<1>(iter_rank_trans[curr_iter]), 0,
+      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
+                std::get<1>(iter_rank_trans[curr_iter]), 0,
                 MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
 
@@ -385,8 +384,8 @@ int main(int argc, char** argv)
     while (!iter_rank_deque.empty()
            && std::get<0>(iter_rank_deque.front()) == curr_iter) {
       // Recv
-      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(),
-               MPI_CHAR, std::get<1>(iter_rank_deque.front()), 0,
+      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+               std::get<1>(iter_rank_deque.front()), 0,
                MPI_COMM_WORLD, &status);
       // Accumulate
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
@@ -404,8 +403,8 @@ int main(int argc, char** argv)
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
-  MPI_Reduce(rI.data(), temp_rI.data(), rI.size(),
-             MPI_DOUBLE, MPI_SUM, MASTER, team_comm);
+  MPI_Reduce(rI.data(), temp_rI.data(), rI.size(), MPI_DOUBLE,
+             MPI_SUM, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Allocate result on master

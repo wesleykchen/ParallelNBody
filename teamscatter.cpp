@@ -160,20 +160,19 @@ int main(int argc, char** argv)
   // Perform initial offset by teamrank
   commTimer.start();
 
-  int prev = (team - trank + num_teams) % num_teams;
-  int next = (team + trank + num_teams) % num_teams;
-  MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
-                       MPI_CHAR, next, 0, prev, 0,
+  int dst = (team + trank + num_teams) % num_teams;
+  int src = (team - trank + num_teams) % num_teams;
+  MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                       src, 0, dst, 0,
                        row_comm, &status);
-  MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
-                       MPI_CHAR, next, 0, prev, 0,
+  MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+                       src, 0, dst, 0,
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
   if (trank == MASTER) {
     // If this is the team leader, compute the symmetric diagonal block
-    p2p(K,
-        xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
+    p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
   } else {
     // Else, compute the off-diagonal block
     p2p(K,
@@ -186,13 +185,13 @@ int main(int argc, char** argv)
   for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
     commTimer.start();
     // Add num_teams to prevent negative numbers
-    int prev = (team - teamsize + num_teams) % num_teams;
-    int next = (team + teamsize + num_teams) % num_teams;
-    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(),
-                         MPI_CHAR, next, 0, prev, 0,
+    int src = (team + teamsize + num_teams) % num_teams;
+    int dst = (team - teamsize + num_teams) % num_teams;
+    MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
+                         dst, 0, src, 0,
                          row_comm, &status);
-    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(),
-                         MPI_CHAR, next, 0, prev, 0,
+    MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
+                         dst, 0, src, 0,
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
@@ -217,8 +216,8 @@ int main(int argc, char** argv)
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
-  MPI_Reduce(rI.data(), teamrI.data(), rI.size(),
-             MPI_DOUBLE, MPI_SUM, MASTER, team_comm);
+  MPI_Reduce(rI.data(), teamrI.data(), rI.size(), MPI_DOUBLE,
+             MPI_SUM, MASTER, team_comm);
   totalCommTime += commTimer.elapsed();
 
   // Allocate result on master
