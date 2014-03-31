@@ -257,13 +257,13 @@ int main(int argc, char** argv)
   // Perform initial offset by teamrank
   commTimer.start();
   // Add num_teams to prevent negative numbers
-  int dst = (team + trank + num_teams) % num_teams;
-  int src = (team - trank + num_teams) % num_teams;
+  int src = (team + trank + num_teams) % num_teams;
+  int dst = (team - trank + num_teams) % num_teams;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
-                       src, 0, dst, 0,
+                       dst, 0, src, 0,
                        row_comm, &status);
   MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
-                       src, 0, dst, 0,
+                       dst, 0, src, 0,
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
 
@@ -338,13 +338,13 @@ int main(int argc, char** argv)
 
     // Shift data to the next process to compute the next block
     commTimer.start();
-    int dst = (team + teamsize + num_teams) % num_teams;
-    int src = (team - teamsize + num_teams) % num_teams;
+    int src = (team + teamsize + num_teams) % num_teams;
+    int dst = (team - teamsize + num_teams) % num_teams;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
-                         src, 0, dst, 0,
+                         dst, 0, src, 0,
                          row_comm, &status);
     MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
-                         src, 0, dst, 0,
+                         dst, 0, src, 0,
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
