@@ -1,0 +1,31 @@
+#pragma once
+
+#include <cmath>  
+#include "numeric/Vec.hpp"
+
+struct NonParaBayesian
+{
+  typedef double         source_type;
+  typedef double         charge_type;
+  typedef double         target_type;
+  typedef double         result_type;
+  typedef double         kernel_value_type;
+
+  double omega, scale;
+
+  NonParaBayesian(double _omega, double _ell)
+    : omega(_omega), scale(-2 / (_ell*_ell)) {
+  }
+
+  /** Kernel evaluation
+   * K(t,s) =  e^(-2*sin^2(omega * pi * (s - t) / (ell^2))
+   */
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
+    double sin_st = std::sin(omega * M_PI * (s - t));
+    return std::exp(scale * sin_st * sin_st)
+  }
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
+    return kts;
+  }
+};
