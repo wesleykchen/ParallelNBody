@@ -221,14 +221,9 @@ int main(int argc, char** argv)
   /********************/
 
   // Declare data for the block computations
-  std::vector<source_type> xI(idiv_up(N,num_teams));
   std::vector<source_type> xJ(idiv_up(N,num_teams));
-  std::vector<charge_type> cI(idiv_up(N,num_teams));
   std::vector<charge_type> cJ(idiv_up(N,num_teams));
-  std::vector<result_type> rI(idiv_up(N,num_teams));
   std::vector<result_type> rJ(idiv_up(N,num_teams));
-  // Declare space for receiving
-  std::vector<result_type> temp_rI(idiv_up(N,num_teams));
 
   // Scatter data from master to team leaders
   if (trank == MASTER) {
@@ -251,9 +246,13 @@ int main(int argc, char** argv)
   totalCommTime += commTimer.elapsed();
 
   // Copy xJ -> xI
-  std::copy(xJ.begin(), xJ.end(), xI.begin());
+  std::vector<source_type> xI = xJ;
   // Copy cJ -> cI
-  std::copy(cJ.begin(), cJ.end(), cI.begin());
+  std::vector<charge_type> cI = cJ;
+  // Initialize block result rI
+  std::vector<result_type> rI(idiv_up(N,num_teams));
+  // Declare space for receiving
+  std::vector<result_type> temp_rI(idiv_up(N,num_teams));
 
   // Perform initial offset by teamrank
   commTimer.start();

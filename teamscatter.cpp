@@ -129,7 +129,6 @@ int main(int argc, char** argv)
   MPI_Comm_split(MPI_COMM_WORLD, trank, rank, &row_comm);
 
   // Declare data for the block computations
-  std::vector<source_type> xI(idiv_up(N,num_teams));
   std::vector<source_type> xJ(idiv_up(N,num_teams));
   std::vector<charge_type> cJ(idiv_up(N,num_teams));
 
@@ -154,7 +153,9 @@ int main(int argc, char** argv)
   totalCommTime += commTimer.elapsed();
 
   // Copy xJ -> xI
-  std::copy(xJ.begin(), xJ.end(), xI.begin());
+  std::vector<source_type> xI = xJ;
+  // Initialize block result rI
+  std::vector<double> rI(idiv_up(N,num_teams));
 
   // Perform initial offset by teamrank
   commTimer.start();
@@ -168,9 +169,6 @@ int main(int argc, char** argv)
                        MPI_CHAR, next, 0, prev, 0,
                        row_comm, &status);
   totalCommTime += commTimer.elapsed();
-
-  // Hold accumulated answers
-  std::vector<double> rI(idiv_up(N,num_teams));
 
   if (trank == MASTER) {
     // If this is the team leader, compute the symmetric diagonal block
