@@ -23,7 +23,7 @@ struct NonParaBayesian
   inline kernel_value_type operator()(const target_type& t,
                                       const source_type& s) const {
     double sin_st = std::sin(omega * M_PI * (s - t));
-    return std::exp(scale * sin_st * sin_st)
+    return std::exp(scale * sin_st * sin_st);
   }
   inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kts;
