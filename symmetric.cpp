@@ -355,8 +355,9 @@ int main(int argc, char** argv)
       rJ.assign(rJ.size(), result_type());
 
       // Compute
+      p2p(K,
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-          xI.begin(), xI.end(), cI.begin(), rI.begin();
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
 
       // Send
       commTimer.start();
