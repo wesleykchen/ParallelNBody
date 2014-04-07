@@ -55,10 +55,10 @@ int main(int argc, char** argv)
   std::vector<charge_type> charge;
   unsigned N;
 
-  if (rank == MASTER) {
+   if (rank == MASTER) {
     if (arg.size() < 3) {
       std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE [-c TEAMSIZE]" << std::endl;
-      //exit(1);
+      // exit(1);
       // XXX: Remove
       std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
 

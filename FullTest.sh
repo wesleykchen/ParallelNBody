@@ -1,8 +1,8 @@
 #!/bin/bash
 
-mpirun -n 16 ./symmetric -c 4 data/oneD_source_1000 data/oneD_charge_1000
+mpirun -n 8 ./symmetric -c 2 data/oneD_source_1000 data/oneD_charge_1000
 
-mpirun -n 16 ./teamscatter -c 4 data/oneD_source_1000 data/oneD_charge_1000
+mpirun -n 8 ./teamscatter -c 2 data/oneD_source_1000 data/oneD_charge_1000
 
 ./serial data/oneD_source_1000 data/oneD_charge_1000
 
