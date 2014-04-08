@@ -2,7 +2,7 @@
 
 // Scatter version of the n-body algorithm
 
-#include "kernel/Laplace.kern"
+#include "kernel/NonParaBayesian.kern"
 #include "meta/kernel_traits.hpp"
 
 int main(int argc, char** argv)
@@ -27,8 +27,8 @@ int main(int argc, char** argv)
   // Scratch status for MPI
   MPI_Status status;
 
-  typedef LaplacePotential kernel_type;
-  kernel_type K;
+  typedef NonParaBayesian kernel_type;
+  kernel_type K(1,1);
 
   // Define source_type, target_type, charge_type, result_type
   typedef kernel_type::source_type source_type;

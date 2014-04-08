@@ -30,8 +30,8 @@ int main(int argc, char** argv)
   }
 
   // Create a Kernel
-  typedef LaplacePotential kernel_type;
-  kernel_type K;
+  typedef NonParaBayesian kernel_type;
+  kernel_type K(1,1);
 
   // Define source_type, target_type, charge_type, result_type
   typedef kernel_type::source_type source_type;
