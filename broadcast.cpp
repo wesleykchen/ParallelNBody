@@ -1,6 +1,6 @@
 #include "Util.hpp"
 
-#include "kernel/Laplace.kern"
+#include "kernel/NonParaBayesian.kern"
 #include "meta/kernel_traits.hpp"
 
 #include <type_traits>
@@ -20,15 +20,22 @@ int main(int argc, char** argv)
 {
   bool checkErrors = true;
 
-  // Parse optional command line args
-  std::vector<std::string> arg(argv, argv + argc);
+  // Parse optional command line arguments
   for (unsigned i = 1; i < arg.size(); ++i) {
     if (arg[i] == "-nocheck") {
       checkErrors = false;
-      arg.erase(arg.begin() + i);  // Erase this arg
-      --i;                         // Reset index
+      arg.erase(arg.begin() + i, arg.begin() + i + 1);  // Erase this arg
+      --i;                                              // Reset index
+    }
+
+    if (arg.size() != 2) {
+      std::cerr << "Usage: " << arg[0] << " NUMPOINTS [-nocheck]" << std::endl;
+      exit(1);
     }
   }
+
+  srand(time(NULL));
+  unsigned N = string_to_<int>(arg[1]);
 
   MPI_Init(&argc, &argv);
   int rank;
@@ -37,7 +44,7 @@ int main(int argc, char** argv)
   MPI_Comm_size(MPI_COMM_WORLD, &P);
 
   // Define the kernel
-  typedef LaplacePotential kernel_type;
+  typedef NonParaBayesian kernel_type;
   kernel_type K;
 
   // Define source_type, target_type, charge_type, result_type
@@ -52,30 +59,17 @@ int main(int argc, char** argv)
 
   std::vector<source_type> source;
   std::vector<charge_type> charge;
-  unsigned N;
 
   if (rank == MASTER) {
-    if (arg.size() < 3) {
-      std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
-      //exit(1);
-      // XXX: Remove
-      std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
+    // generate source data
+    for (unsigned i = 0; i < N; ++i)
+      source.push_back(meta::random<source_type>::get());
 
-      arg.resize(1);
-      arg.push_back(SOURCE_DATA);
-      arg.push_back(CHARGE_DATA);
-    }
+    // generate charge data
+    for (unsigned i = 0; i < N; ++i)
+      charge.push_back(meta::random<charge_type>::get());
 
-    // Read the data from SOURCE_FILE interpreted as source_types
-    std::ifstream source_file(arg[1]);
-    source_file >> source;
-
-    // Read the data from CHARGE_FILE interpreted as charge_types
-    std::ifstream charge_file(arg[2]);
-    charge_file >> charge;
-
-    assert(source.size() == charge.size());
-    N = charge.size();
+    // display metadata
     std::cout << "N = " << N << std::endl;
     std::cout << "P = " << P << std::endl;
   }

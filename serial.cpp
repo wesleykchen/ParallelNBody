@@ -1,6 +1,6 @@
 #include "Util.hpp"
 
-#include "kernel/Laplace.kern"
+#include "kernel/NonParaBayesian.kern"
 #include "meta/kernel_traits.hpp"
 
 // Serial version of n-body algorithm
@@ -8,30 +8,26 @@ int main(int argc, char** argv)
 {
   bool checkErrors = true;
 
-  // Parse optional command line args
-  std::vector<std::string> arg(argv, argv + argc);
+  // Parse optional command line arguments
   for (unsigned i = 1; i < arg.size(); ++i) {
     if (arg[i] == "-nocheck") {
       checkErrors = false;
-      arg.erase(arg.begin() + i);  // Erase this arg
-      --i;                         // Reset index
+      arg.erase(arg.begin() + i, arg.begin() + i + 1);  // Erase this arg
+      --i;                                              // Reset index
+    }
+
+    if (arg.size() != 2) {
+      std::cerr << "Usage: " << arg[0] << " NUMPOINTS [-nocheck]" << std::endl;
+      exit(1);
     }
   }
 
-  if (arg.size() < 3) {
-    std::cerr << "Usage: " << arg[0] << " SOURCE_FILE CHARGE_FILE" << std::endl;
-    //exit(1);
-    // XXX: Remove
-    std::cerr << "Using default " << SOURCE_DATA << " " << CHARGE_DATA << std::endl;
-
-    arg.resize(1);
-    arg.push_back(SOURCE_DATA);
-    arg.push_back(CHARGE_DATA);
-  }
+  srand(time(NULL));
+  unsigned N = string_to_<int>(arg[1]);
 
   // Create a Kernel
-  typedef LaplacePotential kernel_type;
-  kernel_type K;
+  typedef NonParaBayesian kernel_type;
+  kernel_type K(1,1);
 
   // Define source_type, target_type, charge_type, result_type
   typedef kernel_type::source_type source_type;
@@ -46,17 +42,15 @@ int main(int argc, char** argv)
   std::vector<source_type> source;
   std::vector<charge_type> charge;
 
-  // Read the data from SOURCE_FILE interpreted as Points
-  std::ifstream source_file(arg[1]);
-  source_file >> source;
+  // generate source data
+  for (unsigned i = 0; i < N; ++i)
+    source.push_back(meta::random<source_type>::get());
 
-  // Read the data from CHARGE_FILE interpreted as doubles
-  std::ifstream charge_file(arg[2]);
-  charge_file >> charge;
+  // generate charge data
+  for (unsigned i = 0; i < N; ++i)
+    charge.push_back(meta::random<charge_type>::get());
 
-  // Make sure this makes sense and get metadata
-  assert(source.size() == charge.size());
-  unsigned N = charge.size();
+  // Display metadata
   std::cout << "N = " << N << std::endl;
 
   // Compute the matvec

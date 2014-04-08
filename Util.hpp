@@ -165,8 +165,4 @@ void print_error(const std::vector<result_type>& exact,
   std::cout << "Maximum relative error: " << max_ind_rel_err << std::endl;
 }
 
-// Problem specific -- XXX: NOT NEEDED
-#define NUMPOINTS 1024
-#define SOURCE_DATA "data/sourceDataSmall.txt"
-#define CHARGE_DATA "data/chargeDataSmall.txt"
 #define MASTER 0
