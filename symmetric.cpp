@@ -5,7 +5,7 @@
 
 #include "kernel/NonParaBayesian.kern"
 #include "meta/kernel_traits.hpp"
-
+#include "meta/random.hpp"
 
 typedef std::tuple<int,int>      xy_pair;
 typedef std::tuple<int,int,int>  itc_tuple;
@@ -86,13 +86,13 @@ int main(int argc, char** argv)
     }
   }
 
-  if (arg.size() != 2) {
+  if (arg.size() < 2) {
     std::cerr << "Usage: " << arg[0] << " NUMPOINTS [-c TEAMSIZE] [-nocheck]" << std::endl;
     exit(1);
   }
 
   srand(time(NULL));
-  unsigned N = string_to_<int>(arg[3]);
+  unsigned N = string_to_<int>(arg[1]);
 
   MPI_Init(&argc, &argv);
   int rank;
