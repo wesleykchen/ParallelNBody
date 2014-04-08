@@ -1,6 +1,6 @@
 #include "Util.hpp"
 
-#include "kernel/Laplace.kern"
+#include "kernel/NonParaBayesian.kern"
 #include "meta/kernel_traits.hpp"
 
 // Team Scatter version of the n-body algorithm
