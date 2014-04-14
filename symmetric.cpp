@@ -9,7 +9,7 @@
 #include "meta/kernel_traits.hpp"
 #include "meta/random.hpp"
 
-typedef std::tuple<int,int>      mn_pair;
+typedef std::tuple<int,int>      nm_pair;
 typedef std::tuple<int,int,int>  itc_tuple;
 typedef std::tuple<int,int>      ir_pair;
 
@@ -18,18 +18,18 @@ struct IndexTransformer {
       : T(num_teams), C(team_size) {
   }
 
-  /** Convert from iteration/team/member (i,t,c) to 2D diagonal block index (m,n) */
-  mn_pair itc2mn(int i, int t, int c) const {
-    int m = t;
-    int n = i * C + c;
-    return mn_pair(m, n);
+  /** Convert from iteration/team/member (i,t,c) to 2D diagonal block index (n,m) */
+  nm_pair itc2nm(int i, int t, int c) const {
+    int n = t;
+    int m = i * C + c;
+    return nm_pair(n, m);
   }
 
-  /** Convert from 2D diagonal block index (m,n) to iteration/team/member (i,t,c) */
-  itc_tuple mn2itc(int m, int n) const {
-    int i = n / C;
-    int t = m;
-    int c = n % C;
+  /** Convert from 2D diagonal block index (n,m) to iteration/team/member (i,t,c) */
+  itc_tuple nm2itc(int m, int n) const {
+    int i = m / C;
+    int t = n;
+    int c = m % C;
     return itc_tuple(i,t,c);
   }
 
@@ -43,14 +43,14 @@ struct IndexTransformer {
     return ir_pair(std::get<0>(itc), tc2r(std::get<1>(itc), std::get<2>(itc)));
   }
 
-  mn_pair ir2mn(int i, int r) const {
+  nm_pair ir2nm(int i, int r) const {
     int t = r / C;
     int c = r % C;
-    return itc2mn(i,t,c);
+    return itc2nm(i,t,c);
   }
 
-  mn_pair ir2mn(const ir_pair& ir) const {
-    return ir2mn(std::get<0>(ir), std::get<1>(ir));
+  nm_pair ir2nm(const ir_pair& ir) const {
+    return ir2nm(std::get<0>(ir), std::get<1>(ir));
   }
 
  private:
@@ -248,13 +248,13 @@ int main(int argc, char** argv)
 
   } else {
 
-    // Get current block's mn-index
-    mn_pair mn = transformer.itc2mn(curr_iter, team, trank);
+    // Get current block's nm-index
+    nm_pair nm = transformer.itc2nm(curr_iter, team, trank);
 
-    // Convert the mn to the transpose
-    mn_pair mn_trans = mn_pair((std::get<0>(mn) + std::get<1>(mn)) % num_taems, num_teams - std::get<1>(mn))
+    // Convert the nm to the transpose
+    nm_pair nm_trans = nm_pair((std::get<0>(nm) + std::get<1>(nm)) % num_taems, num_teams - std::get<1>(nm))
 
-    itc_tuple itc_trans = transformer.mn2itc(std::get<0>(mn_trans), std::get<1>(mn_trans));    
+    itc_tuple itc_trans = transformer.nm2itc(std::get<0>(nm_trans), std::get<1>(nm_trans));    
 
     // calculate needs of sending to transpose
     if (std::get<0>(itc_trans) > curr_iter) {
@@ -306,13 +306,13 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Get current block's mn-index
-    mn_pair mn = transformer.itc2mn(curr_iter, team, trank);
+    // Get current block's nm-index
+    nm_pair nm = transformer.itc2nm(curr_iter, team, trank);
 
-    // Convert the mn to the transpose
-    mn_pair mn_trans = mn_pair((std::get<0>(mn) + std::get<1>(mn)) % num_taems, num_teams - std::get<1>(mn))
+    // Convert the nm to the transpose
+    nm_pair nm_trans = nm_pair((std::get<0>(nm) + std::get<1>(nm)) % num_taems, num_teams - std::get<1>(nm))
 
-    itc_tuple itc_trans = transformer.mn2itc(std::get<0>(mn_trans), std::get<1>(mn_trans));    
+    itc_tuple itc_trans = transformer.nm2itc(std::get<0>(nm_trans), std::get<1>(nm_trans));    
 
     // calculate needs of sending to transpose
     if (std::get<0>(itc_trans) > curr_iter) {
