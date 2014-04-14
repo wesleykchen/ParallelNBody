@@ -284,10 +284,10 @@ int main(int argc, char** argv)
     }
   }
 
-  int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy((T / C - curr_iter) % (T / C))));
+  int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy(xy_pair((T / C - curr_iter) % (T / C), rank))));
   int recv_dest = transofrmer.tc2r(std::get<1>(itc_trans), std::get<2>(itc_trans));
-  // If not last iteration, receive from destination
   
+  // Receive
   MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
            recv_dest, 0,
            MPI_COMM_WORLD, &status);
@@ -324,37 +324,50 @@ int main(int argc, char** argv)
 
     itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
 
-    // calculate needs of sending to transpose
-    if (std::get<0>(itc_trans) > curr_iter) {
-      // Set rJ to zero
+    // compute own block if last iteration regardless
+    if (curr_iter != last_iter - 1) {
+
+      // Set rJ to zero though unused at this iteration
       rJ.assign(rJ.size(), result_type());
 
       // Compute
       p2p(K,
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
+      
+    } else {
+      // calculate needs of sending to transpose and computing
+      if (std::get<0>(itc_trans) > curr_iter) {
+        // Set rJ to zero
+        rJ.assign(rJ.size(), result_type());
 
-      int send_dest = tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
+        // Compute
+        p2p(K,
+            xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+            xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-      // Send to proper rank
-      commTimer.start();
-        MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
-                send_dest, 0,
-                MPI_COMM_WORLD, &request);
-      totalCommTime += commTimer.elapsed();
+        int send_dest = tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
+
+        // Send to proper rank
+        commTimer.start();
+          MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
+                  send_dest, 0,
+                  MPI_COMM_WORLD, &request);
+        totalCommTime += commTimer.elapsed();
+      }
+
+      int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy(xy_pair((T / C - curr_iter) % (T / C), rank))));
+      int recv_dest = transofrmer.tc2r(std::get<1>(itc_trans), std::get<2>(itc_trans));
+      // If not last iteration, receive from destination
+      
+      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+               recv_dest, 0,
+               MPI_COMM_WORLD, &status);
+      // Accumulate to current answer
+      for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+        *r += *tr;
     }
-    
-    int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy((T / C - curr_iter) % (T / C))));
-    int recv_dest = transofrmer.tc2r(std::get<1>(itc_trans), std::get<2>(itc_trans));
-    // If not last iteration, receive from destination
-    
-    MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
-             recv_dest, 0,
-             MPI_COMM_WORLD, &status);
-    // Accumulate to current answer
-    for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
-      *r += *tr;
-    
+      
   }  //  end for iteration
 
   // Reduce answers to the team leader
