@@ -9,7 +9,7 @@
 #include "meta/kernel_traits.hpp"
 #include "meta/random.hpp"
 
-typedef std::tuple<int,int>      nm_pair;
+typedef std::tuple<int,int>      xy_pair;
 typedef std::tuple<int,int,int>  itc_tuple;
 typedef std::tuple<int,int>      ir_pair;
 
@@ -18,18 +18,25 @@ struct IndexTransformer {
       : T(num_teams), C(team_size) {
   }
 
-  /** Convert from iteration/team/member (i,t,c) to 2D diagonal block index (n,m) */
-  nm_pair itc2nm(int i, int t, int c) const {
-    int n = t;
-    int m = i * C + c;
-    return nm_pair(n, m);
+  /** Convert from iteration/team/member (i,t,c) to 2D block index (X,Y) */
+  xy_pair itc2xy(int i, int t, int c) const {
+    int X = t;
+    int Y = (t + c + i * C) % T;
+    return xy_pair(X, Y);
   }
 
-  /** Convert from 2D diagonal block index (n,m) to iteration/team/member (i,t,c) */
-  itc_tuple nm2itc(int m, int n) const {
-    int i = m / C;
-    int t = n;
-    int c = m % C;
+  /** Transpose in XY */
+  xy_pair xyTranspose(xy_pair xy) const {
+    return xy_pair xyTrans(std::get<1>(xy),std::get<0>(xy));
+  }
+
+  /** Convert from 2D block index (X,Y) to iteration/team/member (i,t,c) */
+  itc_tuple xy2itc(int X, int Y) const {
+    int t = X;
+    int intermediate = (Y - X + T) % T;
+    // fix from zero
+    int c = (intermediate + C) % C;
+    int i = intermediate / C;
     return itc_tuple(i,t,c);
   }
 
@@ -43,14 +50,14 @@ struct IndexTransformer {
     return ir_pair(std::get<0>(itc), tc2r(std::get<1>(itc), std::get<2>(itc)));
   }
 
-  nm_pair ir2nm(int i, int r) const {
+  xy_pair ir2xy(int i, int r) const {
     int t = r / C;
     int c = r % C;
-    return itc2nm(i,t,c);
+    return itc2xy(i,t,c);
   }
 
-  nm_pair ir2nm(const ir_pair& ir) const {
-    return ir2nm(std::get<0>(ir), std::get<1>(ir));
+  xy_pair ir2xy(const ir_pair& ir) const {
+    return ir2xy(std::get<0>(ir), std::get<1>(ir));
   }
 
  private:
@@ -248,13 +255,13 @@ int main(int argc, char** argv)
 
   } else {
 
-    // Get current block's nm-index
-    nm_pair nm = transformer.itc2nm(curr_iter, team, trank);
+    // Get current block's xy-index
+    xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
 
-    // Convert the nm to the transpose
-    nm_pair nm_trans = nm_pair((std::get<0>(nm) + std::get<1>(nm)) % num_taems, num_teams - std::get<1>(nm))
+    // Convert the xy to the transpose
+    xy_pair xy_trans = transformer.xyTranspose(xy);
 
-    itc_tuple itc_trans = transformer.nm2itc(std::get<0>(nm_trans), std::get<1>(nm_trans));    
+    itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
 
     // calculate needs of sending to transpose
     if (std::get<0>(itc_trans) > curr_iter) {
@@ -266,20 +273,23 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
 
+      int send_dest = tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
+
       // Send to proper rank
       commTimer.start();
         MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
-                tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)), 0,
+                send_dest, 0,
                 MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
     }
   }
 
+  int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy((T / C - curr_iter) % (T / C))));
+  int recv_dest = transofrmer.tc2r(std::get<1>(itc_trans), std::get<2>(itc_trans));
   // If not last iteration, receive from destination
-  // COMPUTE
   
   MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
-           std::get<1>(iter_rank_deque.front()), 0,
+           recv_dest, 0,
            MPI_COMM_WORLD, &status);
   // Accumulate to current answer
   for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
@@ -306,13 +316,13 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Get current block's nm-index
-    nm_pair nm = transformer.itc2nm(curr_iter, team, trank);
+    // Get current block's xy-index
+    xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
 
-    // Convert the nm to the transpose
-    nm_pair nm_trans = nm_pair((std::get<0>(nm) + std::get<1>(nm)) % num_taems, num_teams - std::get<1>(nm))
+    // Convert the xy to the transpose
+    xy_pair xy_trans = transformer.xyTranpose(xy);
 
-    itc_tuple itc_trans = transformer.nm2itc(std::get<0>(nm_trans), std::get<1>(nm_trans));    
+    itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
 
     // calculate needs of sending to transpose
     if (std::get<0>(itc_trans) > curr_iter) {
@@ -324,20 +334,24 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
 
+      int send_dest = tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
+
       // Send to proper rank
       commTimer.start();
         MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
-                tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)), 0,
+                send_dest, 0,
                 MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
     }
-
-    // TODO edit in here
-    // Recv from symmetric
+    
+    int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy((T / C - curr_iter) % (T / C))));
+    int recv_dest = transofrmer.tc2r(std::get<1>(itc_trans), std::get<2>(itc_trans));
+    // If not last iteration, receive from destination
+    
     MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
-             std::get<1>(iter_rank_deque.front()), 0,
+             recv_dest, 0,
              MPI_COMM_WORLD, &status);
-    // Accumulate
+    // Accumulate to current answer
     for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
       *r += *tr;
     
