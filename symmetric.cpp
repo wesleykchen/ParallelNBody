@@ -1,5 +1,7 @@
+
+// Symmetric Team Scatter version of the n-body algorithm
+
 #include <tuple>
-#include <deque>
 
 #include "Util.hpp"
 
@@ -7,7 +9,7 @@
 #include "meta/kernel_traits.hpp"
 #include "meta/random.hpp"
 
-typedef std::tuple<int,int>      xy_pair;
+typedef std::tuple<int,int>      mn_pair;
 typedef std::tuple<int,int,int>  itc_tuple;
 typedef std::tuple<int,int>      ir_pair;
 
@@ -16,20 +18,18 @@ struct IndexTransformer {
       : T(num_teams), C(team_size) {
   }
 
-  /** Convert from iteration/team/member (i,t,c) to 2D block index (X,Y) */
-  xy_pair itc2xy(int i, int t, int c) const {
-    int X = t;
-    int Y = (t + c + i * C) % T;
-    return xy_pair(X, Y);
+  /** Convert from iteration/team/member (i,t,c) to 2D diagonal block index (m,n) */
+  mn_pair itc2mn(int i, int t, int c) const {
+    int m = t;
+    int n = i * C + c;
+    return mn_pair(m, n);
   }
 
-  /** Convert from 2D block index (X,Y) to iteration/team/member (i,t,c) */
-  itc_tuple xy2itc(int X, int Y) const {
-    int t = X;
-    int intermediate = (Y - X + T) % T;
-    // fix from zero
-    int c = (intermediate + C) % C;
-    int i = intermediate / C;
+  /** Convert from 2D diagonal block index (m,n) to iteration/team/member (i,t,c) */
+  itc_tuple mn2itc(int m, int n) const {
+    int i = n / C;
+    int t = m;
+    int c = n % C;
     return itc_tuple(i,t,c);
   }
 
@@ -43,23 +43,20 @@ struct IndexTransformer {
     return ir_pair(std::get<0>(itc), tc2r(std::get<1>(itc), std::get<2>(itc)));
   }
 
-  xy_pair ir2xy(int i, int r) const {
+  mn_pair ir2mn(int i, int r) const {
     int t = r / C;
     int c = r % C;
-    return itc2xy(i,t,c);
+    return itc2mn(i,t,c);
   }
 
-  xy_pair ir2xy(const ir_pair& ir) const {
-    return ir2xy(std::get<0>(ir), std::get<1>(ir));
+  mn_pair ir2mn(const ir_pair& ir) const {
+    return ir2mn(std::get<0>(ir), std::get<1>(ir));
   }
 
  private:
   int T;   // The number of process teams in the computation
   int C;   // The size of the process teams in the computation
 };
-
-
-// Symmetric Team Scatter version of the n-body algorithm
 
 int main(int argc, char** argv)
 {
@@ -188,29 +185,6 @@ int main(int argc, char** argv)
   // Create transformer to help us convert between block idx and proc index
   IndexTransformer transformer(num_teams, teamsize);
 
-
-
-  // TODO: Remove, just for proof of concept and testing
-
-  // Compute the rank and iteration of the our symmetric blocks
-  std::vector<ir_pair> iter_rank_trans;
-
-  for (unsigned iter = 0; iter < idiv_up(num_teams, teamsize); ++iter) {
-    // Get our future block coordinates
-    xy_pair xy = transformer.itc2xy(iter, team, trank);
-    // Get the ITC of the process responsible for the symmtric block
-    itc_tuple itc = transformer.xy2itc(std::get<1>(xy), std::get<0>(xy));
-    // Convert ITC to IR
-    iter_rank_trans.push_back(transformer.itc2ir(itc));
-  }
-
-  // Copy and sort by iteration
-  std::deque<ir_pair> iter_rank_deque(iter_rank_trans.begin(), iter_rank_trans.end());
-  // Just for now... make sure this is sorted by iteration
-  // TODO: Avoid this sort by computing them in the right order?
-  std::sort(iter_rank_deque.begin(), iter_rank_deque.end());
-
-
   /********************/
   /** INITIALIZATION **/
   /********************/
@@ -269,15 +243,21 @@ int main(int argc, char** argv)
   int curr_iter = 0;
 
   if (trank == MASTER) {
-    // If this is the team leader, compute the symmetric diagonal block
+    // first iteration masters are computing the symmetric diagonal
     p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
 
-    // The front of the list should be this process
-    assert(iter_rank_deque.front() == ir_pair(curr_iter, rank));
-    iter_rank_deque.pop_front();
   } else {
-    // Compute and send if this IR < transpose IR
-    if (std::tie(curr_iter, rank) < iter_rank_trans[curr_iter]) {
+
+    // Get current block's mn-index
+    mn_pair mn = transformer.itc2mn(curr_iter, team, trank);
+
+    // Convert the mn to the transpose
+    mn_pair mn_trans = mn_pair((std::get<0>(mn) + std::get<1>(mn)) % num_taems, num_teams - std::get<1>(mn))
+
+    itc_tuple itc_trans = transformer.mn2itc(std::get<0>(mn_trans), std::get<1>(mn_trans));    
+
+    // calculate needs of sending to transpose
+    if (std::get<0>(itc_trans) > curr_iter) {
       // Set rJ to zero
       rJ.assign(rJ.size(), result_type());
 
@@ -286,41 +266,24 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-      // Send
+      // Send to proper rank
       commTimer.start();
-      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
-                std::get<1>(iter_rank_trans[curr_iter]), 0,
+        MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
+                tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)), 0,
                 MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
-
-      // Find and remove from receive list  YUCK HACK
-      // Get our block coordinates
-      xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
-      // Get the ITC of the process responsible for the symmtric block
-      itc_tuple itc = transformer.xy2itc(std::get<1>(xy), std::get<0>(xy));
-      // Convert ITC to IR
-      ir_pair ir = transformer.itc2ir(itc);
-      // Remove -- YUCK!
-      auto it = std::find(iter_rank_deque.begin(), iter_rank_deque.end(), ir);
-      assert(it != iter_rank_deque.end());
-      iter_rank_deque.erase(it);
-      assert(std::is_sorted(iter_rank_deque.begin(), iter_rank_deque.end()));
     }
   }
 
-  // Receive all symmetric blocks computed at this iteration
-  while (!iter_rank_deque.empty()
-         && std::get<0>(iter_rank_deque.front()) == curr_iter) {
-    // Recv
-    MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
-             std::get<1>(iter_rank_deque.front()), 0,
-             MPI_COMM_WORLD, &status);
-    // Accumulate
-    for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
-      *r += *tr;
-    // Pop
-    iter_rank_deque.pop_front();
-  }
+  // If not last iteration, receive from destination
+  // COMPUTE
+  
+  MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+           std::get<1>(iter_rank_deque.front()), 0,
+           MPI_COMM_WORLD, &status);
+  // Accumulate to current answer
+  for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+    *r += *tr;
 
   /********************/
   /** ALL ITERATIONS **/
@@ -343,9 +306,16 @@ int main(int argc, char** argv)
                          row_comm, &status);
     totalCommTime += commTimer.elapsed();
 
-    // Compute and send if this IR < transpose IR
-    assert(std::tie(curr_iter, rank) != iter_rank_trans[curr_iter]);
-    if (std::tie(curr_iter, rank) < iter_rank_trans[curr_iter]) {
+    // Get current block's mn-index
+    mn_pair mn = transformer.itc2mn(curr_iter, team, trank);
+
+    // Convert the mn to the transpose
+    mn_pair mn_trans = mn_pair((std::get<0>(mn) + std::get<1>(mn)) % num_taems, num_teams - std::get<1>(mn))
+
+    itc_tuple itc_trans = transformer.mn2itc(std::get<0>(mn_trans), std::get<1>(mn_trans));    
+
+    // calculate needs of sending to transpose
+    if (std::get<0>(itc_trans) > curr_iter) {
       // Set rJ to zero
       rJ.assign(rJ.size(), result_type());
 
@@ -354,47 +324,28 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-      // Send
+      // Send to proper rank
       commTimer.start();
-      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
-                std::get<1>(iter_rank_trans[curr_iter]), 0,
+        MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
+                tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)), 0,
                 MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
-
-      // Find and remove from receive list  YUCK HACK
-      // Get our block coordinates
-      xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
-      // Get the ITC of the process responsible for the symmtric block
-      itc_tuple itc = transformer.xy2itc(std::get<1>(xy), std::get<0>(xy));
-      // Convert ITC to IR
-      ir_pair ir = transformer.itc2ir(itc);
-      // Remove -- YUCK!
-      auto it = std::find(iter_rank_deque.begin(), iter_rank_deque.end(), ir);
-      assert(it != iter_rank_deque.end());
-      iter_rank_deque.erase(it);
-      assert(std::is_sorted(iter_rank_deque.begin(), iter_rank_deque.end()));
     }
 
-    // Receive all symmetric blocks computed at this iteration
-    while (!iter_rank_deque.empty()
-           && std::get<0>(iter_rank_deque.front()) == curr_iter) {
-      // Recv
-      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
-               std::get<1>(iter_rank_deque.front()), 0,
-               MPI_COMM_WORLD, &status);
-      // Accumulate
-      for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
-        *r += *tr;
-      // Pop
-      iter_rank_deque.pop_front();
-    }
+    // TODO edit in here
+    // Recv from symmetric
+    MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+             std::get<1>(iter_rank_deque.front()), 0,
+             MPI_COMM_WORLD, &status);
+    // Accumulate
+    for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+      *r += *tr;
+    
   }  //  end for iteration
-
-  // Make sure all the blocks are accounted for
-  assert(iter_rank_deque.empty());
 
   // Reduce answers to the team leader
   commTimer.start();
+
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
