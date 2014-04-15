@@ -141,7 +141,9 @@ int main(int argc, char** argv)
 
   Clock timer;
   Clock commTimer;
+  Clock compTimer;
   double totalCommTime = 0;
+  double totalCompTime = 0;
 
   timer.start();
 
@@ -253,7 +255,9 @@ int main(int argc, char** argv)
 
   if (trank == MASTER) {
     // first iteration masters are computing the symmetric diagonal
+    compTimer.start();
     p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
+    totalCompTime += compTimer.elapsed();
 
   } else {
 
@@ -271,9 +275,11 @@ int main(int argc, char** argv)
       rJ.assign(rJ.size(), result_type());
 
       // Compute
+      compTimer.start();
       p2p(K,
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
+      totalCompTime += compTimer.elapsed();
 
       int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
 
@@ -314,12 +320,9 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
   /** ALL ITERATIONS **/
   /********************/
 
-
-  //std::cout<<"First iteration done" << std::endl;
-
   for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
 
-    MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race?
+    MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race
 
     // Shift data to the next process to compute the next block
     commTimer.start();
@@ -350,10 +353,13 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
       rJ.assign(rJ.size(), result_type());
 
       // Compute
+      compTimer.start();
       p2p(K,
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
+      totalCompTime += compTimer.elapsed();
       
+
     } else {
       std::cout << "On iteration: " << curr_iter << std::endl;
       // calculate needs of sending to transpose and computing
@@ -364,9 +370,11 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
         rJ.assign(rJ.size(), result_type());
 
         // Compute
+        compTimer.start();
         p2p(K,
             xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
             xI.begin(), xI.end(), cI.begin(), rI.begin());
+        totalCompTime += compTimer.elapsed();
 
         int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
 
@@ -429,6 +437,7 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
+  printf("[%d] CompTimer: %e\n", rank, totalCompTime);
 
   // Check the result
   if (rank == MASTER && checkErrors) {

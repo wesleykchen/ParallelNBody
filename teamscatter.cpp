@@ -80,7 +80,9 @@ int main(int argc, char** argv)
 
   Clock timer;
   Clock commTimer;
+  Clock compTimer;
   double totalCommTime = 0;
+  double totalCompTime = 0;
 
   timer.start();
 
@@ -168,12 +170,16 @@ int main(int argc, char** argv)
 
   if (trank == MASTER) {
     // If this is the team leader, compute the symmetric diagonal block
+    compTimer.start();
     p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
+    totalCompTime += compTimer.elapsed();
   } else {
     // Else, compute the off-diagonal block
+    compTimer.start();
     p2p(K,
         xJ.begin(), xJ.end(), cJ.begin(),
         xI.begin(), xI.end(), rI.begin());
+    totalCompTime += compTimer.elapsed();
   }
 
   // Looping process to shift the data between the teams
@@ -196,9 +202,11 @@ int main(int argc, char** argv)
     // 2) Your team rank is one of the remainders
     if (shiftCount < ceilPC2-1
         || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
+      compTimer.start();
       p2p(K,
           xJ.begin(), xJ.end(), cJ.begin(),
           xI.begin(), xI.end(), rI.begin());
+      totalCompTime += compTimer.elapsed();
     }
   }
 
@@ -233,6 +241,7 @@ int main(int argc, char** argv)
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
+  printf("[%d] CompTimer: %e\n", rank, totalCompTime);
 
   // Check the result
   if (rank == MASTER && checkErrors) {
