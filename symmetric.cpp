@@ -27,7 +27,7 @@ struct IndexTransformer {
 
   /** Transpose in XY */
   xy_pair xyTranspose(xy_pair xy) const {
-    return xy_pair xyTrans(std::get<1>(xy),std::get<0>(xy));
+    return xy_pair(std::get<1>(xy),std::get<0>(xy));
   }
 
   /** Convert from 2D block index (X,Y) to iteration/team/member (i,t,c) */
@@ -249,6 +249,8 @@ int main(int argc, char** argv)
 
   int curr_iter = 0;
 
+  int last_iter = idiv_up(num_teams + 1, 2*teamsize);
+
   if (trank == MASTER) {
     // first iteration masters are computing the symmetric diagonal
     p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
@@ -264,7 +266,7 @@ int main(int argc, char** argv)
     itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
 
     // calculate needs of sending to transpose
-    if (std::get<0>(itc_trans) > curr_iter) {
+    if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
       // Set rJ to zero
       rJ.assign(rJ.size(), result_type());
 
@@ -273,8 +275,10 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-      int send_dest = tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
+      int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
 
+
+std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
       // Send to proper rank
       commTimer.start();
         MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
@@ -284,24 +288,37 @@ int main(int argc, char** argv)
     }
   }
 
-  int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy(xy_pair((T / C - curr_iter) % (T / C), rank))));
-  int recv_dest = transofrmer.tc2r(std::get<1>(itc_trans), std::get<2>(itc_trans));
-  
-  // Receive
-  MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
-           recv_dest, 0,
-           MPI_COMM_WORLD, &status);
-  // Accumulate to current answer
-  for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
-    *r += *tr;
+  //MPI_Barrier(MPI_COMM_WORLD); 
+  if (trank != MASTER) {
 
+    xy_pair recv_dest_xy = transformer.xyTranspose(transformer.ir2xy(xy_pair(num_teams/teamsize - curr_iter - 1, rank)));
+
+    itc_tuple recv_dest_itc = transformer.xy2itc(std::get<0>(recv_dest_xy),std::get<1>(recv_dest_xy));
+    int recv_dest = transformer.tc2r(std::get<1>(recv_dest_itc), std::get<2>(recv_dest_itc));
+
+    if (num_teams / teamsize - curr_iter - 1 != last_iter - 1) {
+
+      std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
+
+      // Receive
+      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+               recv_dest, 0,
+               MPI_COMM_WORLD, &status);
+      // Accumulate to current answer
+
+      for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+        *r += *tr;
+    }
+  }
   /********************/
   /** ALL ITERATIONS **/
   /********************/
 
-  int last_iter = idiv_up(num_teams + 1, 2*teamsize);
+
+  //std::cout<<"First iteration done" << std::endl;
 
   for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
+
     MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race?
 
     // Shift data to the next process to compute the next block
@@ -320,12 +337,14 @@ int main(int argc, char** argv)
     xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
 
     // Convert the xy to the transpose
-    xy_pair xy_trans = transformer.xyTranpose(xy);
+    xy_pair xy_trans = transformer.xyTranspose(xy);
 
     itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
 
     // compute own block if last iteration regardless
-    if (curr_iter != last_iter - 1) {
+    if (curr_iter == last_iter - 1) {
+
+      std::cout << "On iteration: " << last_iter - 1 << std::endl;
 
       // Set rJ to zero though unused at this iteration
       rJ.assign(rJ.size(), result_type());
@@ -336,8 +355,11 @@ int main(int argc, char** argv)
           xI.begin(), xI.end(), cI.begin(), rI.begin());
       
     } else {
+      std::cout << "On iteration: " << curr_iter << std::endl;
       // calculate needs of sending to transpose and computing
-      if (std::get<0>(itc_trans) > curr_iter) {
+
+      if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
+
         // Set rJ to zero
         rJ.assign(rJ.size(), result_type());
 
@@ -346,7 +368,9 @@ int main(int argc, char** argv)
             xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
             xI.begin(), xI.end(), cI.begin(), rI.begin());
 
-        int send_dest = tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
+        int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
+
+        std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
 
         // Send to proper rank
         commTimer.start();
@@ -356,16 +380,24 @@ int main(int argc, char** argv)
         totalCommTime += commTimer.elapsed();
       }
 
-      int recv_dest_itc= transformer.xy2itc(transformer.xyTranpose(transformer.ir2xy(xy_pair((T / C - curr_iter) % (T / C), rank))));
-      int recv_dest = transofrmer.tc2r(std::get<1>(itc_trans), std::get<2>(itc_trans));
-      // If not last iteration, receive from destination
-      
-      MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
-               recv_dest, 0,
-               MPI_COMM_WORLD, &status);
-      // Accumulate to current answer
-      for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
-        *r += *tr;
+
+      int iPrimeOffset = ((trank == 0) ? 0 : 1);
+      xy_pair recv_dest_xy = transformer.xyTranspose(transformer.ir2xy(xy_pair(num_teams/teamsize - curr_iter - iPrimeOffset, rank)));
+
+      itc_tuple recv_dest_itc = transformer.xy2itc(std::get<0>(recv_dest_xy),std::get<1>(recv_dest_xy));
+      int recv_dest = transformer.tc2r(std::get<1>(recv_dest_itc), std::get<2>(recv_dest_itc));
+
+      if (num_teams/teamsize - curr_iter - iPrimeOffset != last_iter - 1) {
+
+        std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
+        // Receive
+        MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
+                 recv_dest, 0,
+                 MPI_COMM_WORLD, &status);
+        // Accumulate to current answer
+        for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
+          *r += *tr;
+      }
     }
       
   }  //  end for iteration
