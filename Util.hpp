@@ -16,6 +16,7 @@
 #include <iterator>
 #include <numeric>
 #include <algorithm>
+#include <chrono>
 
 #include <mpi.h>
 
@@ -33,36 +34,30 @@ inline unsigned idiv_up(unsigned a, unsigned b) {
 
 /** Clock class, useful when timing code.
  */
-struct Clock {
-  /** Construct a Clock and start timing. */
-  Clock() {
-    start();
+class Clock {
+ public:
+  typedef std::chrono::high_resolution_clock clock;
+  typedef typename clock::time_point         time_point;
+  typedef typename clock::duration           duration_type;
+  typedef typename duration_type::rep        tick_type;
+
+  // Default constructor
+  Clock() : starttime_(clock::now()) {}
+  // Restart the timer on this Clock
+  void start() {
+    starttime_ = clock::now();
   }
-  /** Start the clock. */
-  inline void start() {
-    time_ = now();
+  // Get the duration on this Clock
+  duration_type duration() const {
+    return clock::now() - starttime_;
   }
-  /** Return the seconds elapsed since the last start. */
-  inline double elapsed() const {
-    return sec_diff(time_, now());
-  }
-  /** Return the seconds difference between two Clocks */
-  inline double operator-(const Clock& clock) const {
-    return sec_diff(time_, clock.time_);
+  // Get the seconds on this Clock
+  double elapsed() const {
+    typedef std::chrono::duration<double> units;
+    return std::chrono::duration_cast<units>(duration()).count();
   }
  private:
-  timeval time_;
-  inline static timeval now() {
-    timeval tv;
-    gettimeofday(&tv, 0);
-    return tv;
-  }
-  // Return the time difference (t2 - t1) in seconds
-  inline static double sec_diff(const timeval& t1, const timeval& t2) {
-    timeval dt;
-    timersub(&t2, &t1, &dt);
-    return dt.tv_sec + 1e-6 * dt.tv_usec;
-  }
+  time_point starttime_;
 };
 
 /** Read a line from @a s, parse it as type T, and store it in @a value.

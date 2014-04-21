@@ -131,7 +131,8 @@ int main(int argc, char** argv)
 
     std::vector<result_type> exact(N);
 
-    compTimer.starT();
+    Clock compTimer;
+    compTimer.start();
     // Compute the result with a direct matrix-vector multiplication
     p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
     double directCompTime = compTimer.elapsed();
