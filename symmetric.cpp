@@ -142,6 +142,7 @@ int main(int argc, char** argv)
   Clock timer;
   Clock commTimer;
   Clock compTimer;
+
   double totalCommTime = 0;
   double totalCompTime = 0;
 
@@ -434,10 +435,13 @@ int main(int argc, char** argv)
 
     std::vector<result_type> exact(N);
 
+    compTimer.start();
     // Compute the result with a direct matrix-vector multiplication
     p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+    double directCompTime = compTime.elapsed();
 
     print_error(exact, result);
+    std::cout << "DirectCompTime: " << directCompTime << std::endl;
 
     std::ofstream exact_file("data/exact.txt");
     exact_file << exact << std::endl;
