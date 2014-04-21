@@ -273,7 +273,7 @@ int main(int argc, char** argv)
     // Set rJ to zero
     rJ.assign(rJ.size(), result_type());
 
-    // Compute
+    // Compute symmetric off-diagonal
     compTimer.start();
     p2p(K,
         xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
@@ -323,8 +323,6 @@ int main(int argc, char** argv)
 
   for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
 
-    MPI_Barrier(MPI_COMM_WORLD);  // To make sure it's not an rJ race
-
     // Shift data to the next process to compute the next block
     commTimer.start();
     int src = (team + teamsize + num_teams) % num_teams;
@@ -347,23 +345,18 @@ int main(int argc, char** argv)
 
     //std::cout << "On iteration: " << curr_iter << std::endl;
 
-    // Set rJ to zero
-    rJ.assign(rJ.size(), result_type());
-
-    // Compute
-    compTimer.start();
-    p2p(K,
-        xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-        xI.begin(), xI.end(), cI.begin(), rI.begin());
-    totalCompTime += compTimer.elapsed();
-
-        // no send/recv if last_iter - 1
-    if (curr_iter == last_iter - 1) {
-      break;
-    }
-
     // calculate needs of sending to transpose and computing
     if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
+
+      // Set rJ to zero
+      rJ.assign(rJ.size(), result_type());
+
+      // Compute symmetric off-diagonal
+      compTimer.start();
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
+      totalCompTime += compTimer.elapsed();
 
       int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
 
@@ -375,6 +368,17 @@ int main(int argc, char** argv)
                 send_dest, 0,
                 MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
+    } else {
+      // Set rJ to zero
+      rJ.assign(rJ.size(), result_type());
+
+      // Compute asymmetric off-diagonal
+      compTimer.start();
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(),
+          xI.begin(), xI.end(), rI.begin());
+      totalCompTime += compTimer.elapsed();
+
     }
 
 
