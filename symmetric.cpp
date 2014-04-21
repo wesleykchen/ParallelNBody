@@ -346,12 +346,6 @@ int main(int argc, char** argv)
 
     //std::cout << "On iteration: " << curr_iter << std::endl;
 
-    // no send/recv if last_iter - 1
-    if (curr_iter == last_iter - 1) {
-      break;
-    }
-    // calculate needs of sending to transpose and computing
-
     // Set rJ to zero
     rJ.assign(rJ.size(), result_type());
 
@@ -362,6 +356,12 @@ int main(int argc, char** argv)
         xI.begin(), xI.end(), cI.begin(), rI.begin());
     totalCompTime += compTimer.elapsed();
 
+        // no send/recv if last_iter - 1
+    if (curr_iter == last_iter - 1) {
+      break;
+    }
+
+    // calculate needs of sending to transpose and computing
     if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
 
       int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
