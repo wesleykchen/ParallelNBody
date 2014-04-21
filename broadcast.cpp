@@ -78,7 +78,9 @@ int main(int argc, char** argv)
 
   Clock timer;
   Clock commTimer;
+  Clock compTimer;
   double totalCommTime = 0;
+  double totalCompTime = 0;
 
   // Broadcast the size of the problem to all processes
   timer.start();
@@ -104,11 +106,13 @@ int main(int argc, char** argv)
   std::vector<result_type> rI(idiv_up(N,P));
 
   // Evaluate computation
+  compTimer.start();
   p2p(K,
       source.begin(), source.end(), charge.begin(),
       source.begin() + calcStart(rank,P,N),
       source.begin() + calcEnd(rank,P,N),
       rI.begin());
+  totalCompTime += compTimer.elapsed();
 
   // Collect results and display
   std::vector<result_type> result;
@@ -124,6 +128,7 @@ int main(int argc, char** argv)
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
+  printf("[%d] CompTimer: %e\n", rank, totalCompTime);
 
   // Check the result
   if (rank == MASTER && checkErrors) {
@@ -131,9 +136,8 @@ int main(int argc, char** argv)
 
     std::vector<result_type> exact(N);
 
-    Clock compTimer;
-    compTimer.start();
     // Compute the result with a direct matrix-vector multiplication
+    compTimer.start();
     p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
     double directCompTime = compTimer.elapsed();
 

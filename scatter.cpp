@@ -64,7 +64,9 @@ int main(int argc, char** argv)
 
   Clock timer;
   Clock commTimer;
+  Clock compTimer;
   double totalCommTime = 0;
+  double totalCompTime = 0;
   
   // Broadcast the size of the problem to all processes
   timer.start();
@@ -99,7 +101,9 @@ int main(int argc, char** argv)
   std::vector<result_type> rI(idiv_up(N,P));
 
   // Calculate the symmetric first block
+  compTimer.start();
   p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
+  totalCompTime += compTimer.elapsed();
 
   for (int shiftCount = 1; shiftCount < P; ++shiftCount) {
     commTimer.start();
@@ -115,9 +119,11 @@ int main(int argc, char** argv)
     totalCommTime += commTimer.elapsed();
 
     // Calculate the current block
+    compTimer.start();
     p2p(K,
         xJ.begin(), xJ.end(), cJ.begin(),
         xI.begin(), xI.end(), rI.begin());
+    totalCompTime += compTime.elapsed();
   }
 
   std::vector<result_type> result;
@@ -134,6 +140,7 @@ int main(int argc, char** argv)
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalCommTime);
+  printf("[%d] CompTimer: %e\n", rank, totalCompTime);
 
   // Check the result
   if (rank == MASTER && checkErrors) {
@@ -142,9 +149,13 @@ int main(int argc, char** argv)
     std::vector<result_type> exact(N);
 
     // Compute the result with a direct matrix-vector multiplication
+    compTimer.start();
     p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+    double directCompTime = compTimer.elapsed();
 
     print_error(exact, result);
+
+    std::cout << "DirectCompTime: " << directCompTime << std::endl;
   }
 
   if (rank == MASTER) {

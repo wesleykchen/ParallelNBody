@@ -71,9 +71,12 @@ int main(int argc, char** argv)
     std::vector<result_type> exact(N);
 
     // Compute the result with a direct matrix-vector multiplication
+    timer.start();
     p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+    double directCompTime = timer.elapsed();
 
     print_error(exact, result);
+    std::cout << "DirectCompTime: " << directCompTime << std::endl;
   }
 
   std::ofstream result_file("data/result.txt");
