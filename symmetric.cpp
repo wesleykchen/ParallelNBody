@@ -269,17 +269,18 @@ int main(int argc, char** argv)
 
     itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
 
+    // Set rJ to zero
+    rJ.assign(rJ.size(), result_type());
+
+    // Compute
+    compTimer.start();
+    p2p(K,
+        xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+        xI.begin(), xI.end(), cI.begin(), rI.begin());
+    totalCompTime += compTimer.elapsed();
+
     // calculate needs of sending to transpose
     if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
-      // Set rJ to zero
-      rJ.assign(rJ.size(), result_type());
-
-      // Compute
-      compTimer.start();
-      p2p(K,
-          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-          xI.begin(), xI.end(), cI.begin(), rI.begin());
-      totalCompTime += compTimer.elapsed();
 
       int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
 
@@ -310,8 +311,8 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
       MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                recv_dest, 0,
                MPI_COMM_WORLD, &status);
-      // Accumulate to current answer
 
+      // Accumulate to current answer
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
         *r += *tr;
     }
@@ -358,23 +359,22 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
           xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
           xI.begin(), xI.end(), cI.begin(), rI.begin());
       totalCompTime += compTimer.elapsed();
-      
 
     } else {
       std::cout << "On iteration: " << curr_iter << std::endl;
       // calculate needs of sending to transpose and computing
 
+      // Set rJ to zero
+      rJ.assign(rJ.size(), result_type());
+
+      // Compute
+      compTimer.start();
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
+      totalCompTime += compTimer.elapsed();
+
       if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
-
-        // Set rJ to zero
-        rJ.assign(rJ.size(), result_type());
-
-        // Compute
-        compTimer.start();
-        p2p(K,
-            xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-            xI.begin(), xI.end(), cI.begin(), rI.begin());
-        totalCompTime += compTimer.elapsed();
 
         int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
 
@@ -402,6 +402,7 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
         MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                  recv_dest, 0,
                  MPI_COMM_WORLD, &status);
+
         // Accumulate to current answer
         for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
           *r += *tr;
@@ -422,8 +423,9 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
 
   // Allocate result on master
   std::vector<result_type> result;
-  if (rank == MASTER)
+  if (rank == MASTER) {
     result = std::vector<result_type>(P*idiv_up(N,P));
+  }
 
   // Gather team leader answers to master
   if (trank == MASTER) {
