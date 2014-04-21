@@ -378,6 +378,10 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(),
           xI.begin(), xI.end(), rI.begin());
       totalCompTime += compTimer.elapsed();
+     
+      if (curr_iter == last_iter -1 ) {
+        break;
+      }
 
     }
 

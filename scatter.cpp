@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     p2p(K,
         xJ.begin(), xJ.end(), cJ.begin(),
         xI.begin(), xI.end(), rI.begin());
-    totalCompTime += compTime.elapsed();
+    totalCompTime += compTimer.elapsed();
   }
 
   std::vector<result_type> result;
