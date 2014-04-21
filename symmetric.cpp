@@ -285,7 +285,7 @@ int main(int argc, char** argv)
       int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
 
 
-std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
+      //std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
       // Send to proper rank
       commTimer.start();
         MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
@@ -305,7 +305,7 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
 
     if (num_teams / teamsize - curr_iter - 1 != last_iter - 1) {
 
-      std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
+      //std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
 
       // Receive
       MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
@@ -348,7 +348,7 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
     // compute own block if last iteration regardless
     if (curr_iter == last_iter - 1) {
 
-      std::cout << "On iteration: " << last_iter - 1 << std::endl;
+      //std::cout << "On iteration: " << last_iter - 1 << std::endl;
 
       // Set rJ to zero though unused at this iteration
       rJ.assign(rJ.size(), result_type());
@@ -361,7 +361,7 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
       totalCompTime += compTimer.elapsed();
 
     } else {
-      std::cout << "On iteration: " << curr_iter << std::endl;
+      //std::cout << "On iteration: " << curr_iter << std::endl;
       // calculate needs of sending to transpose and computing
 
       // Set rJ to zero
@@ -378,7 +378,7 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
 
         int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
 
-        std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
+        //std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
 
         // Send to proper rank
         commTimer.start();
@@ -397,7 +397,7 @@ std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
 
       if (num_teams/teamsize - curr_iter - iPrimeOffset != last_iter - 1) {
 
-        std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
+        //std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
         // Receive
         MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                  recv_dest, 0,
