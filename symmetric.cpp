@@ -438,7 +438,7 @@ int main(int argc, char** argv)
     compTimer.start();
     // Compute the result with a direct matrix-vector multiplication
     p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
-    double directCompTime = compTime.elapsed();
+    double directCompTime = compTimer.elapsed();
 
     print_error(exact, result);
     std::cout << "DirectCompTime: " << directCompTime << std::endl;
