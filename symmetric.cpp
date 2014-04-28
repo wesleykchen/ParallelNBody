@@ -270,18 +270,18 @@ int main(int argc, char** argv)
 
     itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
 
-    // Set rJ to zero
-    rJ.assign(rJ.size(), result_type());
-
-    // Compute symmetric off-diagonal
-    compTimer.start();
-    p2p(K,
-        xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
-        xI.begin(), xI.end(), cI.begin(), rI.begin());
-    totalCompTime += compTimer.elapsed();
-
     // calculate needs of sending to transpose
     if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
+
+      // Set rJ to zero
+      rJ.assign(rJ.size(), result_type());
+
+      // Compute symmetric off-diagonal
+      compTimer.start();
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(), rJ.begin(),
+          xI.begin(), xI.end(), cI.begin(), rI.begin());
+      totalCompTime += compTimer.elapsed();
 
       int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
 
@@ -292,6 +292,17 @@ int main(int argc, char** argv)
                 send_dest, 0,
                 MPI_COMM_WORLD, &request);
       totalCommTime += commTimer.elapsed();
+    }
+    else {
+      // Set rJ to zero
+      rJ.assign(rJ.size(), result_type());
+
+      // Compute asymmetric off-diagonal
+      compTimer.start();
+      p2p(K,
+          xJ.begin(), xJ.end(), cJ.begin(),
+          xI.begin(), xI.end(), rI.begin());
+      totalCompTime += compTimer.elapsed();
     }
   }
 
@@ -308,9 +319,11 @@ int main(int argc, char** argv)
       //std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
 
       // Receive
+      commTimer.start();
       MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                recv_dest, 0,
                MPI_COMM_WORLD, &status);
+      totalCommTime += commTimer.elapsed();
 
       // Accumulate to current answer
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
@@ -396,9 +409,11 @@ int main(int argc, char** argv)
 
       //std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
       // Receive
+      commTimer.start();
       MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                recv_dest, 0,
                MPI_COMM_WORLD, &status);
+      totalCommTime += commTimer.elapsed();
 
       // Accumulate to current answer
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
