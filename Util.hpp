@@ -28,8 +28,17 @@
  * @param[in] b Denominator
  * @returns If b divides a, then a/b, else a/b + 1
  */
-inline unsigned idiv_up(unsigned a, unsigned b) {
+inline constexpr unsigned idiv_up(unsigned a, unsigned b) {
   return (a+b-1)/b;
+}
+
+/** Positive modulus
+ * @param[in] i Dividend
+ * @param[in] n Divisor
+ * @returns r such that 0 <= r < n and i == a*n+r for some integer a.
+ */
+inline constexpr int pos_mod(int i, unsigned n) {
+  return ((i % n) + n) % n;
 }
 
 /** Clock class, useful when timing code.
