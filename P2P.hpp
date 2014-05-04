@@ -14,6 +14,9 @@
 #if !defined(P2P_BLOCK_SIZE)
 #  define P2P_BLOCK_SIZE 128
 #endif
+#if !defined(P2P_NUM_THREADS)
+#  define P2P_NUM_THREADS std::thread::hardware_concurrency()
+#endif
 
 namespace detail {
 
@@ -207,7 +210,7 @@ inline void
 p2p(const Kernel& K,
     Source* s_first, Source* s_last, Charge* c_first,
     Target* t_first, Target* t_last, Result* r_first,
-    unsigned threads = std::thread::hardware_concurrency())
+    unsigned threads = P2P_NUM_THREADS)
 {
   const int count1 = (s_last - s_first)/2;
   const int count2 = (t_last - t_first)/2;
@@ -291,7 +294,7 @@ p2p(const Kernel& K,
     Charge* c1_first, Result* r1_first,
     Target* p2_first, Target* p2_last,
     Charge* c2_first, Result* r2_first,
-    unsigned threads = std::thread::hardware_concurrency())
+    unsigned threads = P2P_NUM_THREADS)
 {
   const int count1 = (p1_last - p1_first)/2;
   const int count2 = (p2_last - p2_first)/2;
@@ -368,7 +371,7 @@ inline void
 p2p(const Kernel& K,
     Source* p_first, Source* p_last,
     Charge* c_first, Result* r_first,
-    unsigned threads = std::thread::hardware_concurrency())
+    unsigned threads = P2P_NUM_THREADS)
 {
   const int count = (p_last - p_first)/2;
   if (count > P2P_BLOCK_SIZE/2) {   // TODO: Generalize
@@ -414,7 +417,7 @@ inline void
 p2p(const Kernel& K,
     SourceIter s_first, SourceIter s_last, ChargeIter c_first,
     TargetIter t_first, TargetIter t_last, ResultIter r_first,
-    unsigned threads = std::thread::hardware_concurrency())
+    unsigned threads = P2P_NUM_THREADS)
 {
   return detail::p2p(K,
                      iter_base(s_first), iter_base(s_last),
@@ -441,7 +444,7 @@ p2p(const Kernel& K,
     ChargeIter c1_first, ResultIter r1_first,
     TargetIter p2_first, TargetIter p2_last,
     ChargeIter c2_first, ResultIter r2_first,
-    unsigned threads = std::thread::hardware_concurrency())
+    unsigned threads = P2P_NUM_THREADS)
 {
   return detail::p2p(K,
                      iter_base(p1_first), iter_base(p1_last),
@@ -462,7 +465,7 @@ inline void
 p2p(const Kernel& K,
     SourceIter p_first, SourceIter p_last,
     ChargeIter c_first, ResultIter r_first,
-    unsigned threads = std::thread::hardware_concurrency())
+    unsigned threads = P2P_NUM_THREADS)
 {
   return detail::p2p(K,
                      iter_base(p_first), iter_base(p_last),
