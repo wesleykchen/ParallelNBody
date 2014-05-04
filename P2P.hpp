@@ -6,6 +6,7 @@
 
 #include <iterator>
 #include <type_traits>
+#include <thread>
 
 #include "meta/kernel_traits.hpp"
 #include "meta/trivial_iterator.hpp"
@@ -216,10 +217,14 @@ p2p(const Kernel& K,
     case 1: { // Split the targets
       Target* t_half = t_first + count2/2;
       Result* r_half = r_first + count2/2;
+      // In parallel
+      std::thread thr([=](){
       p2p(K, s_first, s_last, c_first,
              t_first, t_half, r_first);
+        });
       p2p(K, s_first, s_last, c_first,
              t_half, t_last, r_half);
+      thr.join();
     } break;
     case 2: { // Split the sources
       Source* s_half = s_first + count1/2;
@@ -234,14 +239,18 @@ p2p(const Kernel& K,
       Charge* c_half = c_first + count1/2;
       Target* t_half = t_first + count2/2;
       Result* r_half = r_first + count2/2;
+      // Top and bottom in parallel
+      std::thread thr([=](){
       p2p(K, s_first, s_half, c_first,
              t_first, t_half, r_first);
       p2p(K, s_half,  s_last, c_half,
              t_first, t_half, r_first);
+        });
       p2p(K, s_first, s_half, c_first,
              t_half,  t_last, r_half);
       p2p(K, s_half, s_last, c_half,
              t_half, t_last, r_half);
+      thr.join();
     } break;
   }
 }
@@ -291,14 +300,23 @@ p2p(const Kernel& K,
       Target* p2_half = p2_first + count2/2;
       Charge* c2_half = c2_first + count2/2;
       Result* r2_half = r2_first + count2/2;
+      // Upper left and bottom right in parallel
+      std::thread thr1([=](){
       p2p(K, p1_first, p1_half, c1_first, r1_first,
              p2_first, p2_half, c2_first, r2_first);
-      p2p(K, p1_half,  p1_last, c1_half,  r1_half,
-             p2_first, p2_half, c2_first, r2_first);
-      p2p(K, p1_first, p1_half, c1_first, r1_first,
-             p2_half,  p2_last, c2_half,  r2_half);
+        });
       p2p(K, p1_half, p1_last, c1_half, r1_half,
              p2_half, p2_last, c2_half, r2_half);
+      thr1.join();
+
+      // Bottom left and top right in parallel
+      std::thread thr2([=](){
+      p2p(K, p1_half,  p1_last, c1_half,  r1_half,
+             p2_first, p2_half, c2_first, r2_first);
+        });
+      p2p(K, p1_first, p1_half, c1_first, r1_first,
+             p2_half,  p2_last, c2_half,  r2_half);
+      thr2.join();
     } break;
   }
 }
@@ -313,14 +331,20 @@ p2p(const Kernel& K,
 {
   const int count = p_last - p_first;
   if (count > P2P_BLOCK_SIZE) {   // TODO: Generalize
-    // Split this triangle into two triangles and a square
     Source* p_half = p_first + count/2;
     Charge* c_half = c_first + count/2;
     Result* r_half = r_first + count/2;
+
+    // Two symmetric diagonal blocks in parallel
+    std::thread thr([=](){
     p2p(K, p_first, p_half, c_first, r_first);
+      });
+    p2p(K, p_half,  p_last, c_half,  r_half);
+    thr.join();
+
+    // Symmetric off-diagonal block
     p2p(K, p_first, p_half, c_first, r_first,
            p_half,  p_last, c_half,  r_half);
-    p2p(K, p_half,  p_last, c_half,  r_half);
   } else {
     block_eval(K, p_first, p_last, c_first, r_first);
   }

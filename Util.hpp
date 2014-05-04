@@ -1,8 +1,4 @@
-#if defined(_WIN32)
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
+#pragma once
 
 #include <cstdlib>
 #include <iostream>
