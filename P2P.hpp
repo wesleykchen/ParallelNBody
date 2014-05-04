@@ -158,7 +158,8 @@ template <typename Kernel,
 inline void
 p2p(const Kernel& K,
     SourceIter s_first, SourceIter s_last, ChargeIter c_first,
-    TargetIter t_first, TargetIter t_last, ResultIter r_first)
+    TargetIter t_first, TargetIter t_last, ResultIter r_first,
+    unsigned)
 {
   return block_eval(K,
                     s_first, s_last, c_first,
@@ -174,7 +175,8 @@ p2p(const Kernel& K,
     SourceIter p1_first, SourceIter p1_last,
     ChargeIter c1_first, ResultIter r1_first,
     TargetIter p2_first, TargetIter p2_last,
-    ChargeIter c2_first, ResultIter r2_first)
+    ChargeIter c2_first, ResultIter r2_first,
+    unsigned)
 {
   return block_eval(K,
                     p1_first, p1_last,
@@ -189,7 +191,8 @@ template <typename Kernel,
 inline void
 p2p(const Kernel& K,
     SourceIter p_first, SourceIter p_last,
-    ChargeIter c_first, ResultIter r_first)
+    ChargeIter c_first, ResultIter r_first,
+    unsigned)
 {
   return block_eval(K,
                     p_first, p_last,
@@ -206,18 +209,19 @@ p2p(const Kernel& K,
     Target* t_first, Target* t_last, Result* r_first,
     unsigned threads = std::thread::hardware_concurrency())
 {
-  const int count1 = s_last - s_first;
-  const int count2 = t_last - t_first;
+  const int count1 = (s_last - s_first)/2;
+  const int count2 = (t_last - t_first)/2;
 
-  const char flag = ((count1 > P2P_BLOCK_SIZE) << 1) | (count2 > P2P_BLOCK_SIZE);
+  const char flag = ((count1 > P2P_BLOCK_SIZE/2) << 1) |
+                     (count2 > P2P_BLOCK_SIZE/2);
   switch (flag) {
     case 0: { // Both are small, evaluate
       block_eval(K, s_first, s_last, c_first,
                     t_first, t_last, r_first);
     } break;
     case 1: { // Split the targets
-      Target* t_half = t_first + count2/2;
-      Result* r_half = r_first + count2/2;
+      Target* t_half = t_first + count2;
+      Result* r_half = r_first + count2;
 
       if (threads > 0) {
         // In parallel
@@ -236,18 +240,19 @@ p2p(const Kernel& K,
       }
     } break;
     case 2: { // Split the sources
-      Source* s_half = s_first + count1/2;
-      Charge* c_half = c_first + count1/2;
+      Source* s_half = s_first + count1;
+      Charge* c_half = c_first + count1;
+
       p2p(K, s_first, s_half, c_first,
              t_first, t_last, r_first, threads);
       p2p(K, s_half,  s_last, c_half,
              t_first, t_last, r_first, threads);
     } break;
     case 3: { // Split both
-      Source* s_half = s_first + count1/2;
-      Charge* c_half = c_first + count1/2;
-      Target* t_half = t_first + count2/2;
-      Result* r_half = r_first + count2/2;
+      Source* s_half = s_first + count1;
+      Charge* c_half = c_first + count1;
+      Target* t_half = t_first + count2;
+      Result* r_half = r_first + count2;
 
       if (threads > 0) {
         // Top and bottom in parallel
@@ -288,40 +293,41 @@ p2p(const Kernel& K,
     Charge* c2_first, Result* r2_first,
     unsigned threads = std::thread::hardware_concurrency())
 {
-  const int count1 = p1_last - p1_first;
-  const int count2 = p2_last - p2_first;
+  const int count1 = (p1_last - p1_first)/2;
+  const int count2 = (p2_last - p2_first)/2;
 
-  const char flag = ((count1 > P2P_BLOCK_SIZE) << 1) | (count2 > P2P_BLOCK_SIZE);
+  const char flag = ((count1 > P2P_BLOCK_SIZE/2) << 1) |
+                     (count2 > P2P_BLOCK_SIZE/2);
   switch (flag) {
     case 0: { // Both are small, evaluate
       block_eval(K, p1_first, p1_last, c1_first, r1_first,
                     p2_first, p2_last, c2_first, r2_first);
     } break;
     case 1: { // Split the p2
-      Target* p2_half = p2_first + count2/2;
-      Charge* c2_half = c2_first + count2/2;
-      Result* r2_half = r2_first + count2/2;
+      Target* p2_half = p2_first + count2;
+      Charge* c2_half = c2_first + count2;
+      Result* r2_half = r2_first + count2;
       p2p(K, p1_first, p1_last, c1_first, r1_first,
              p2_first, p2_half, c2_first, r2_first, threads);
       p2p(K, p1_first, p1_last, c1_first, r1_first,
              p2_half,  p2_last, c2_half, r2_half, threads);
     } break;
     case 2: { // Split the p1
-      Source* p1_half = p1_first + count2/2;
-      Charge* c1_half = c1_first + count2/2;
-      Result* r1_half = r1_first + count2/2;
+      Source* p1_half = p1_first + count2;
+      Charge* c1_half = c1_first + count2;
+      Result* r1_half = r1_first + count2;
       p2p(K, p1_first, p1_half, c1_first, r1_first,
              p2_first, p2_last, c2_first, r2_first, threads);
       p2p(K, p1_half,  p1_last, c1_half,  r1_half,
              p2_first, p2_last, c2_first, r2_first, threads);
     } break;
     case 3: { // Split both
-      Source* p1_half = p1_first + count1/2;
-      Charge* c1_half = c1_first + count1/2;
-      Result* r1_half = r1_first + count1/2;
-      Target* p2_half = p2_first + count2/2;
-      Charge* c2_half = c2_first + count2/2;
-      Result* r2_half = r2_first + count2/2;
+      Source* p1_half = p1_first + count1;
+      Charge* c1_half = c1_first + count1;
+      Result* r1_half = r1_first + count1;
+      Target* p2_half = p2_first + count2;
+      Charge* c2_half = c2_first + count2;
+      Result* r2_half = r2_first + count2;
 
       if (threads > 0) {
         // Upper left and bottom right in parallel
@@ -364,11 +370,11 @@ p2p(const Kernel& K,
     Charge* c_first, Result* r_first,
     unsigned threads = std::thread::hardware_concurrency())
 {
-  const int count = p_last - p_first;
-  if (count > P2P_BLOCK_SIZE) {   // TODO: Generalize
-    Source* p_half = p_first + count/2;
-    Charge* c_half = c_first + count/2;
-    Result* r_half = r_first + count/2;
+  const int count = (p_last - p_first)/2;
+  if (count > P2P_BLOCK_SIZE/2) {   // TODO: Generalize
+    Source* p_half = p_first + count;
+    Charge* c_half = c_first + count;
+    Result* r_half = r_first + count;
 
     if (threads > 0) {
       // Two symmetric diagonal blocks in parallel
