@@ -22,8 +22,6 @@ Dependencies:
 * MPI
 
 Building:
-* Edit Makefile.inc to edit paths
-* Enter unit_tests/ or examples/
 * 'make'
 
 Supported Flags:
