@@ -1,5 +1,8 @@
 #!/bin/bash
 
+make clean
+make all XFLAGS='-DP2P_NUM_THREADS=0'
+
 mpirun -n 8 ./symmetric 1000 -c 1
 
 mpirun -n 8 ./teamscatter 1000 -c 1
@@ -53,5 +56,3 @@ mpirun -n 16 ./symmetric 100000 -c 4 -nocheck
 mpirun -n 16 ./teamscatter 100000 -c 4 -nocheck
 
 ./serial 100000 -nocheck
-
-
