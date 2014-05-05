@@ -25,9 +25,9 @@ Building:
 * 'make'
 
 Supported Flags:
-* P2P_DECAY_ITERATOR={0.1}
-** Find and decay contiguous iterators to pointers to exploit blocking and SMP.
-* P2P_BLOCK_SIZE=###
-** Maximum block size of the recursive P2P blocked evaluation. (Deprecate?)
-* P2P_NUM_THREADS=###
-** Number of SMB threads to use in the recursive P2P blocked evaluation.
+* P2P_DECAY_ITERATOR={0,1}<br/>
+  Find and decay contiguous iterators to pointers to exploit blocking and SMP.
+* P2P_BLOCK_SIZE=###<br/>
+  Maximum block size of the recursive P2P blocked evaluation. (Deprecate?)
+* P2P_NUM_THREADS=###<br/>
+  Number of SMB threads to use in the recursive P2P blocked evaluation.
