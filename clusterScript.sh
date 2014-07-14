@@ -15,6 +15,7 @@
 . /etc/profile
 module load compilers/intel/11.1
 module load mpi/openmpi/1.4.2/intel
+module load courses/cs205/2013
  
 #
 # Execute the run
