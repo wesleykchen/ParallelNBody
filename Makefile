@@ -12,7 +12,7 @@ CXX := g++ -std=c++11
 LINK := $(CXX)
 
 # Define any compile-time flags
-CFLAGS := $(XFLAGS) -funroll-loops -O3 #-axW -ip -align -cxxlib-gcc
+CFLAGS := $(XFLAGS) -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs
 # 'make DEBUG=1' - compile with debug flags
 ifeq ($(DEBUG),1)
 CFLAGS += -g -fno-inline
