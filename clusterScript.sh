@@ -13,6 +13,7 @@
 module load hpc/intel-compilers-13.0.079 
 module load hpc/openmpi-1.6.2_gcc-4.7.2
 module load centos6/openmpi-1.7.2_intel-13.0.079
+module load centos6/fftw-3.3.3_openmpi-1.6.4_gcc-4.8.0
  
 #
 # Execute the run
