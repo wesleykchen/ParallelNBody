@@ -1,0 +1,28 @@
+/** @file InvSq
+ * @brief Implements the inverse square distance kernel:
+ * K(t,s) = 1 / |s-t|^2
+ *
+ * Note: Mostly for testing purposes.
+ */
+
+#include "numeric/Vec.hpp"
+
+struct InvSq
+{
+  typedef Vec<3,double>  source_type;
+  typedef double         charge_type;
+  typedef Vec<3,double>  target_type;
+  typedef double         result_type;
+  typedef double         kernel_value_type;
+
+  /** Kernel evaluation
+   * K(t,s) = 1 / |s-t|^2
+   */
+  inline kernel_value_type operator()(const target_type& t,
+                                      const source_type& s) const {
+    return 1.0 / normSq(s - t);
+  }
+  inline kernel_value_type transpose(const kernel_value_type& kts) const {
+    return kts;
+  }
+};
