@@ -1,6 +1,6 @@
 #include "Util.hpp"
 
-#include "kernel/NonParaBayesian.kern"
+#include "kernel/InvSq.kern"
 #include "meta/kernel_traits.hpp"
 #include "meta/random.hpp"
 
@@ -46,7 +46,7 @@ int main(int argc, char** argv)
   MPI_Comm_size(MPI_COMM_WORLD, &P);
 
   // Define the kernel
-  typedef NonParaBayesian kernel_type;
+  typedef InvSq kernel_type;
   kernel_type K(1,1);
 
   // Define source_type, target_type, charge_type, result_type
