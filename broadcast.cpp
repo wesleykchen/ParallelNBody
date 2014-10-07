@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 
   // Define the kernel
   typedef InvSq kernel_type;
-  kernel_type K(1,1);
+  kernel_type K;
 
   // Define source_type, target_type, charge_type, result_type
   typedef kernel_type::source_type source_type;
