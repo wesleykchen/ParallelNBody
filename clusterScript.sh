@@ -3,16 +3,16 @@
 #SBATCH -t 10                 						#Runtime in minutes
 #SBATCH -p general   								#Partition to submit to
 #SBATCH --mem-per-cpu=100   						#Memory per cpu in MB (see also --mem)
-#SBATCH -o hopper.out     					#File to which standard out will be written
-#SBATCH -e hopper.err      					#File to which standard err will be written
+#SBATCH -o trial3.out     					#File to which standard out will be written
+#SBATCH -e trial3.err      					#File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
 #
 . /etc/profile
-module load centos6/openmpi-1.7.2_intel-13.0.079
-module load centos6/fftw-3.3.3_openmpi-1.6.4_gcc-4.8.0
- 
+#module load centos6/openmpi-1.7.2_intel-13.0.079
+#module load centos6/fftw-3.3.3_openmpi-1.6.4_gcc-4.8.0
+module load centos6/openmpi-1.6.5_gcc-4.8.0 
 #
 # Execute the run
 #
