@@ -1,9 +1,9 @@
 #!/bin/bash
-#BATCH -n 64                #Number of cores
+#BATCH -n 16                #Number of cores
 #SBATCH -t 10                 #Runtime in minutes
 #SBATCH -p general   	      #Partition to submit to
 
-#SBATCH --mem-per-cpu=2000     #Memory per cpu in MB (see also --mem)
+#SBATCH --mem-per-cpu=100     #Memory per cpu in MB (see also --mem)
 #SBATCH -o t1.out     	      #File to which standard out will be written
 #SBATCH -e t1.err      	      #File to which standard err will be written
  
@@ -18,19 +18,20 @@ module load centos6/openmpi-1.6.5_gcc-4.8.0
 # Execute the run
 #
 
+myN = 16
 
-mpirun -np 64  ./symmetric 25600  -c 4
+mpirun -np $myN  ./symmetric 25600  -c 1
 
-mpirun -np 64 ./symmetric 25600 -c 2 -nocheck
+mpirun -np $myN ./symmetric 25600 -c 2 -nocheck
 
-#mpirun -np 128 ./symmetric 25600 -c 4 -nocheck
+mpirun -np $myN ./symmetric 25600 -c 4 -nocheck
 
-#mpirun -np 128 ./symmetric 25600 -c 8 -nocheck
+mpirun -np $myN ./symmetric 25600 -c 8 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 1 -nocheck
+mpirun -np $myN ./teamscatter 25600 -c 1 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 2 -nocheck
+mpirun -np $myN ./teamscatter 25600 -c 2 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 4 -nocheck
+mpirun -np $myN ./teamscatter 25600 -c 4 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 8 -nocheck
+mpirun -np $myN ./teamscatter 25600 -c 8 -nocheck

@@ -5,7 +5,7 @@
 
 #include "Util.hpp"
 
-#include "kernel/InvSq.kern"
+#include "kernel/NonParaBayesian.kern"
 #include "meta/kernel_traits.hpp"
 #include "meta/random.hpp"
 
@@ -108,8 +108,8 @@ int main(int argc, char** argv)
   // Scratch status for MPI
   MPI_Status status;
 
-  typedef InvSq kernel_type;
-  kernel_type K;
+  typedef NonParaBayesian kernel_type;
+  kernel_type K(1,1);
 
   // Define source_type, target_type, charge_type, result_type
   typedef kernel_type::source_type source_type;
