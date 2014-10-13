@@ -79,22 +79,26 @@ int main(int argc, char** argv)
   }
 
   Clock timer;
-  Clock commTimer;
-  Clock compTimer;
+  Clock splitTimer;
+  Clock reduceTimer;
+  Clock shiftTimer
+
   double totalCommTime = 0;
-  double totalCompTime = 0;
+  double totalSplitTime = 0;
+  double totalReduceTime = 0;
+  double totalShiftTime = 0;
 
   timer.start();
 
   // Broadcast the size of the problem to all processes
-  commTimer.start();
+  splitTimer.start();
   MPI_Bcast(&N, sizeof(N), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  totalCommTime += commTimer.elapsed();
+  totalSplitTime += splitTimer.elapsed();
 
   // Broadcast the teamsize to all processes
-  commTimer.start();
+  splitTimer.start();
   MPI_Bcast(&teamsize, sizeof(teamsize), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  totalCommTime += commTimer.elapsed();
+  totalSplitTime += splitTimer.elapsed();
 
   // TODO: How to generalize?
   if (N % P != 0) {
@@ -132,23 +136,23 @@ int main(int argc, char** argv)
 
   // Scatter data from master to team leaders
   if (trank == MASTER) {
-    commTimer.start();
+    splitTimer.start();
     MPI_Scatter(source.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 MASTER, row_comm);
-    totalCommTime += commTimer.elapsed();
+    totalSplitTime += splitTimer.elapsed();
   }
 
   // Team leaders broadcast to team
-  commTimer.start();
+  splitTimer.start();
   MPI_Bcast(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
             MASTER, team_comm);
   MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
             MASTER, team_comm);
-  totalCommTime += commTimer.elapsed();
+  totalSplitTime += splitTimer.elapsed();
 
   // Copy xJ -> xI
   std::vector<source_type> xI = xJ;
@@ -156,7 +160,7 @@ int main(int argc, char** argv)
   std::vector<double> rI(idiv_up(N,num_teams));
 
   // Perform initial offset by teamrank
-  commTimer.start();
+  shiftTimer.start();
 
   int dst = (team + trank + num_teams) % num_teams;
   int src = (team - trank + num_teams) % num_teams;
@@ -166,7 +170,7 @@ int main(int argc, char** argv)
   MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                        src, 0, dst, 0,
                        row_comm, &status);
-  totalCommTime += commTimer.elapsed();
+  totalShiftTime += shiftTimer.elapsed();
 
   if (trank == MASTER) {
     // If this is the team leader, compute the symmetric diagonal block
@@ -185,7 +189,7 @@ int main(int argc, char** argv)
   // Looping process to shift the data between the teams
   int ceilPC2 = idiv_up(P, teamsize*teamsize);
   for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
-    commTimer.start();
+    shiftTimer.start();
     // Add num_teams to prevent negative numbers
     int src = (team + teamsize + num_teams) % num_teams;
     int dst = (team - teamsize + num_teams) % num_teams;
@@ -195,7 +199,7 @@ int main(int argc, char** argv)
     MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                          dst, 0, src, 0,
                          row_comm, &status);
-    totalCommTime += commTimer.elapsed();
+    totalShiftTime += shiftTimer.elapsed();
 
     // Compute on the last iteration only if
     // 1) The teamsize divides the number of teams (everyone computes)
@@ -216,13 +220,13 @@ int main(int argc, char** argv)
     teamrI = std::vector<result_type>(idiv_up(N,num_teams));
 
   // Reduce answers to the team leader
-  commTimer.start();
+  reduceTimer.start();
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
   MPI_Reduce(rI.data(), teamrI.data(), rI.size(), MPI_DOUBLE,
              MPI_SUM, MASTER, team_comm);
-  totalCommTime += commTimer.elapsed();
+  totalReduceTime += reduceTimer.elapsed();
 
   // Allocate result on master
   std::vector<result_type> result;
@@ -231,16 +235,16 @@ int main(int argc, char** argv)
 
   // Gather team leader answers to master
   if (trank == MASTER) {
-    commTimer.start();
+    reduceTimer.start();
     MPI_Gather(teamrI.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
                result.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
                MASTER, row_comm);
-    totalCommTime += commTimer.elapsed();
+    totalReduceTime += reduceTimer.elapsed();
   }
 
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
-  printf("[%d] CommTimer: %e\n", rank, totalCommTime);
+  printf("[%d] CommTimer: %e\n", rank, totalShiftTime + totalSplitTime + totalReduceTime);
   printf("[%d] CompTimer: %e\n", rank, totalCompTime);
 
   // Check the result
