@@ -20,7 +20,8 @@ struct InvSq
    */
   inline kernel_value_type operator()(const target_type& t,
                                       const source_type& s) const {
-    return 1.0 / normSq(s - t);
+    double r2 = normSq(s - t);
+    return r2 == 0 ? 0.0 : 1.0 / r2;
   }
   inline kernel_value_type transpose(const kernel_value_type& kts) const {
     return kts;

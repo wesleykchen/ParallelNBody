@@ -140,23 +140,28 @@ int main(int argc, char** argv)
   }
 
   Clock timer;
-  Clock commTimer;
-  Clock compTimer;
+  Clock splitTimer;
+  Clock reduceTimer;
+  Clock shiftTimer
+  Clock sendRecvTimer;
 
   double totalCommTime = 0;
-  double totalCompTime = 0;
+  double totalSplitTime = 0;
+  double totalReduceTime = 0;
+  double totalShiftTime = 0;
+  double totalSendRecvTime = 0;
 
   timer.start();
 
   // Broadcast the size of the problem to all processes
-  commTimer.start();
+  splitTimer.start();
   MPI_Bcast(&N, sizeof(N), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  totalCommTime += commTimer.elapsed();
+  totalSplitTime += splitTimer.elapsed();
 
   // Broadcast the teamsize to all processes
-  commTimer.start();
+  splitTimer.start();
   MPI_Bcast(&teamsize, sizeof(teamsize), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  totalCommTime += commTimer.elapsed();
+  totalSplitTime += splitTimer.elapsed();
 
   // TODO: How to generalize?
   if (N % P != 0) {
@@ -206,23 +211,23 @@ int main(int argc, char** argv)
 
   // Scatter data from master to team leaders
   if (trank == MASTER) {
-    commTimer.start();
+    splitTimer.start();
     MPI_Scatter(source.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 MASTER, row_comm);
-    totalCommTime += commTimer.elapsed();
+    totalSplitTime += splitTimer.elapsed();
   }
 
   // Team leaders broadcast to team
-  commTimer.start();
+  splitTimer.start();
   MPI_Bcast(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
             MASTER, team_comm);
   MPI_Bcast(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
             MASTER, team_comm);
-  totalCommTime += commTimer.elapsed();
+  totalSplitTime += splitTimer.elapsed();
 
   // Copy xJ -> xI
   std::vector<source_type> xI = xJ;
@@ -234,7 +239,7 @@ int main(int argc, char** argv)
   std::vector<result_type> temp_rI(idiv_up(N,num_teams));
 
   // Perform initial offset by teamrank
-  commTimer.start();
+  shiftTimer.start();
   // Add num_teams to prevent negative numbers
   int src = (team + trank + num_teams) % num_teams;
   int dst = (team - trank + num_teams) % num_teams;
@@ -244,7 +249,7 @@ int main(int argc, char** argv)
   MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                        dst, 0, src, 0,
                        row_comm, &status);
-  totalCommTime += commTimer.elapsed();
+  totalShiftTime += shiftTimer.elapsed();
 
   /**********************/
   /** ZEROTH ITERATION **/
@@ -287,11 +292,11 @@ int main(int argc, char** argv)
 
       //std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
       // Send to proper rank
-      commTimer.start();
+      sendRecvTimer.start();
         MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
                 send_dest, 0,
                 MPI_COMM_WORLD, &request);
-      totalCommTime += commTimer.elapsed();
+      totalSendRecvTime += sendRecvTimer.elapsed();
     }
     else {
       // Set rJ to zero
@@ -319,11 +324,11 @@ int main(int argc, char** argv)
       //std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
 
       // Receive
-      commTimer.start();
+      sendRecvTimer.start();
       MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                recv_dest, 0,
                MPI_COMM_WORLD, &status);
-      totalCommTime += commTimer.elapsed();
+      totalSendRecvTime += sendRecvTimer.elapsed();
 
       // Accumulate to current answer
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
@@ -337,7 +342,7 @@ int main(int argc, char** argv)
   for (++curr_iter; curr_iter < last_iter; ++curr_iter) {
 
     // Shift data to the next process to compute the next block
-    commTimer.start();
+    shiftTimer.start();
     int src = (team + teamsize + num_teams) % num_teams;
     int dst = (team - teamsize + num_teams) % num_teams;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
@@ -346,7 +351,7 @@ int main(int argc, char** argv)
     MPI_Sendrecv_replace(cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                          dst, 0, src, 0,
                          row_comm, &status);
-    totalCommTime += commTimer.elapsed();
+    totalShiftTime += shiftTimer.elapsed();
 
     // Get current block's xy-index
     xy_pair xy = transformer.itc2xy(curr_iter, team, trank);
@@ -376,11 +381,11 @@ int main(int argc, char** argv)
       //std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
 
       // Send to proper rank
-      commTimer.start();
+      sendRecvTimer.start();
         MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
                 send_dest, 0,
                 MPI_COMM_WORLD, &request);
-      totalCommTime += commTimer.elapsed();
+      totalSendRecvTime += sendRecvTimer.elapsed();
     } else {
       // Set rJ to zero
       rJ.assign(rJ.size(), result_type());
@@ -409,11 +414,11 @@ int main(int argc, char** argv)
 
       //std::cout << "Processor: " << rank << "receiving from: " << recv_dest << std::endl;
       // Receive
-      commTimer.start();
+      sendRecvTimer.start();
       MPI_Recv(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                recv_dest, 0,
                MPI_COMM_WORLD, &status);
-      totalCommTime += commTimer.elapsed();
+      totalSendRecvTime += sendRecvTimer.elapsed();
 
       // Accumulate to current answer
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
@@ -423,14 +428,14 @@ int main(int argc, char** argv)
   }  //  end for iteration
 
   // Reduce answers to the team leader
-  commTimer.start();
+  reduceTimer.start();
 
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
   MPI_Reduce(rI.data(), temp_rI.data(), rI.size(), MPI_DOUBLE,
              MPI_SUM, MASTER, team_comm);
-  totalCommTime += commTimer.elapsed();
+  totalReduceTime += reduceTimer.elapsed();
 
   // Allocate result on master
   std::vector<result_type> result;
@@ -440,16 +445,17 @@ int main(int argc, char** argv)
 
   // Gather team leader answers to master
   if (trank == MASTER) {
-    commTimer.start();
+    reduceTimer.start();
     MPI_Gather(temp_rI.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                result.data(), sizeof(result_type) * temp_rI.size(), MPI_CHAR,
                MASTER, row_comm);
-    totalCommTime += commTimer.elapsed();
+    totalReduceTime += reduceTimer.elapsed();
   }
 
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
-  printf("[%d] CommTimer: %e\n", rank, totalCommTime);
+  printf("[%d] CommTimer: %e\n", rank, totalSendRecvTime + totalReduceTime
+                                       + totalSplitTime + totalShiftTime);
   printf("[%d] CompTimer: %e\n", rank, totalCompTime);
 
   // Check the result

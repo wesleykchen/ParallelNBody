@@ -65,6 +65,7 @@ int main(int argc, char** argv)
   Clock timer;
   Clock commTimer;
   Clock compTimer;
+  
   double totalCommTime = 0;
   double totalCompTime = 0;
   
