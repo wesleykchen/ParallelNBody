@@ -140,12 +140,13 @@ int main(int argc, char** argv)
   }
 
   Clock timer;
+  Clock compTimer;
   Clock splitTimer;
   Clock reduceTimer;
-  Clock shiftTimer
+  Clock shiftTimer;
   Clock sendRecvTimer;
 
-  double totalCommTime = 0;
+  double totalCompTime = 0;
   double totalSplitTime = 0;
   double totalReduceTime = 0;
   double totalShiftTime = 0;
