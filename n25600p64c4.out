@@ -1,0 +1,11 @@
+N = 25600
+P = 64
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	8.218176e-01	2.661866e-02	6.137550e-02	1.325942e-02	2.320948e-02
+Rank 0 Total Time: 1.003372e+00
+Computing direct matvec...
+Vector  relative error: 4.2588e-15
+Average relative error: 3.66447e-15
+Maximum relative error: 2.05083e-14
+DirectCompTime: 1.18955

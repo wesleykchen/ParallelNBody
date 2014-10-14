@@ -1,0 +1,650 @@
+Loading module centos6/gmp-5.1.1.
+Loading module centos6/mpfr-3.1.2.
+Loading module centos6/mpc-1.0.1.
+Loading module centos6/gcc-4.8.0.
+Loading module centos6/openmpi-1.6.5_gcc-4.8.0.
+terminate called without an active exception
+[holy2a08101:57387] *** Process received signal ***
+[holy2a08101:57387] Signal: Aborted (6)
+[holy2a08101:57387] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57388] *** Process received signal ***
+[holy2a08101:57388] Signal: Aborted (6)
+[holy2a08101:57388] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57393] *** Process received signal ***
+[holy2a08101:57393] Signal: Aborted (6)
+[holy2a08101:57393] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57400] *** Process received signal ***
+[holy2a08101:57400] Signal: Aborted (6)
+[holy2a08101:57400] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailableterminate called recursively
+
+[holy2a08101:57401] *** Process received signal ***
+[holy2a08101:57401] Signal: Aborted (6)
+[holy2a08101:57401] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57408] *** Process received signal ***
+[holy2a08101:57408] Signal: Aborted (6)
+[holy2a08101:57408] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+[holy2a08101:57423] *** Process received signal ***
+  what():  Resource temporarily unavailable[holy2a08101:57423] Signal: Aborted (6)
+[holy2a08101:57423] Signal code:  (-6)
+
+terminate called without an active exception
+[holy2a08101:57425] *** Process received signal ***
+[holy2a08101:57425] Signal: Aborted (6)
+[holy2a08101:57425] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57432] *** Process received signal ***
+[holy2a08101:57432] Signal: Aborted (6)
+[holy2a08101:57432] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57438] *** Process received signal ***
+[holy2a08101:57438] Signal: Aborted (6)
+[holy2a08101:57438] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+terminate called recursively
+  what():  Resource temporarily unavailable
+[holy2a08101:57441] *** Process received signal ***
+[holy2a08101:57441] Signal: Aborted (6)
+[holy2a08101:57441] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57442] *** Process received signal ***
+[holy2a08101:57442] Signal: Aborted (6)
+[holy2a08101:57442] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57447] *** Process received signal ***
+[holy2a08101:57447] Signal: Aborted (6)
+[holy2a08101:57447] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57424] *** Process received signal ***
+[holy2a08101:57424] Signal: Aborted (6)
+[holy2a08101:57424] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57431] *** Process received signal ***
+[holy2a08101:57431] Signal: Aborted (6)
+[holy2a08101:57431] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+terminate called recursively
+terminate called recursively
+[holy2a08101:57443] *** Process received signal ***
+[holy2a08101:57443] Signal: Aborted (6)
+[holy2a08101:57443] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57389] *** Process received signal ***
+[holy2a08101:57389] Signal: Aborted (6)
+[holy2a08101:57389] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  [holy2a08101:57394] *** Process received signal ***
+Resource temporarily unavailable
+[holy2a08101:57394] Signal: Aborted (6)
+[holy2a08101:57394] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57398] *** Process received signal ***
+[holy2a08101:57398] Signal: Aborted (6)
+[holy2a08101:57398] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57403] *** Process received signal ***
+[holy2a08101:57403] Signal: Aborted (6)
+[holy2a08101:57403] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57416] *** Process received signal ***
+[holy2a08101:57416] Signal: Aborted (6)
+[holy2a08101:57416] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57421] *** Process received signal ***
+[holy2a08101:57421] Signal: Aborted (6)
+[holy2a08101:57421] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57410] *** Process received signal ***
+[holy2a08101:57410] Signal: Aborted (6)
+[holy2a08101:57410] Signal code:  (-6)
+terminate called recursively
+terminate called recursively
+[holy2a08101:57411] *** Process received signal ***
+terminate called after throwing an instance of 'std::system_error'
+[holy2a08101:57411] Signal: Aborted (6)
+[holy2a08101:57411] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57415] *** Process received signal ***
+[holy2a08101:57415] Signal: Aborted (6)
+[holy2a08101:57415] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57437] *** Process received signal ***
+[holy2a08101:57437] Signal: Aborted (6)
+[holy2a08101:57437] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57440] *** Process received signal ***
+[holy2a08101:57440] Signal: Aborted (6)
+[holy2a08101:57440] Signal code:  (-6)
+terminate called after throwing an instance of 'terminate called recursively
+std::system_error'
+terminate called recursively
+[holy2a08101:57445] *** Process received signal ***
+[holy2a08101:57445] Signal: Aborted (6)
+[holy2a08101:57445] Signal code:  (-6)
+  what():  Resource temporarily unavailable
+terminate called without an active exception
+[holy2a08101:57390] *** Process received signal ***
+[holy2a08101:57390] Signal: Aborted (6)
+[holy2a08101:57390] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57395] *** Process received signal ***
+terminate called recursively
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+terminate called recursively
+[holy2a08101:57435] *** Process received signal ***
+[holy2a08101:57435] Signal: Aborted (6)
+[holy2a08101:57435] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable[holy2a08101:57409] *** Process received signal ***
+
+[holy2a08101:57409] Signal: Aborted (6)
+[holy2a08101:57409] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57426] *** Process received signal ***
+[holy2a08101:57426] Signal: Aborted (6)
+[holy2a08101:57426] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57434] *** Process received signal ***
+[holy2a08101:57434] Signal: Aborted (6)
+[holy2a08101:57434] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57397] *** Process received signal ***
+[holy2a08101:57397] Signal: Aborted (6)
+[holy2a08101:57397] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'terminate called recursively
+std::system_error'
+terminate called recursively
+[holy2a08101:57402] *** Process received signal ***
+[holy2a08101:57402] Signal: Aborted (6)
+[holy2a08101:57402] Signal code:  (-6)
+terminate called without an active exception
+terminate called recursively
+[holy2a08101:57428] *** Process received signal ***
+[holy2a08101:57428] Signal: Aborted (6)
+[holy2a08101:57428] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'terminate called recursively
+[holy2a08101:57391] *** Process received signal ***
+[holy2a08101:57391] Signal: Aborted (6)
+[holy2a08101:57391] Signal code:  (-6)
+terminate called recursively
+terminate called recursively
+std::system_error'
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57392] *** Process received signal ***
+[holy2a08101:57392] Signal: Aborted (6)
+[holy2a08101:57392] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57439] *** Process received signal ***
+[holy2a08101:57439] Signal: Aborted (6)
+[holy2a08101:57439] Signal code:  (-6)
+[holy2a08101:57421] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57421] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57421] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57421] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b29863d78e5]
+[holy2a08101:57421] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b29863d5a56]
+[holy2a08101:57421] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b29863d5a83]
+[holy2a08101:57421] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5dcae) [0x2b29863d5cae]
+[holy2a08101:57421] [ 7] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZSt20__throw_system_errori+0x80) [0x2b298642af00]
+[holy2a08101:57421] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZNSt6thread15_M_start_threadESt10shared_ptrINS_10_Impl_baseEE+0x248) [0x2b298642c588]
+[holy2a08101:57421] [ 9] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x4db) [0x416d2b]
+[holy2a08101:57421] [10] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57421] [11] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57421] [12] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57421] [13] ./symmetric(main+0x293f) [0x419fdf]
+[holy2a08101:57421] [14] /lib64/libc.so.6(__libc_start_main+0xfd) [0x3a65a1ed1d]
+[holy2a08101:57421] [15] ./symmetric() [0x40e6b1]
+[holy2a08101:57421] *** End of error message ***
+terminate called recursively
+terminate called recursively
+terminate called recursively
+terminate called without an active exception
+[holy2a08101:57430] *** Process received signal ***
+[holy2a08101:57430] Signal: Aborted (6)
+[holy2a08101:57430] Signal code:  (-6)
+terminate called recursively
+terminate called recursively
+[holy2a08101:57387] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57387] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57387] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57387] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b6f981f78e5]
+[holy2a08101:57387] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b6f981f5a56]
+[holy2a08101:57387] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b6f981f5a83]
+[holy2a08101:57387] [ 6] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x587) [0x416dd7]
+[holy2a08101:57387] [ 7] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEdS6_dEEvRKT_PT0_SB_PT1_PT2_SF_PT3_jEUlvE0_vEEE6_M_runEv+0x3b) [0x4170db]
+[holy2a08101:57387] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2b6f9824c280]
+[holy2a08101:57387] [ 9] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57387] [10] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57387] *** End of error message ***
+[holy2a08101:57392] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57392] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57392] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57392] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b60c31d78e5]
+[holy2a08101:57392] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b60c31d5a56]
+[holy2a08101:57392] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b60c31d5a83]
+[holy2a08101:57392] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b60c322c315]
+[holy2a08101:57392] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57392] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57392] *** End of error message ***
+terminate called recursively
+[holy2a08101:57389] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57389] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57389] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57389] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b5733a978e5]
+[holy2a08101:57389] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b5733a95a56]
+[holy2a08101:57389] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b5733a95a83]
+[holy2a08101:57389] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b5733aec315]
+[holy2a08101:57389] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57389] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57389] *** End of error message ***
+[holy2a08101:57434] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57434] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57434] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57434] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b8bd68778e5]
+[holy2a08101:57434] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b8bd6875a56]
+[holy2a08101:57434] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b8bd6875a83]
+[holy2a08101:57434] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b8bd68cc315]
+[holy2a08101:57434] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57434] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57434] *** End of error message ***
+terminate called recursively
+[holy2a08101:57400] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57400] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57400] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57400] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b94498f78e5]
+[holy2a08101:57400] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b94498f5a56]
+[holy2a08101:57400] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b94498f5a83]
+[holy2a08101:57400] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b944994c315]
+[holy2a08101:57400] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57400] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57400] *** End of error message ***
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57405] *** Process received signal ***
+[holy2a08101:57405] Signal: Aborted (6)
+[holy2a08101:57405] Signal code:  (-6)
+[holy2a08101:57405] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57405] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57405] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57405] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b72cdd078e5]
+[holy2a08101:57405] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b72cdd05a56]
+[holy2a08101:57405] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b72cdd05a83]
+[holy2a08101:57405] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b72cdd5c315]
+[holy2a08101:57405] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57405] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57405] *** End of error message ***
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57406] *** Process received signal ***
+[holy2a08101:57406] Signal: Aborted (6)
+[holy2a08101:57406] Signal code:  (-6)
+[holy2a08101:57406] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57406] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57406] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57406] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b09cd9378e5]
+[holy2a08101:57406] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b09cd935a56]
+[holy2a08101:57406] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b09cd935a83]
+[holy2a08101:57406] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b09cd98c315]
+[holy2a08101:57406] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57406] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57406] *** End of error message ***
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57407] *** Process received signal ***
+[holy2a08101:57407] Signal: Aborted (6)
+[holy2a08101:57407] Signal code:  (-6)
+[holy2a08101:57407] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57407] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57407] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57407] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2ae25821f8e5]
+[holy2a08101:57407] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2ae25821da56]
+[holy2a08101:57407] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2ae25821da83]
+[holy2a08101:57407] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2ae258274315]
+[holy2a08101:57407] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57407] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57407] *** End of error message ***
+[holy2a08101:57410] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57410] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57410] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57410] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2ab56b97f8e5]
+[holy2a08101:57410] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2ab56b97da56]
+[holy2a08101:57410] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2ab56b97da83]
+[holy2a08101:57410] [ 6] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x587) [0x416dd7]
+terminate called recursively
+[holy2a08101:57410] [ 7] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57410] [ 8] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEdS6_dEEvRKT_PT0_SB_PT1_PT2_SF_PT3_jEUlvE0_vEEE6_M_runEv+0x3b) [0x4170db]
+[holy2a08101:57410] [ 9] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2ab56b9d4280]
+[holy2a08101:57410] [10] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57410] [11] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57410] *** End of error message ***
+[holy2a08101:57403] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57403] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57403] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57403] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b1fbcaff8e5]
+[holy2a08101:57403] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b1fbcafda56]
+[holy2a08101:57403] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b1fbcafda83]
+[holy2a08101:57403] [ 6] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x587) [0x416dd7]
+[holy2a08101:57403] [ 7] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEdS6_dEEvRKT_PT0_SB_PT1_PT2_SF_PT3_jEUlvE0_vEEE6_M_runEv+0x3b) [0x4170db]
+[holy2a08101:57403] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2b1fbcb54280]
+[holy2a08101:57403] [ 9] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57403] [10] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57403] *** End of error message ***
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57418] *** Process received signal ***
+[holy2a08101:57418] Signal: Aborted (6)
+[holy2a08101:57418] Signal code:  (-6)
+[holy2a08101:57418] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57418] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57418] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57418] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b80a842f8e5]
+[holy2a08101:57418] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b80a842da56]
+[holy2a08101:57418] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b80a842da83]
+[holy2a08101:57418] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5dcae) [0x2b80a842dcae]
+[holy2a08101:57418] [ 7] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZSt20__throw_system_errori+0x80) [0x2b80a8482f00]
+[holy2a08101:57418] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZNSt6thread15_M_start_threadESt10shared_ptrINS_10_Impl_baseEE+0x248) [0x2b80a8484588]
+[holy2a08101:57418] [ 9] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x4db) [0x416d2b]
+[holy2a08101:57418] [10] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x56c) [0x416dbc]
+[holy2a08101:57418] [11] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57418] [12] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57418] [13] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57418] [14] ./symmetric(main+0x293f) [0x419fdf]
+[holy2a08101:57418] [15] /lib64/libc.so.6(__libc_start_main+0xfd) [0x3a65a1ed1d]
+[holy2a08101:57418] [16] ./symmetric() [0x40e6b1]
+[holy2a08101:57418] *** End of error message ***
+terminate called recursively
+terminate called recursively
+terminate called recursively
+[holy2a08101:57408] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57408] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57408] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57408] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b726cc4f8e5]
+[holy2a08101:57408] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b726cc4da56]
+[holy2a08101:57408] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b726cc4da83]
+[holy2a08101:57408] [ 6] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEddEEvRKT_PT0_SB_PT1_PT2_jEUlvE_vEEE6_M_runEv+0x53e) [0x41590e]
+[holy2a08101:57408] [ 7] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2b726cca4280]
+[holy2a08101:57408] [ 8] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57408] [ 9] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57408] *** End of error message ***
+terminate called recursively
+[holy2a08101:57424] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57424] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57424] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57424] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b508aa378e5]
+[holy2a08101:57424] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b508aa35a56]
+[holy2a08101:57424] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b508aa35a83]
+[holy2a08101:57424] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b508aa8c315]
+[holy2a08101:57424] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57424] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57424] *** End of error message ***
+[holy2a08101:57426] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57426] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57426] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57426] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b937a4d78e5]
+[holy2a08101:57426] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b937a4d5a56]
+[holy2a08101:57426] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b937a4d5a83]
+[holy2a08101:57426] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b937a52c315]
+[holy2a08101:57426] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57426] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57426] *** End of error message ***
+terminate called after throwing an instance of 'std::system_error'
+terminate called recursively
+[holy2a08101:57436] *** Process received signal ***
+[holy2a08101:57436] Signal: Aborted (6)
+[holy2a08101:57436] Signal code:  (-6)
+[holy2a08101:57436] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57436] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57436] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57436] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0xe5) [0x2aab9e9ef875]
+[holy2a08101:57436] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2aab9e9eda56]
+[holy2a08101:57436] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2aab9e9eda83]
+[holy2a08101:57436] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2aab9ea44315]
+[holy2a08101:57436] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57436] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57436] *** End of error message ***
+terminate called recursively
+terminate called recursively
+terminate called recursively
+terminate called recursively
+terminate called recursively
+[holy2a08101:57440] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57440] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57440] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57440] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b4ee50e78e5]
+[holy2a08101:57440] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b4ee50e5a56]
+[holy2a08101:57440] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b4ee50e5a83]
+[holy2a08101:57440] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b4ee513c315]
+[holy2a08101:57440] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57440] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57440] *** End of error message ***
+terminate called recursively
+[holy2a08101:57390] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57390] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57390] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57390] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2abf81f978e5]
+[holy2a08101:57390] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2abf81f95a56]
+[holy2a08101:57390] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2abf81f95a83]
+[holy2a08101:57390] [ 6] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x587) [0x416dd7]
+[holy2a08101:57390] [ 7] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEdS6_dEEvRKT_PT0_SB_PT1_PT2_SF_PT3_jEUlvE0_vEEE6_M_runEv+0x3b) [0x4170db]
+[holy2a08101:57390] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2abf81fec280]
+[holy2a08101:57390] [ 9] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57390] [10] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57390] *** End of error message ***
+terminate called recursively
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57414] *** Process received signal ***
+[holy2a08101:57414] Signal: Aborted (6)
+[holy2a08101:57414] Signal code:  (-6)
+[holy2a08101:57414] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57414] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57414] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57414] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b520767f8e5]
+[holy2a08101:57414] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b520767da56]
+[holy2a08101:57414] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b520767da83]
+[holy2a08101:57414] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b52076d4315]
+[holy2a08101:57414] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57414] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57414] *** End of error message ***
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57404] *** Process received signal ***
+terminate called recursively
+[holy2a08101:57404] Signal: Aborted (6)
+[holy2a08101:57404] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57419] *** Process received signal ***
+[holy2a08101:57419] Signal: Aborted (6)
+[holy2a08101:57419] Signal code:  (-6)
+[holy2a08101:57419] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57419] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57419] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57419] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2acab342f8e5]
+[holy2a08101:57419] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2acab342da56]
+[holy2a08101:57419] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2acab342da83]
+[holy2a08101:57419] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2acab3484315]
+[holy2a08101:57419] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57419] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57419] *** End of error message ***
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57396] *** Process received signal ***
+[holy2a08101:57396] Signal: Aborted (6)
+[holy2a08101:57396] Signal code:  (-6)
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+  what():  [holy2a08101:57413] *** Process received signal ***
+Resource temporarily unavailable
+[holy2a08101:57413] Signal: Aborted (6)
+[holy2a08101:57413] Signal code:  (-6)
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57399] *** Process received signal ***
+[holy2a08101:57399] Signal: Aborted (6)
+[holy2a08101:57399] Signal code:  (-6)
+[holy2a08101:57399] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57399] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57399] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57399] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b453d3778e5]
+[holy2a08101:57399] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b453d375a56]
+[holy2a08101:57399] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b453d375a83]
+[holy2a08101:57399] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2b453d3cc315]
+[holy2a08101:57399] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57399] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57399] *** End of error message ***
+terminate called recursively
+terminate called recursively
+terminate called after throwing an instance of 'std::system_error'
+terminate called recursively
+terminate called recursively
+  what():  Resource temporarily unavailable[holy2a08101:57420] *** Process received signal ***
+
+[holy2a08101:57420] Signal: Aborted (6)
+[holy2a08101:57420] Signal code:  (-6)
+terminate called without an active exception
+[holy2a08101:57422] *** Process received signal ***
+[holy2a08101:57422] Signal: Aborted (6)
+[holy2a08101:57422] Signal code:  (-6)
+[holy2a08101:57422] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57422] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57422] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57422] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b770a82f8e5]
+[holy2a08101:57422] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b770a82da56]
+[holy2a08101:57422] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b770a82da83]
+[holy2a08101:57422] [ 6] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x587) [0x416dd7]
+[holy2a08101:57422] [ 7] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEdS6_dEEvRKT_PT0_SB_PT1_PT2_SF_PT3_jEUlvE0_vEEE6_M_runEv+0x3b) [0x4170db]
+[holy2a08101:57422] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2b770a884280]
+[holy2a08101:57422] [ 9] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57422] [10] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57422] *** End of error message ***
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57427] *** Process received signal ***
+[holy2a08101:57427] Signal: Aborted (6)
+[holy2a08101:57427] Signal code:  (-6)
+[holy2a08101:57427] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57427] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57427] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57427] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b850ec4f8e5]
+[holy2a08101:57427] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b850ec4da56]
+[holy2a08101:57427] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b850ec4da83]
+[holy2a08101:57427] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5dcae) [0x2b850ec4dcae]
+[holy2a08101:57427] [ 7] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZSt20__throw_system_errori+0x80) [0x2b850eca2f00]
+[holy2a08101:57427] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZNSt6thread15_M_start_threadESt10shared_ptrINS_10_Impl_baseEE+0x248) [0x2b850eca4588]
+[holy2a08101:57427] [ 9] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x4db) [0x416d2b]
+[holy2a08101:57427] [10] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x56c) [0x416dbc]
+[holy2a08101:57427] [11] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57427] [12] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57427] [13] ./symmetric(main+0x293f) [0x419fdf]
+[holy2a08101:57427] [14] /lib64/libc.so.6(__libc_start_main+0xfd) [0x3a65a1ed1d]
+[holy2a08101:57427] [15] ./symmetric() [0x40e6b1]
+[holy2a08101:57427] *** End of error message ***
+terminate called without an active exception
+[holy2a08101:57429] *** Process received signal ***
+[holy2a08101:57429] Signal: Aborted (6)
+[holy2a08101:57429] Signal code:  (-6)
+[holy2a08101:57429] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57429] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57429] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57429] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2b814bcd78e5]
+[holy2a08101:57429] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2b814bcd5a56]
+[holy2a08101:57429] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2b814bcd5a83]
+[holy2a08101:57429] [ 6] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x587) [0x416dd7]
+[holy2a08101:57429] [ 7] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57429] [ 8] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57429] [ 9] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEdS6_dEEvRKT_PT0_SB_PT1_PT2_SF_PT3_jEUlvE0_vEEE6_M_runEv+0x3b) [0x4170db]
+[holy2a08101:57429] [10] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2b814bd2c280]
+[holy2a08101:57429] [11] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57429] [12] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57429] *** End of error message ***
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+[holy2a08101:57433] *** Process received signal ***
+[holy2a08101:57433] Signal: Aborted (6)
+[holy2a08101:57433] Signal code:  (-6)
+[holy2a08101:57433] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57433] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57433] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57433] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2ad5bdc8f8e5]
+[holy2a08101:57433] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2ad5bdc8da56]
+[holy2a08101:57433] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2ad5bdc8da83]
+[holy2a08101:57433] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5dcae) [0x2ad5bdc8dcae]
+[holy2a08101:57433] [ 7] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZSt20__throw_system_errori+0x80) [0x2ad5bdce2f00]
+[holy2a08101:57433] [ 8] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZNSt6thread15_M_start_threadESt10shared_ptrINS_10_Impl_baseEE+0x248) [0x2ad5bdce4588]
+[holy2a08101:57433] [ 9] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x4db) [0x416d2b]
+[holy2a08101:57433] [10] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57433] [11] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x56c) [0x416dbc]
+[holy2a08101:57433] [12] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57433] [13] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57433] [14] ./symmetric(main+0x293f) [0x419fdf]
+[holy2a08101:57433] [15] /lib64/libc.so.6(__libc_start_main+0xfd) [0x3a65a1ed1d]
+[holy2a08101:57433] [16] ./symmetric() [0x40e6b1]
+[holy2a08101:57433] *** End of error message ***
+terminate called recursively
+terminate called without an active exception
+[holy2a08101:57385] *** Process received signal ***
+[holy2a08101:57385] Signal: Aborted (6)
+[holy2a08101:57385] Signal code:  (-6)
+[holy2a08101:57385] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57385] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57385] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57385] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2abcc420f8e5]
+[holy2a08101:57385] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2abcc420da56]
+[holy2a08101:57385] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2abcc420da83]
+[holy2a08101:57385] [ 6] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x587) [0x416dd7]
+[holy2a08101:57385] [ 7] ./symmetric(_ZN6detail3p2pI5InvSq3VecILm3EdEdS3_dEEvRKT_PT0_S8_PT1_PT2_SC_PT3_j+0x541) [0x416d91]
+[holy2a08101:57385] [ 8] ./symmetric(_ZNSt6thread5_ImplISt12_Bind_simpleIFZN6detail3p2pI5InvSq3VecILm3EdEdS6_dEEvRKT_PT0_SB_PT1_PT2_SF_PT3_jEUlvE0_vEEE6_M_runEv+0x3b) [0x4170db]
+[holy2a08101:57385] [ 9] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4280) [0x2abcc4264280]
+[holy2a08101:57385] [10] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57385] [11] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57385] *** End of error message ***
+[holy2a08101:57396] [ 0] /lib64/libpthread.so.0() [0x3a65e0f710]
+[holy2a08101:57396] [ 1] /lib64/libc.so.6(gsignal+0x35) [0x3a65a32925]
+[holy2a08101:57396] [ 2] /lib64/libc.so.6(abort+0x175) [0x3a65a34105]
+[holy2a08101:57396] [ 3] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(_ZN9__gnu_cxx27__verbose_terminate_handlerEv+0x155) [0x2aabba3d78e5]
+[holy2a08101:57396] [ 4] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da56) [0x2aabba3d5a56]
+[holy2a08101:57396] [ 5] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0x5da83) [0x2aabba3d5a83]
+[holy2a08101:57396] [ 6] /n/sw/centos6/gcc-4.8.0/lib64/libstdc++.so.6(+0xb4315) [0x2aabba42c315]
+[holy2a08101:57396] [ 7] /lib64/libpthread.so.0() [0x3a65e079d1]
+[holy2a08101:57396] [ 8] /lib64/libc.so.6(clone+0x6d) [0x3a65ae8b5d]
+[holy2a08101:57396] *** End of error message ***
+terminate called recursively
+--------------------------------------------------------------------------
+mpirun noticed that process rank 53 with PID 57437 on node holy2a08101.rc.fas.harvard.edu exited on signal 6 (Aborted).
+--------------------------------------------------------------------------

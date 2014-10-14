@@ -1,0 +1,103 @@
+N = 25600
+P = 64
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.232538e+00	5.457405e-02	5.334820e-01	3.237246e-01	9.571312e-03
+Rank 0 Total Time: 2.178618e+00
+Computing direct matvec...
+Vector  relative error: 4.49786e-15
+Average relative error: 3.91549e-15
+Maximum relative error: 2.568e-14
+DirectCompTime: 3.55362
+N = 25600
+P = 64
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	6.494646e-01	2.862131e-02	2.993957e-01	1.928452e-01	8.670230e-02
+Rank 0 Total Time: 1.369677e+00
+Computing direct matvec...
+Vector  relative error: 0.0162032
+Average relative error: 0.00494788
+Maximum relative error: 0.627948
+DirectCompTime: 3.44689
+N = 25600
+P = 64
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	4.051780e-01	7.499373e-02	4.893808e-02	1.206761e-02	5.491508e-02
+Rank 0 Total Time: 6.911770e-01
+Computing direct matvec...
+Vector  relative error: 0.0117844
+Average relative error: 0.00272365
+Maximum relative error: 0.22856
+DirectCompTime: 3.36411
+N = 25600
+P = 64
+Teamsize = 8
+2 total processes killed (some possibly by mpirun during cleanup)
+N = 25600
+P = 32
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.495796e+00	3.168544e-02	6.825164e-01	6.574495e-01	5.905059e-02
+Rank 0 Total Time: 2.941293e+00
+Computing direct matvec...
+Vector  relative error: 0.0222482
+Average relative error: 0.00713269
+Maximum relative error: 0.769297
+DirectCompTime: 3.53691
+N = 25600
+P = 32
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	6.876911e-01	1.096178e-02	1.698889e-01	6.308234e-02	9.619281e-02
+Rank 0 Total Time: 1.102332e+00
+Computing direct matvec...
+Vector  relative error: 0.0181615
+Average relative error: 0.0063141
+Maximum relative error: 0.406953
+DirectCompTime: 3.45744
+N = 25600
+P = 32
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	3.855183e-01	1.365719e-02	1.798025e-02	0.000000e+00	7.632750e-02
+Rank 0 Total Time: 5.838150e-01
+Computing direct matvec...
+Vector  relative error: 4.13959e-15
+Average relative error: 3.66098e-15
+Maximum relative error: 2.033e-14
+DirectCompTime: 3.23152
+N = 25600
+P = 16
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.334177e+00	1.091544e-02	4.745532e-01	3.138093e-01	2.675044e-02
+Rank 0 Total Time: 2.165224e+00
+Computing direct matvec...
+Vector  relative error: 0.0195655
+Average relative error: 0.00424241
+Maximum relative error: 1.17865
+DirectCompTime: 3.16628
+N = 25600
+P = 16
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	6.565188e-01	9.469688e-03	4.850187e-02	2.009394e-02	8.606263e-02
+Rank 0 Total Time: 8.390330e-01
+Computing direct matvec...
+Vector  relative error: 4.05118e-15
+Average relative error: 3.65252e-15
+Maximum relative error: 1.98999e-14
+DirectCompTime: 3.44343
+N = 25600
+P = 16
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	5.179174e-01	2.846381e-02	1.489631e-02	0.000000e+00	1.846971e-01
+Rank 0 Total Time: 8.435160e-01
+Computing direct matvec...
+Vector  relative error: 4.17228e-15
+Average relative error: 3.60322e-15
+Maximum relative error: 2.01735e-14
+DirectCompTime: 3.26867

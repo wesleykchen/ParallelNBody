@@ -1,0 +1,6 @@
+N = 25600
+P = 64
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.219229e+00	6.745122e-02	5.557239e-01	3.262696e-01	1.421759e-02
+Rank 0 Total Time: 2.236467e+00
