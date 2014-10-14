@@ -1,4 +1,0 @@
-N = 25600
-P = 256
-Teamsize = 4
-2 total processes killed (some possibly by mpirun during cleanup)

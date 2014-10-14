@@ -1,0 +1,23 @@
+Loading module centos6/gmp-5.1.1.
+Loading module centos6/mpfr-3.1.2.
+Loading module centos6/mpc-1.0.1.
+Loading module centos6/gcc-4.8.0.
+Loading module centos6/openmpi-1.6.5_gcc-4.8.0.
+--------------------------------------------------------------------------
+mpirun was unable to launch the specified application as it could not access
+or execute an executable:
+
+Executable: ./symmetric
+Node: holy2a04201.rc.fas.harvard.edu
+
+while attempting to start process rank 0.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun was unable to launch the specified application as it could not access
+or execute an executable:
+
+Executable: ./symmetric
+Node: holy2a04201.rc.fas.harvard.edu
+
+while attempting to start process rank 0.
+--------------------------------------------------------------------------

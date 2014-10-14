@@ -259,10 +259,10 @@ int main(int argc, char** argv)
   double avgSendRecvTime = 0;
 
   // Could use all reduce here to get the averaged data to all the processors
-  MPI_Reduce(totalCompTime, &avgCompTime, 1, MPI_DOUBLE,
+  MPI_Reduce(&totalCompTime, &avgCompTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
 
-  avgCompTimer /= n;
+  avgCompTime /= N;
   printf("[%d] CompTimer: %e\n", rank, totalCompTime);
   if (rank == MASTER) {
 

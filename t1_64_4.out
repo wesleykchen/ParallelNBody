@@ -1,0 +1,116 @@
+32 total processes failed to start
+64 total processes failed to start
+N = 25600
+P = 32
+Teamsize = 4
+[23] CompTimer: 1.274907e+00
+[7] CompTimer: 1.381235e+00
+[11] CompTimer: 1.414097e+00
+[13] CompTimer: 1.408255e+00
+[15] CompTimer: 1.435755e+00
+[3] CompTimer: 1.374959e+00
+[19] CompTimer: 1.442071e+00
+[27] CompTimer: 1.242107e+00
+[9] CompTimer: 1.437298e+00
+[10] CompTimer: 1.270903e+00
+[18] CompTimer: 1.356414e+00
+[17] CompTimer: 1.209091e+00
+[2] CompTimer: 1.308441e+00
+[1] CompTimer: 1.389969e+00
+[25] CompTimer: 1.404412e+00
+[26] CompTimer: 1.409068e+00
+[31] CompTimer: 1.332530e+00
+[21] CompTimer: 1.387492e+00
+[22] CompTimer: 1.290556e+00
+[29] CompTimer: 1.250982e+00
+[14] CompTimer: 1.426387e+00
+[30] CompTimer: 1.347394e+00
+[5] CompTimer: 1.385615e+00
+[6] CompTimer: 1.360616e+00
+[4] CompTimer: 1.422727e+00
+[8] CompTimer: 1.426846e+00
+[12] CompTimer: 1.227035e+00
+[16] CompTimer: 1.176064e+00
+[20] CompTimer: 1.272291e+00
+[0] CompTimer: 1.375421e+00
+[0] AVERAGES: 1.687281e-03
+Computing direct matvec...
+[24] CompTimer: 1.427787e+00
+[28] CompTimer: 1.325667e+00
+Vector  relative error: 4.13959e-15
+Average relative error: 3.66098e-15
+Maximum relative error: 2.033e-14
+DirectCompTime: 3.92783
+N = 25600
+P = 64
+Teamsize = 4
+[39] CompTimer: 8.348530e-01
+[7] CompTimer: 8.584950e-01
+[1] CompTimer: 7.306770e-01
+[11] CompTimer: 8.777180e-01
+[5] CompTimer: 8.336170e-01
+[6] CompTimer: 9.504840e-01
+[27] CompTimer: 9.726510e-01
+[21] CompTimer: 7.619670e-01
+[49] CompTimer: 9.704400e-01
+[33] CompTimer: 9.372460e-01
+[17] CompTimer: 7.259590e-01
+[43] CompTimer: 8.527460e-01
+[55] CompTimer: 8.624600e-01
+[37] CompTimer: 7.551900e-01
+[38] CompTimer: 7.317440e-01
+[59] CompTimer: 6.913620e-01
+[61] CompTimer: 8.275930e-01
+[53] CompTimer: 8.506760e-01
+[54] CompTimer: 7.580180e-01
+[15] CompTimer: 6.725780e-01
+[14] CompTimer: 7.432380e-01
+[25] CompTimer: 8.839320e-01
+[26] CompTimer: 1.039054e+00
+[13] CompTimer: 7.222520e-01
+[22] CompTimer: 7.038070e-01
+[23] CompTimer: 8.873680e-01
+[62] CompTimer: 9.796090e-01
+[63] CompTimer: 7.037460e-01
+[31] CompTimer: 6.392930e-01
+[9] CompTimer: 8.231980e-01
+[10] CompTimer: 6.964180e-01
+[57] CompTimer: 9.139540e-01
+[58] CompTimer: 8.476670e-01
+[50] CompTimer: 1.001752e+00
+[51] CompTimer: 9.339610e-01
+[18] CompTimer: 7.200650e-01
+[19] CompTimer: 8.213390e-01
+[41] CompTimer: 9.972080e-01
+[42] CompTimer: 7.053180e-01
+[2] CompTimer: 7.199610e-01
+[3] CompTimer: 7.633670e-01
+[12] CompTimer: 9.883070e-01
+[20] CompTimer: 7.913810e-01
+[45] CompTimer: 6.830100e-01
+[4] CompTimer: 8.835460e-01
+[8] CompTimer: 7.664170e-01
+[29] CompTimer: 7.503940e-01
+[35] CompTimer: 9.416210e-01
+[34] CompTimer: 7.761660e-01
+[46] CompTimer: 9.409110e-01
+[47] CompTimer: 1.006176e+00
+[28] CompTimer: 9.087790e-01
+[30] CompTimer: 8.467600e-01
+[36] CompTimer: 1.009583e+00
+[40] CompTimer: 1.013931e+00
+[44] CompTimer: 7.961790e-01
+[52] CompTimer: 8.572170e-01
+[16] CompTimer: 8.905800e-01
+[24] CompTimer: 9.129410e-01
+[32] CompTimer: 8.495700e-01
+[0] CompTimer: 9.141350e-01
+[0] AVERAGES: 2.098273e-03
+Computing direct matvec...
+[48] CompTimer: 1.045946e+00
+[56] CompTimer: 5.981950e-01
+[60] CompTimer: 8.410570e-01
+Vector  relative error: 4.50133e-15
+Average relative error: 3.64566e-15
+Maximum relative error: 1.99733e-14
+DirectCompTime: 1.34497
