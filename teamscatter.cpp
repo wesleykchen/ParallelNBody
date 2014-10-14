@@ -262,7 +262,7 @@ int main(int argc, char** argv)
   MPI_Reduce(&totalCompTime, &avgCompTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
 
-  avgCompTime /= N;
+  avgCompTime /= P;
   printf("[%d] CompTimer: %e\n", rank, totalCompTime);
   if (rank == MASTER) {
 

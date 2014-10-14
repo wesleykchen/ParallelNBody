@@ -8,7 +8,7 @@ mpirun was unable to launch the specified application as it could not access
 or execute an executable:
 
 Executable: ./symmetric
-Node: holy2a04201.rc.fas.harvard.edu
+Node: holy2a02207.rc.fas.harvard.edu
 
 while attempting to start process rank 0.
 --------------------------------------------------------------------------
@@ -17,7 +17,7 @@ mpirun was unable to launch the specified application as it could not access
 or execute an executable:
 
 Executable: ./symmetric
-Node: holy2a04201.rc.fas.harvard.edu
+Node: holy2a02207.rc.fas.harvard.edu
 
 while attempting to start process rank 0.
 --------------------------------------------------------------------------
