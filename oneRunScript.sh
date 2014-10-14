@@ -4,8 +4,8 @@
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=2000     #Memory per cpu in MB (see also --mem)
-#SBATCH -o n25600p64c8.out     	      #File to which standard out will be written
-#SBATCH -e n25600p64c8.err      	      #File to which standard err will be written
+#SBATCH -o data/n25600p16c1.out     	      #File to which standard out will be written
+#SBATCH -e data/n25600p16c1.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
@@ -14,17 +14,21 @@
 #module load centos6/openmpi-1.7.2_intel-13.0.079
 #module load centos6/fftw-3.3.3_openmpi-1.6.4_gcc-4.8.0
 module load centos6/openmpi-1.6.5_gcc-4.8.0 
+
+make clean
+
+make symmetric XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 #
 # Execute the run
 #
 
-#mpirun -np 64  ./symmetric 25600  -c 1 -nocheck
+mpirun -np 16  ./symmetric 25600  -c 1 #-nocheck
 
 #mpirun -np 64  ./symmetric 25600  -c 2 #-nocheck
 
 #mpirun -np 64  ./symmetric 25600  -c 4 #-nocheck
 
-mpirun -np 64  ./symmetric 25600  -c 8 #-nocheck
+#mpirun -np 64  ./symmetric 25600  -c 8 #-nocheck
 
 #mpirun -np 32  ./symmetric 25600  -c 1 #-nocheck
 
