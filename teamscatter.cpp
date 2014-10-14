@@ -277,7 +277,7 @@ int main(int argc, char** argv)
 
   // format output well
   if (rank == MASTER) {
-    printf("Label\tComputation\tSplit\tShift\tReduce")
+    printf("Label\tComputation\tSplit\tShift\tReduce");
     printf("c=%d\t%e\t%e\t%e\t%e", teamsize, avgCompTime, avgSplitTime, avgShiftTime, avgReduceTime);
   }
 

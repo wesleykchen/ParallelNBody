@@ -1,116 +1,32 @@
-32 total processes failed to start
-64 total processes failed to start
 N = 25600
 P = 32
 Teamsize = 4
-[15] CompTimer: 4.075160e-01
-[3] CompTimer: 4.059930e-01
-[23] CompTimer: 3.948990e-01
-[7] CompTimer: 4.236660e-01
-[31] CompTimer: 3.955230e-01
-[19] CompTimer: 4.243680e-01
-[27] CompTimer: 4.446920e-01
-[11] CompTimer: 4.205110e-01
-[13] CompTimer: 3.700450e-01
-[14] CompTimer: 4.150070e-01
-[2] CompTimer: 4.099070e-01
-[1] CompTimer: 4.176970e-01
-[29] CompTimer: 4.070020e-01
-[30] CompTimer: 4.402350e-01
-[17] CompTimer: 3.971060e-01
-[18] CompTimer: 4.202380e-01
-[9] CompTimer: 3.950980e-01
-[22] CompTimer: 3.874110e-01
-[21] CompTimer: 3.980490e-01
-[10] CompTimer: 3.700060e-01
-[6] CompTimer: 4.166340e-01
-[25] CompTimer: 4.472700e-01
-[5] CompTimer: 4.188870e-01
-[4] CompTimer: 5.721050e-01
-[8] CompTimer: 4.645640e-01
-[12] CompTimer: 4.983850e-01
-[20] CompTimer: 4.913850e-01
-[26] CompTimer: 4.403210e-01
-[28] CompTimer: 5.270790e-01
-[0] CompTimer: 5.177640e-01
-[0] AVERAGES: 4.393316e-01
-Computing direct matvec...
-[16] CompTimer: 5.515000e-01
-[24] CompTimer: 5.677490e-01
+Label	Computation	Split	Shift	SendReceive	ReduceC=4	4.563609e-01	1.340644e-02	2.231575e-02	0.000000e+00	1.098416e-01Computing direct matvec...
 Vector  relative error: 4.13959e-15
 Average relative error: 3.66098e-15
 Maximum relative error: 2.033e-14
-DirectCompTime: 3.03894
+DirectCompTime: 5.36322
 N = 25600
 P = 64
 Teamsize = 4
-[43] CompTimer: 3.186720e-01
-[23] CompTimer: 3.578330e-01
-[11] CompTimer: 3.447460e-01
-[39] CompTimer: 3.314480e-01
-[59] CompTimer: 3.559590e-01
-[7] CompTimer: 3.375690e-01
-[63] CompTimer: 3.423530e-01
-[55] CompTimer: 3.160240e-01
-[31] CompTimer: 3.036630e-01
-[27] CompTimer: 3.477680e-01
-[15] CompTimer: 3.550800e-01
-[35] CompTimer: 3.207420e-01
-[3] CompTimer: 3.367580e-01
-[47] CompTimer: 3.335380e-01
-[57] CompTimer: 3.373830e-01
-[58] CompTimer: 3.520260e-01
-[9] CompTimer: 3.547370e-01
-[10] CompTimer: 3.511960e-01
-[51] CompTimer: 3.341030e-01
-[19] CompTimer: 3.421000e-01
-[25] CompTimer: 3.441790e-01
-[26] CompTimer: 3.205430e-01
-[49] CompTimer: 3.275490e-01
-[50] CompTimer: 3.661130e-01
-[17] CompTimer: 3.457380e-01
-[18] CompTimer: 3.497350e-01
-[33] CompTimer: 3.474050e-01
-[34] CompTimer: 3.534020e-01
-[42] CompTimer: 3.217850e-01
-[41] CompTimer: 3.534920e-01
-[1] CompTimer: 3.584150e-01
-[2] CompTimer: 3.330400e-01
-[45] CompTimer: 3.191520e-01
-[46] CompTimer: 3.522190e-01
-[61] CompTimer: 3.058220e-01
-[62] CompTimer: 3.590050e-01
-[29] CompTimer: 3.378810e-01
-[30] CompTimer: 3.661870e-01
-[13] CompTimer: 3.507240e-01
-[14] CompTimer: 3.222630e-01
-[53] CompTimer: 3.289430e-01
-[54] CompTimer: 3.197800e-01
-[4] CompTimer: 4.266460e-01
-[5] CompTimer: 3.185070e-01
-[6] CompTimer: 3.336700e-01
-[8] CompTimer: 3.816460e-01
-[12] CompTimer: 4.258760e-01
-[37] CompTimer: 3.588370e-01
-[38] CompTimer: 3.596840e-01
-[20] CompTimer: 4.158190e-01
-[21] CompTimer: 3.652630e-01
-[22] CompTimer: 3.075950e-01
-[16] CompTimer: 3.872820e-01
-[24] CompTimer: 4.148730e-01
-[28] CompTimer: 4.429100e-01
-[36] CompTimer: 4.403650e-01
-[40] CompTimer: 4.209820e-01
-[0] CompTimer: 3.964310e-01
-[0] AVERAGES: 3.594925e-01
-Computing direct matvec...
-[44] CompTimer: 4.011040e-01
-[48] CompTimer: 4.429970e-01
-[52] CompTimer: 4.738940e-01
-[56] CompTimer: 3.984110e-01
-[60] CompTimer: 4.475340e-01
-[32] CompTimer: 3.901270e-01
+Label	Computation	Split	Shift	SendReceive	ReduceC=4	4.534838e-01	8.120138e-02	7.720892e-02	1.327300e-02	5.844403e-02Computing direct matvec...
+Vector  relative error: 4.2588e-15
+Average relative error: 3.66447e-15
+Maximum relative error: 2.05083e-14
+DirectCompTime: 5.55819
+N = 25600
+P = 32
+Teamsize = 4
+Label	Computation	Split	Shift	Reducec=4	4.428890e-01	3.581881e-02	1.818319e-02	1.044744e-01Computing direct matvec...
+Vector  relative error: 4.13959e-15
+Average relative error: 3.66098e-15
+Maximum relative error: 2.033e-14
+DirectCompTime: 6.02423
+N = 25600
+P = 64
+Teamsize = 4
+Label	Computation	Split	Shift	Reducec=4	4.053867e-01	3.757973e-02	5.720166e-02	4.631597e-02Computing direct matvec...
 Vector  relative error: 4.50133e-15
 Average relative error: 3.64566e-15
 Maximum relative error: 1.99733e-14
-DirectCompTime: 2.74665
+DirectCompTime: 5.12939
