@@ -256,18 +256,31 @@ int main(int argc, char** argv)
   double avgCompTime = 0;
   double avgSplitTime = 0;
   double avgShiftTime = 0;
-  double avgSendRecvTime = 0;
+  double avgReduceTime = 0;
 
   // Could use all reduce here to get the averaged data to all the processors
   MPI_Reduce(&totalCompTime, &avgCompTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
-
   avgCompTime /= P;
-  printf("[%d] CompTimer: %e\n", rank, totalCompTime);
-  if (rank == MASTER) {
 
-    printf("[%d] AVERAGES: %e\n", rank, avgCompTime);
+  MPI_Reduce(&totalSplitTime, &avgSplitTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgSplitTime /= P;
+
+  MPI_Reduce(&totalShiftTime, &avgShiftTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgShiftTime /= P;
+
+  MPI_Reduce(&totalReduceTime, &avgReduceTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgReduceTime /= P;
+
+  // format output well
+  if (rank == MASTER) {
+    printf("Label\tComputation\tSplit\tShift\tReduce")
+    printf("c=%d\t%e\t%e\t%e\t%e", teamsize, avgCompTime, avgSplitTime, avgShiftTime, avgReduceTime);
   }
+
   // Check the result
   if (rank == MASTER && checkErrors) {
     std::cout << "Computing direct matvec..." << std::endl;

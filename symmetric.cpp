@@ -453,11 +453,49 @@ int main(int argc, char** argv)
     totalReduceTime += reduceTimer.elapsed();
   }
 
+  /* Old timing code to display
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalSendRecvTime + totalReduceTime
                                        + totalSplitTime + totalShiftTime);
   printf("[%d] CompTimer: %e\n", rank, totalCompTime);
+  */
+
+  // Collect times to MASTER
+
+  // Receive buffers for master
+  double avgCompTime = 0;
+  double avgSplitTime = 0;
+  double avgShiftTime = 0;
+  double avgReduceTime = 0;
+  double avgSendRecvTime = 0;
+
+  // Could use all reduce here to get the averaged data to all the processors
+  MPI_Reduce(&totalCompTime, &avgCompTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgCompTime /= P;
+
+  MPI_Reduce(&totalSplitTime, &avgSplitTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgSplitTime /= P;
+
+  MPI_Reduce(&totalShiftTime, &avgShiftTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgShiftTime /= P;
+
+  MPI_Reduce(&totalSendRecvTime, &avgSendRecvTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgSendRecvTime /= P;
+
+  MPI_Reduce(&totalReduceTime, &avgReduceTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+  avgReduceTime /= P;
+
+  // format output well
+  if (rank == MASTER) {
+    printf("Label\tComputation\tSplit\tShift\tSendReceive\tReduce")
+    printf("C=%d\t%e\t%e\t%e\t%e\t%e", teamsize, avgCompTime, avgSplitTime, avgShiftTime, avgSendRecvTime, avgReduceTime);
+  }
 
   // Check the result
   if (rank == MASTER && checkErrors) {
