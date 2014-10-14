@@ -18,24 +18,26 @@ module load centos6/openmpi-1.6.5_gcc-4.8.0
 # Execute the run
 #
 
-mpirun -np 32  ./symmetric 25600  -c 4
+mpirun -np 64  ./symmetric 25600  -c 1 -nocheck
 
-mpirun -np 64  ./symmetric 25600  -c 4
+mpirun -np 64  ./symmetric 25600  -c 2 -nocheck
 
-mpirun -np 32  ./teamscatter 25600  -c 4
+mpirun -np 64  ./symmetric 25600  -c 4 -nocheck
 
-mpirun -np 64  ./teamscatter 25600  -c 4
+mpirun -np 64  ./symmetric 25600  -c 8 -nocheck
 
-#mpirun -np 64 ./symmetric 25600 -c 2 -nocheck
+mpirun -np 32  ./symmetric 25600  -c 1 -nocheck
 
-#mpirun -np 128 ./symmetric 25600 -c 4 -nocheck
+mpirun -np 32  ./symmetric 25600  -c 2 -nocheck
 
-#mpirun -np 128 ./symmetric 25600 -c 8 -nocheck
+mpirun -np 32  ./symmetric 25600  -c 4 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 1 -nocheck
+mpirun -np 16  ./symmetric 25600  -c 1 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 2 -nocheck
+mpirun -np 16  ./symmetric 25600  -c 2 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 4 -nocheck
+mpirun -np 16  ./symmetric 25600  -c 4 -nocheck
 
-#mpirun -np 128 ./teamscatter 25600 -c 8 -nocheck
+#mpirun -np 32  ./teamscatter 25600  -c 4
+
+#mpirun -np 64  ./teamscatter 25600  -c 4

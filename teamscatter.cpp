@@ -243,9 +243,9 @@ int main(int argc, char** argv)
     totalReduceTime += reduceTimer.elapsed();
   }
 
-  /* Old timing code to display
+
   double time = timer.elapsed();
-  printf("[%d] Timer: %e\n", rank, time);
+  /* Old timing code to display
   printf("[%d] CommTimer: %e\n", rank, totalShiftTime + totalSplitTime + totalReduceTime);
   printf("[%d] CompTimer: %e\n", rank, totalCompTime);
   */
@@ -277,8 +277,9 @@ int main(int argc, char** argv)
 
   // format output well
   if (rank == MASTER) {
-    printf("Label\tComputation\tSplit\tShift\tReduce");
-    printf("c=%d\t%e\t%e\t%e\t%e", teamsize, avgCompTime, avgSplitTime, avgShiftTime, avgReduceTime);
+    printf("Label\tComputation\tSplit\tShift\tReduce\n");
+    printf("c=%d\t%e\t%e\t%e\t%e\n", teamsize, avgCompTime, avgSplitTime, avgShiftTime, avgReduceTime);
+    printf("Rank 0 Total Time: %e\n", time);
   }
 
   // Check the result
