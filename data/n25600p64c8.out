@@ -1,4 +1,1 @@
-N = 25600
-P = 64
-Teamsize = 8
-5 total processes killed (some possibly by mpirun during cleanup)
+64 total processes failed to start
