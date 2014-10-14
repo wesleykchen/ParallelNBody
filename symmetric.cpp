@@ -3,6 +3,10 @@
 
 #include <tuple>
 
+// Uncomment for no threading inside P2P
+//#define P2P_DECAY_ITERATOR 0
+//#define P2P_NUM_THREADS 0
+
 #include "Util.hpp"
 
 #include "kernel/InvSq.kern"
@@ -104,7 +108,7 @@ int main(int argc, char** argv)
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
   // Scratch request for MPI
-  MPI_Request request;
+  MPI_Request request = MPI_REQUEST_NULL;
   // Scratch status for MPI
   MPI_Status status;
 
@@ -274,14 +278,10 @@ int main(int argc, char** argv)
     // Convert the xy to the transpose
     xy_pair xy_trans = transformer.xyTranspose(xy);
 
-    itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
+    itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));
 
     // calculate needs of sending to transpose
     if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
-
-      // Set rJ to zero
-      rJ.assign(rJ.size(), result_type());
-
       // Compute symmetric off-diagonal
       compTimer.start();
       p2p(K,
@@ -289,20 +289,17 @@ int main(int argc, char** argv)
           xI.begin(), xI.end(), cI.begin(), rI.begin());
       totalCompTime += compTimer.elapsed();
 
-      int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans)); 
+      int send_dest = transformer.tc2r(std::get<1>(itc_trans),std::get<2>(itc_trans));
 
       //std::cout << "Processor: " << rank << "sending to: " << send_dest << std::endl;
       // Send to proper rank
       sendRecvTimer.start();
-        MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
+      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
                 send_dest, 0,
                 MPI_COMM_WORLD, &request);
       totalSendRecvTime += sendRecvTimer.elapsed();
     }
     else {
-      // Set rJ to zero
-      rJ.assign(rJ.size(), result_type());
-
       // Compute asymmetric off-diagonal
       compTimer.start();
       p2p(K,
@@ -312,7 +309,7 @@ int main(int argc, char** argv)
     }
   }
 
-  //MPI_Barrier(MPI_COMM_WORLD); 
+
   if (trank != MASTER) {
 
     xy_pair recv_dest_xy = transformer.xyTranspose(transformer.ir2xy(xy_pair(num_teams/teamsize - curr_iter - 1, rank)));
@@ -336,6 +333,7 @@ int main(int argc, char** argv)
         *r += *tr;
     }
   }
+
   /********************/
   /** ALL ITERATIONS **/
   /********************/
@@ -360,7 +358,7 @@ int main(int argc, char** argv)
     // Convert the xy to the transpose
     xy_pair xy_trans = transformer.xyTranspose(xy);
 
-    itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));    
+    itc_tuple itc_trans = transformer.xy2itc(std::get<0>(xy_trans), std::get<1>(xy_trans));
 
     //std::cout << "On iteration: " << curr_iter << std::endl;
 
@@ -368,6 +366,7 @@ int main(int argc, char** argv)
     if (std::get<0>(itc_trans) > curr_iter && std::get<0>(itc_trans) != last_iter - 1) {
 
       // Set rJ to zero
+      MPI_Wait(&request, &status);
       rJ.assign(rJ.size(), result_type());
 
       // Compute symmetric off-diagonal
@@ -383,12 +382,13 @@ int main(int argc, char** argv)
 
       // Send to proper rank
       sendRecvTimer.start();
-        MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
+      MPI_Isend(rJ.data(), sizeof(result_type) * rJ.size(), MPI_CHAR,
                 send_dest, 0,
                 MPI_COMM_WORLD, &request);
       totalSendRecvTime += sendRecvTimer.elapsed();
     } else {
       // Set rJ to zero
+      MPI_Wait(&request, &status);
       rJ.assign(rJ.size(), result_type());
 
       // Compute asymmetric off-diagonal
@@ -397,13 +397,12 @@ int main(int argc, char** argv)
           xJ.begin(), xJ.end(), cJ.begin(),
           xI.begin(), xI.end(), rI.begin());
       totalCompTime += compTimer.elapsed();
-     
+
       if (curr_iter == last_iter -1 ) {
         break;
       }
 
     }
-
 
     int iPrimeOffset = ((trank == 0) ? 0 : 1);
     xy_pair recv_dest_xy = transformer.xyTranspose(transformer.ir2xy(xy_pair(num_teams/teamsize - curr_iter - iPrimeOffset, rank)));
@@ -425,7 +424,7 @@ int main(int argc, char** argv)
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
         *r += *tr;
     }
-      
+
   }  //  end for iteration
 
   // Reduce answers to the team leader
