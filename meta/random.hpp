@@ -5,7 +5,7 @@
 
 namespace meta {
 
-static std::mt19937 default_genenerator;
+static std::mt19937 default_generator;
 
 template <typename T>
 struct random;
@@ -14,7 +14,7 @@ template <>
 struct random<double> {
   static double get(double a, double b) {
     std::uniform_real_distribution<double> dist(a, b);
-    return dist(default_genenerator);
+    return dist(default_generator);
   }
   static double get() {
     return get(0,1);
@@ -25,7 +25,7 @@ template <>
 struct random<float> {
   static float get(float a, float b) {
     std::uniform_real_distribution<float> dist(a, b);
-    return dist(default_genenerator);
+    return dist(default_generator);
   }
   static float get() {
     return get(0,1);
@@ -36,7 +36,7 @@ template <>
 struct random<unsigned> {
   static unsigned get(unsigned a, unsigned b) {
     std::uniform_int_distribution<unsigned> dist(a, b);
-    return dist(default_genenerator);
+    return dist(default_generator);
   }
   static unsigned get() {
     return get(0, std::numeric_limits<unsigned>::max());
@@ -47,7 +47,7 @@ template <>
 struct random<int> {
   static int get(int a, int b) {
     std::uniform_int_distribution<int> dist(a, b);
-    return dist(default_genenerator);
+    return dist(default_generator);
   }
   static int get() {
     return get(0, std::numeric_limits<int>::max());
