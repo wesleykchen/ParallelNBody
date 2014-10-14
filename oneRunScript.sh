@@ -1,11 +1,11 @@
 #!/bin/bash
 #BATCH -n 64                #Number of cores
-#SBATCH -t 10                 #Runtime in minutes
+#SBATCH -t 100                 #Runtime in minutes
 #SBATCH -p general   	      #Partition to submit to
 
-#SBATCH --mem-per-cpu=2000     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/n25600p16c1.out     	      #File to which standard out will be written
-#SBATCH -e data/n25600p16c1.err      	      #File to which standard err will be written
+#SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
+#SBATCH -o data/test.out     	      #File to which standard out will be written
+#SBATCH -e data/test.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
@@ -22,7 +22,7 @@ make symmetric XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 # Execute the run
 #
 
-mpirun -np 16  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 64  ./symmetric 64000  -c 8 #-nocheck
 
 #mpirun -np 64  ./symmetric 25600  -c 2 #-nocheck
 

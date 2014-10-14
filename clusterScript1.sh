@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --ntasks 256                #Number of processes
 #SBATCH --nodes 4                  #Number of nodes
-#SBATCH --exclusive
+
 #SBATCH -t 100                 #Runtime in minutes
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/data.out     	      #File to which standard out will be written
-#SBATCH -e data/d.err      	      #File to which standard err will be written
+#SBATCH -o data/dataNoExclu.out     	      #File to which standard out will be written
+#SBATCH -e data/dNoExclu.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment

@@ -129,6 +129,8 @@ int main(int argc, char** argv)
   std::vector<charge_type> charge;
 
   if (rank == MASTER) {
+    meta::default_generator.seed(1337);
+
     // generate source data
     for (unsigned i = 0; i < N; ++i)
       source.push_back(meta::random<source_type>::get());

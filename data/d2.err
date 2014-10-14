@@ -4,9 +4,9 @@ Loading module centos6/mpc-1.0.1.
 Loading module centos6/gcc-4.8.0.
 Loading module centos6/openmpi-1.6.5_gcc-4.8.0.
 symmetric.cpp: In function ‘int main(int, char**)’:
-symmetric.cpp:323:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:320:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
      if (num_teams / teamsize - curr_iter - 1 != last_iter - 1) {
                                                              ^
-symmetric.cpp:414:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:413:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
      if (num_teams/teamsize - curr_iter - iPrimeOffset != last_iter - 1) {
                                                                       ^

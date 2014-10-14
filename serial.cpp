@@ -44,6 +44,8 @@ int main(int argc, char** argv)
   std::vector<source_type> source;
   std::vector<charge_type> charge;
 
+  meta::default_generator.seed(1337);
+
   // generate source data
   for (unsigned i = 0; i < N; ++i)
     source.push_back(meta::random<source_type>::get());
@@ -79,6 +81,6 @@ int main(int argc, char** argv)
     std::cout << "DirectCompTime: " << directCompTime << std::endl;
   }
 
-  std::ofstream result_file("data/result.txt");
+  std::ofstream result_file("data/result128k.txt");
   result_file << result << std::endl;
 }
