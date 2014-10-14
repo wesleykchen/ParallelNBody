@@ -158,7 +158,7 @@ int main(int argc, char** argv)
   // Copy xJ -> xI
   std::vector<source_type> xI = xJ;
   // Initialize block result rI
-  std::vector<double> rI(idiv_up(N,num_teams));
+  std::vector<result_type> rI(idiv_up(N,num_teams));
 
   // Perform initial offset by teamrank
   shiftTimer.start();
@@ -243,11 +243,31 @@ int main(int argc, char** argv)
     totalReduceTime += reduceTimer.elapsed();
   }
 
+  /* Old timing code to display
   double time = timer.elapsed();
   printf("[%d] Timer: %e\n", rank, time);
   printf("[%d] CommTimer: %e\n", rank, totalShiftTime + totalSplitTime + totalReduceTime);
   printf("[%d] CompTimer: %e\n", rank, totalCompTime);
+  */
 
+  // Collect times to MASTER
+
+  // Receive buffers for master
+  double avgCompTime = 0;
+  double avgSplitTime = 0;
+  double avgShiftTime = 0;
+  double avgSendRecvTime = 0;
+
+  // Could use all reduce here to get the averaged data to all the processors
+  MPI_Reduce(totalCompTime, &avgCompTime, 1, MPI_DOUBLE,
+             MPI_SUM, MASTER, MPI_COMM_WORLD);
+
+  avgCompTimer /= n;
+  printf("[%d] CompTimer: %e\n", rank, totalCompTime);
+  if (rank == MASTER) {
+
+    printf("[%d] AVERAGES: %e\n", rank, avgCompTime);
+  }
   // Check the result
   if (rank == MASTER && checkErrors) {
     std::cout << "Computing direct matvec..." << std::endl;
