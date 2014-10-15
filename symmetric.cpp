@@ -131,11 +131,7 @@ int main(int argc, char** argv)
   const int seed = 1337;
 
   if (rank == MASTER) {
-<<<<<<< HEAD
-    meta::default_generator.seed(1337);
-=======
     meta::default_generator.seed(seed);
->>>>>>> 7524e994787580030a48cb6f5186a6a9f2b75913
 
     // generate source data
     for (unsigned i = 0; i < N; ++i)
