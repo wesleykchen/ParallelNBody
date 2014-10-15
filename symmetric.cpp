@@ -520,6 +520,7 @@ int main(int argc, char** argv)
     if (result_file) {
       std::cout << "Reading result from " << result_filename << std::endl;
 
+      // Read the previously computed results
       std::vector<result_type> exact;
       result_file >> exact;
       assert(exact.size() == N);
@@ -538,8 +539,9 @@ int main(int argc, char** argv)
       print_error(exact, result);
       std::cout << "DirectCompTime: " << directCompTime << std::endl;
 
-      std::ofstream result_file2(result_filename);
-      result_file2 << exact << std::endl;
+      // Open and write
+      result_file.open(result_filename, std::fstream::out);
+      result_file << exact << std::endl;
     }
   }
 
