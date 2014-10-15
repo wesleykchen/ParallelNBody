@@ -1,0 +1,13 @@
+Loading module centos6/gmp-5.1.1.
+Loading module centos6/mpfr-3.1.2.
+Loading module centos6/mpc-1.0.1.
+Loading module centos6/gcc-4.8.0.
+Loading module centos6/openmpi-1.6.5_gcc-4.8.0.
+symmetric.cpp: In function ‘int main(int, char**)’:
+symmetric.cpp:322:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (num_teams / teamsize - curr_iter - 1 != last_iter - 1) {
+                                                             ^
+symmetric.cpp:415:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     if (num_teams/teamsize - curr_iter - iPrimeOffset != last_iter - 1) {
+                                                                      ^
+slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556586/job_22103270/step_batch: Device or resource busy

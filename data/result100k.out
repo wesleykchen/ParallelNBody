@@ -1,0 +1,4 @@
+g++ -std=c++11  -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -MD -MF .deps/serial.d -MP -I. -c -o serial.o serial.cpp
+g++ -std=c++11  -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o serial serial.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 128000
+Computed in 33.2113 seconds

@@ -1,0 +1,49 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o symmetric symmetric.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 25600
+P = 256
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.900852e-02	3.720843e+00	4.782229e+00	1.446985e+01	7.658797e-03
+Rank 0 Total Time: 2.470606e+01
+Computing direct matvec...
+Vector  relative error: 4.99372e-15
+Average relative error: 3.8779e-15
+Maximum relative error: 2.23208e-14
+DirectCompTime: 7.19069
+N = 25600
+P = 256
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	1.748231e-02	2.173852e+00	1.452504e+00	3.208020e+00	1.102744e-01
+Rank 0 Total Time: 7.625482e+00
+Computing direct matvec...
+Vector  relative error: 4.70181e-15
+Average relative error: 3.66101e-15
+Maximum relative error: 1.9544e-14
+DirectCompTime: 7.19003
+N = 25600
+P = 256
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	1.711593e-02	1.478648e+00	4.424920e-01	6.235145e-01	8.123677e-02
+Rank 0 Total Time: 3.201884e+00
+Computing direct matvec...
+Vector  relative error: 4.58543e-15
+Average relative error: 3.57747e-15
+Maximum relative error: 1.84185e-14
+DirectCompTime: 7.1858
+N = 25600
+P = 256
+Teamsize = 8
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=8	1.719038e-02	1.229725e+00	2.440850e-01	6.034597e-02	3.795643e-02
+Rank 0 Total Time: 2.087227e+00
+Computing direct matvec...
+Vector  relative error: 4.5104e-15
+Average relative error: 3.52397e-15
+Maximum relative error: 1.93982e-14
+DirectCompTime: 7.10861

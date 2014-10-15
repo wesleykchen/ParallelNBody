@@ -1,6 +1,6 @@
 #!/bin/bash
 #BATCH -n 64                #Number of cores
-#SBATCH -t 100                 #Runtime in minutes
+#SBATCH -t 10                 #Runtime in minutes
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
@@ -22,7 +22,7 @@ make symmetric XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 # Execute the run
 #
 
-mpirun -np 64  ./symmetric 64000  -c 8 #-nocheck
+mpirun -np 64  ./symmetric 6400  -c 8 #-nocheck
 
 #mpirun -np 64  ./symmetric 25600  -c 2 #-nocheck
 

@@ -1,0 +1,24 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o symmetric symmetric.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 6400
+P = 64
+Teamsize = 8
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=8	9.664094e-03	1.216227e-02	1.552977e-02	0.000000e+00	8.282891e-03
+Rank 0 Total Time: 1.684580e-01
+Computing direct matvec...
+Vector  relative error: 2.21116e-15
+Average relative error: 1.79664e-15
+Maximum relative error: 8.92186e-15
+DirectCompTime: 0.181454
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o symmetric symmetric.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 64000
+P = 64
+Teamsize = 8
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=8	1.818211e+00	7.158820e-02	2.778281e-02	0.000000e+00	4.644212e-01
+Rank 0 Total Time: 2.628710e+00
+Computing direct matvec...
