@@ -542,7 +542,8 @@ int main(int argc, char** argv)
       print_error(exact, result);
       std::cout << "DirectCompTime: " << directCompTime << std::endl;
 
-      result_file << exact << std::endl;
+      std::ofstream result_file2(result_filename);
+      result_file2 << exact << std::endl;
     }
   }
 
