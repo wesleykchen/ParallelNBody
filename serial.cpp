@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 
   // Set the seed
   const int seed = 1337;
-  meta::default_generator.seed(1337);
+  meta::default_generator.seed(seed);
 
   // generate source data
   for (unsigned i = 0; i < N; ++i)
