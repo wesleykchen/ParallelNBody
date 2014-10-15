@@ -95,7 +95,10 @@ std::istream& operator>>(std::istream& s, std::vector<T>& v) {
 
 template <typename T>
 std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
+  std::streamsize p = s.precision();
+  s.precision(20);
   std::copy(v.begin(), v.end(), std::ostream_iterator<T>(s,"\n"));
+  s.precision(p);
   return s;
 }
 

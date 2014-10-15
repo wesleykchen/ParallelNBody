@@ -2,7 +2,7 @@
 #include "Util.hpp"
 #include "meta/random.hpp"
 
-#include "kernel/Laplace.kern"
+#include "kernel/InvSq.kern"
 
 #include <iostream>
 #include <iomanip>
@@ -21,7 +21,7 @@ std::vector<T> generate(unsigned N) {
 
 
 int main() {
-  typedef LaplacePotential kernel_type;
+  typedef InvSq kernel_type;
   kernel_type K;
 
   typedef kernel_type::source_type source_type;

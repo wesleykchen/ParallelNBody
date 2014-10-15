@@ -1,8 +1,9 @@
 #include "Util.hpp"
 
-#include "kernel/InvSq.kern"
 #include "meta/kernel_traits.hpp"
 #include "meta/random.hpp"
+
+#include "kernel/InvSq.kern"
 
 // Serial version of n-body algorithm
 int main(int argc, char** argv)
@@ -44,6 +45,8 @@ int main(int argc, char** argv)
   std::vector<source_type> source;
   std::vector<charge_type> charge;
 
+  // Set the seed
+  const int seed = 1337;
   meta::default_generator.seed(1337);
 
   // generate source data
@@ -74,7 +77,9 @@ int main(int argc, char** argv)
 
     // Compute the result with a direct matrix-vector multiplication
     timer.start();
-    p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+    detail::block_eval(K,
+                       source.begin(), source.end(),
+                       charge.begin(), exact.begin());
     double directCompTime = timer.elapsed();
 
     print_error(exact, result);
@@ -82,5 +87,11 @@ int main(int argc, char** argv)
   }
 
   std::ofstream result_file("data/result128k.txt");
-  result_file << result << std::endl;
+
+  std::string result_filename = "data/";
+  result_filename += std::string("invsq")
+      + "_n" + std::to_string(N)
+      + "_s" + std::to_string(seed) + ".txt";
+
+  std::ofstream result_file(result_filename);
 }
