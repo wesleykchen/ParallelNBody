@@ -12,7 +12,7 @@
 #include "meta/trivial_iterator.hpp"
 
 #if !defined(P2P_BLOCK_SIZE)
-#  define P2P_BLOCK_SIZE 128
+#  define P2P_BLOCK_SIZE 1024
 #endif
 #if !defined(P2P_NUM_THREADS)
 #  define P2P_NUM_THREADS std::thread::hardware_concurrency()
