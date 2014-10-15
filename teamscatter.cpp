@@ -63,7 +63,11 @@ int main(int argc, char** argv)
   std::vector<source_type> source;
   std::vector<charge_type> charge;
 
+  const int seed = 1337;
+
   if (rank == MASTER) {
+    meta::default_generator.seed(seed);
+
     // generate source data
     for (unsigned i = 0; i < N; ++i)
       source.push_back(meta::random<source_type>::get());
@@ -77,6 +81,12 @@ int main(int argc, char** argv)
     std::cout << "P = " << P << std::endl;
     std::cout << "Teamsize = " << teamsize << std::endl;
   }
+
+
+  ////////////////////////
+  // Actual Computation //
+  ////////////////////////
+  // TODO: Factor out into function
 
   Clock timer;
   Clock compTimer;
@@ -284,22 +294,39 @@ int main(int argc, char** argv)
 
   // Check the result
   if (rank == MASTER && checkErrors) {
-    std::cout << "Computing direct matvec..." << std::endl;
+    std::string result_filename = "data/";
+    result_filename += std::string("invsq")
+        + "_n" + std::to_string(N)
+        + "_s" + std::to_string(seed) + ".txt";
 
-    std::vector<result_type> exact(N);
+    std::fstream result_file(result_filename);
 
-    // Compute the result with a direct matrix-vector multiplication
-    compTimer.start();
-    p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
-    double directCompTime = compTimer.elapsed();
+    if (result_file) {
+      std::cout << "Reading result from " << result_filename << std::endl;
 
-    print_error(exact, result);
-    std::cout << "DirectCompTime: " << directCompTime << std::endl;;
-  }
+      // Read the previously computed results
+      std::vector<result_type> exact;
+      result_file >> exact;
+      assert(exact.size() == N);
 
-  if (rank == MASTER) {
-    std::ofstream result_file("data/result.txt");
-    result_file << result << std::endl;
+      print_error(exact, result);
+    } else {
+      std::cout << "Computing direct matvec..." << std::endl;
+
+      std::vector<result_type> exact(N);
+
+      // Compute the result with a direct matrix-vector multiplication
+      compTimer.start();
+      p2p(K, source.begin(), source.end(), charge.begin(), exact.begin());
+      double directCompTime = compTimer.elapsed();
+
+      print_error(exact, result);
+      std::cout << "DirectCompTime: " << directCompTime << std::endl;
+
+      // Open and write
+      result_file.open(result_filename, std::fstream::out);
+      result_file << exact << std::endl;
+    }
   }
 
   MPI_Finalize();
