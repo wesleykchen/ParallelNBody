@@ -86,8 +86,6 @@ int main(int argc, char** argv)
     std::cout << "DirectCompTime: " << directCompTime << std::endl;
   }
 
-  std::ofstream result_file("data/result128k.txt");
-
   std::string result_filename = "data/";
   result_filename += std::string("invsq")
       + "_n" + std::to_string(N)
