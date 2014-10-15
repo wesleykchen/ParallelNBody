@@ -2,12 +2,12 @@
 #SBATCH --ntasks 64                #Number of processes
 #SBATCH --nodes 1                  #Number of nodes
 #SBATCH --exclusive
-#SBATCH -t 100                 #Runtime in minutes
+#SBATCH -t 300                 #Runtime in minutes
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/fullOneNode.out     	      #File to which standard out will be written
-#SBATCH -e data/fullOneNode.err      	      #File to which standard err will be written
+#SBATCH -o data/fullOneNode128k.out     	      #File to which standard out will be written
+#SBATCH -e data/fullOneNode128k.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
@@ -24,34 +24,34 @@ make symmetric XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 # Execute the run
 #
 
-mpirun -np 1  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 1  ./symmetric 128000  -c 1 #-nocheck
 
-mpirun -np 2  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 2  ./symmetric 128000  -c 1 #-nocheck
 
-mpirun -np 4  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 4  ./symmetric 128000  -c 1 #-nocheck
 
-mpirun -np 4  ./symmetric 25600  -c 2 #-nocheck
+mpirun -np 4  ./symmetric 128000  -c 2 #-nocheck
 
-mpirun -np 8  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 8  ./symmetric 128000  -c 1 #-nocheck
 
-mpirun -np 8  ./symmetric 25600  -c 2 #-nocheck
+mpirun -np 8  ./symmetric 128000  -c 2 #-nocheck
 
-mpirun -np 16  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 16  ./symmetric 128000  -c 1 #-nocheck
 
-mpirun -np 16  ./symmetric 25600  -c 2 #-nocheck
+mpirun -np 16  ./symmetric 128000  -c 2 #-nocheck
 
-mpirun -np 16  ./symmetric 25600  -c 4 #-nocheck
+mpirun -np 16  ./symmetric 128000  -c 4 #-nocheck
 
-mpirun -np 32  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 32  ./symmetric 128000  -c 1 #-nocheck
 
-mpirun -np 32  ./symmetric 25600  -c 2 #-nocheck
+mpirun -np 32  ./symmetric 128000  -c 2 #-nocheck
 
-mpirun -np 32  ./symmetric 25600  -c 4 #-nocheck
+mpirun -np 32  ./symmetric 128000  -c 4 #-nocheck
 
-mpirun -np 64  ./symmetric 25600  -c 1 #-nocheck
+mpirun -np 64  ./symmetric 128000  -c 1 #-nocheck
 
-mpirun -np 64  ./symmetric 25600  -c 2 #-nocheck
+mpirun -np 64  ./symmetric 128000  -c 2 #-nocheck
 
-mpirun -np 64  ./symmetric 25600  -c 4 #-nocheck
+mpirun -np 64  ./symmetric 128000  -c 4 #-nocheck
 
-mpirun -np 64  ./symmetric 25600  -c 8 #-nocheck
+mpirun -np 64  ./symmetric 128000  -c 8 #-nocheck
