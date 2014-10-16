@@ -12,7 +12,7 @@
 #include "meta/trivial_iterator.hpp"
 
 #if !defined(P2P_BLOCK_SIZE)
-#  define P2P_BLOCK_SIZE 1024
+#  define P2P_BLOCK_SIZE 32768
 #endif
 #if !defined(P2P_NUM_THREADS)
 #  define P2P_NUM_THREADS std::thread::hardware_concurrency()
@@ -215,8 +215,11 @@ p2p(const Kernel& K,
   const int count1 = (s_last - s_first)/2;
   const int count2 = (t_last - t_first)/2;
 
-  const char flag = ((count1 > P2P_BLOCK_SIZE/2) << 1) |
-                     (count2 > P2P_BLOCK_SIZE/2);
+  constexpr int SC_BLOCK = P2P_BLOCK_SIZE/(2*(sizeof(Source)+sizeof(Charge)));
+  constexpr int TR_BLOCK = P2P_BLOCK_SIZE/(2*(sizeof(Target)+sizeof(Result)));
+
+  const char flag = ((count1 > SC_BLOCK) << 1) |
+                    ((count2 > TR_BLOCK) << 0);
   switch (flag) {
     case 0: { // Both are small, evaluate
       block_eval(K, s_first, s_last, c_first,
@@ -299,8 +302,11 @@ p2p(const Kernel& K,
   const int count1 = (p1_last - p1_first)/2;
   const int count2 = (p2_last - p2_first)/2;
 
-  const char flag = ((count1 > P2P_BLOCK_SIZE/2) << 1) |
-                     (count2 > P2P_BLOCK_SIZE/2);
+  constexpr int SC_BLOCK = P2P_BLOCK_SIZE/(2*(sizeof(Source)+sizeof(Charge)));
+  constexpr int TR_BLOCK = P2P_BLOCK_SIZE/(2*(sizeof(Target)+sizeof(Result)));
+
+  const char flag = ((count1 > SC_BLOCK) << 1) |
+                    ((count2 > TR_BLOCK) << 0);
   switch (flag) {
     case 0: { // Both are small, evaluate
       block_eval(K, p1_first, p1_last, c1_first, r1_first,
@@ -373,8 +379,10 @@ p2p(const Kernel& K,
     Charge* c_first, Result* r_first,
     unsigned threads = P2P_NUM_THREADS)
 {
+  constexpr int SRC_BLOCK = P2P_BLOCK_SIZE/(2*(sizeof(Source)+sizeof(Charge)+sizeof(Result)));
+
   const int count = (p_last - p_first)/2;
-  if (count > P2P_BLOCK_SIZE/2) {   // TODO: Generalize
+  if (count > SRC_BLOCK) {
     Source* p_half = p_first + count;
     Charge* c_half = c_first + count;
     Result* r_half = r_first + count;
