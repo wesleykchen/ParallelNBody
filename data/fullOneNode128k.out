@@ -1,0 +1,165 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o symmetric symmetric.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 128000
+P = 1
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.907994e+02	1.733000e-03	8.051000e-03	0.000000e+00	7.050000e-04
+Rank 0 Total Time: 1.908237e+02
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.1957e-14
+Average relative error: 9.13722e-15
+Maximum relative error: 6.00622e-14
+N = 128000
+P = 2
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	7.806832e+01	1.955900e-02	1.041574e+01	0.000000e+00	1.281946e+01
+Rank 0 Total Time: 1.013141e+02
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 9.37602e-15
+Average relative error: 7.0493e-15
+Maximum relative error: 6.8844e-14
+N = 128000
+P = 4
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	2.836678e+01	2.847750e-02	5.036534e+00	2.463826e+00	1.802505e-01
+Rank 0 Total Time: 3.605724e+01
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.15184e-14
+Average relative error: 9.22616e-15
+Maximum relative error: 5.91278e-14
+N = 128000
+P = 4
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	2.764897e+01	3.036350e-02	6.958000e-03	0.000000e+00	1.550549e+00
+Rank 0 Total Time: 2.924801e+01
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.08454e-14
+Average relative error: 8.63931e-15
+Maximum relative error: 5.27444e-14
+N = 128000
+P = 8
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	9.974528e+00	3.514875e-02	2.015814e+00	9.886926e-01	1.308890e-01
+Rank 0 Total Time: 1.328885e+01
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.14438e-14
+Average relative error: 9.15676e-15
+Maximum relative error: 5.36754e-14
+N = 128000
+P = 8
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	2.055394e+01	3.606650e-02	1.265456e+00	0.000000e+00	2.357381e+00
+Rank 0 Total Time: 2.508343e+01
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.06693e-14
+Average relative error: 8.46838e-15
+Maximum relative error: 5.22448e-14
+N = 128000
+P = 16
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	6.075012e+00	3.891769e-02	1.150639e+00	8.066077e-01	1.659171e-01
+Rank 0 Total Time: 8.296739e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.12486e-14
+Average relative error: 8.97336e-15
+Maximum relative error: 5.53485e-14
+N = 128000
+P = 16
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	8.388428e+00	4.436800e-02	7.661416e-01	3.141762e-01	2.327131e+00
+Rank 0 Total Time: 1.234931e+01
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.02373e-14
+Average relative error: 8.14128e-15
+Maximum relative error: 4.99744e-14
+N = 128000
+P = 16
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	8.490749e+00	4.398794e-02	7.546750e-03	0.000000e+00	1.795068e+00
+Rank 0 Total Time: 1.131509e+01
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.02933e-14
+Average relative error: 8.17924e-15
+Maximum relative error: 4.86781e-14
+N = 128000
+P = 32
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	3.365404e+00	4.085319e-02	1.600150e+00	8.279320e-01	1.416563e-01
+Rank 0 Total Time: 6.066558e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.10731e-14
+Average relative error: 8.83651e-15
+Maximum relative error: 5.34237e-14
+N = 128000
+P = 32
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	3.473518e+00	5.043106e-02	5.415240e-01	2.148674e-01	5.159640e-01
+Rank 0 Total Time: 5.049992e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.00463e-14
+Average relative error: 7.98515e-15
+Maximum relative error: 4.40599e-14
+N = 128000
+P = 32
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	4.440956e+00	4.595212e-02	3.008118e-01	0.000000e+00	8.486176e-01
+Rank 0 Total Time: 5.853729e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.03224e-14
+Average relative error: 8.20552e-15
+Maximum relative error: 5.07489e-14
+N = 128000
+P = 64
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.920263e+00	2.433206e-01	1.489515e+00	7.803686e-01	1.571655e-01
+Rank 0 Total Time: 4.844455e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.09941e-14
+Average relative error: 8.76518e-15
+Maximum relative error: 5.35671e-14
+N = 128000
+P = 64
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	2.543914e+00	1.052675e-01	1.190437e+00	5.627534e-01	2.857329e-01
+Rank 0 Total Time: 5.023323e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.00059e-14
+Average relative error: 7.94923e-15
+Maximum relative error: 4.70926e-14
+N = 128000
+P = 64
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	2.437537e+00	8.509366e-02	3.865664e-01	1.105635e-01	3.357074e-01
+Rank 0 Total Time: 3.711511e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.0335e-14
+Average relative error: 8.22692e-15
+Maximum relative error: 5.17726e-14
+N = 128000
+P = 64
+Teamsize = 8
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=8	3.268141e+00	6.262759e-02	4.886694e-02	0.000000e+00	1.326264e+00
+Rank 0 Total Time: 5.500950e+00
+Reading result from data/invsq_n128000_s1337.txt
+Vector  relative error: 1.00098e-14
+Average relative error: 7.93996e-15
+Maximum relative error: 4.81164e-14
