@@ -1,11 +1,9 @@
 #!/bin/bash
 #SBATCH --ntasks 4096         #Number of processes
-#SBATCH -t 300                #Runtime in minutes
+#SBATCH -t 01:30:00                #Runtime in minutes
 #SBATCH -p normal   	      #Partition to submit to
-
-#SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/largeScale256k.out     	      #File to which standard out will be written
-#SBATCH -e data/largeScale256k.err      	      #File to which standard err will be written
+#SBATCH -o data/stampede256k.out     	      #File to which standard out will be written
+#SBATCH -e data/stampede256k.err      	      #File to which standard err will be written
 
 module swap intel gcc/4.7.1
 

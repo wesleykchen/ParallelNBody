@@ -1,0 +1,13 @@
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) mvapich2/1.9a2
+
+symmetric.cpp: In function ‘int main(int, char**)’:
+symmetric.cpp:330:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:423:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+slurmd[c427-902]: *** JOB 4298789 CANCELLED AT 2014-10-17T07:59:42 DUE TO TIME LIMIT ***
+[mpiexec@c427-902.stampede.tacc.utexas.edu] HYD_pmcd_pmiserv_send_signal (./pm/pmiserv/pmiserv_cb.c:170): assert (!closed) failed
+[mpiexec@c427-902.stampede.tacc.utexas.edu] ui_cmd_cb (./pm/pmiserv/pmiserv_pmci.c:78): unable to send signal downstream
+[mpiexec@c427-902.stampede.tacc.utexas.edu] HYDT_dmxu_poll_wait_for_event (./tools/demux/demux_poll.c:77): callback returned error status
+[mpiexec@c427-902.stampede.tacc.utexas.edu] HYD_pmci_wait_for_completion (./pm/pmiserv/pmiserv_pmci.c:196): error waiting for event
+[mpiexec@c427-902.stampede.tacc.utexas.edu] main (./ui/mpich/mpiexec.c:325): process manager error waiting for completion
