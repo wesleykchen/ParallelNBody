@@ -99,7 +99,6 @@ int main(int argc, char** argv)
     exit(1);
   }
 
-  srand(time(NULL));
   unsigned N = string_to_<int>(arg[1]);
 
   MPI_Init(&argc, &argv);

@@ -1,6 +1,10 @@
 #!/bin/bash
 #SBATCH --ntasks 4096         #Number of processes
+<<<<<<< HEAD
 #SBATCH -t 01:30:00                #Runtime in minutes
+=======
+#SBATCH -t 01:00:00                #Runtime in minutes
+>>>>>>> 4273cd3a39f9250f6ff39459e84f191c048e4c9d
 #SBATCH -p normal   	      #Partition to submit to
 #SBATCH -o data/stampede256k.out     	      #File to which standard out will be written
 #SBATCH -e data/stampede256k.err      	      #File to which standard err will be written
