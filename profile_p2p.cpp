@@ -2,7 +2,7 @@
 #include "Util.hpp"
 #include "meta/random.hpp"
 
-#include "kernel/InvSq.kern"
+#include "kernel/NormSq.kern"
 
 #include <iostream>
 #include <iomanip>
@@ -20,8 +20,8 @@ std::vector<T> generate(unsigned N) {
 }
 
 
-int main() {
-  typedef InvSq kernel_type;
+int main(int argv, char** arg) {
+  typedef NormSq kernel_type;
   kernel_type K;
 
   typedef kernel_type::source_type source_type;
@@ -29,11 +29,16 @@ int main() {
   typedef kernel_type::target_type target_type;
   typedef kernel_type::result_type result_type;
 
-  unsigned N = 40000;
+  unsigned N = 1 << 17;
+  char run_type = string_to_<char>(arg[1]);
+
   Clock timer;
 
-  std::cout << "Symmetric Diagonal" << std::endl;
-  for (unsigned n = 1; n < N; n *= 2) {
+  switch (run_type) {
+    case 'D':
+
+  //std::cout << "Symmetric Diagonal" << std::endl;
+  for (unsigned n = 64; n < N; n *= 1.1) {
     std::vector<source_type> s = generate<source_type>(n);
     std::vector<charge_type> c = generate<charge_type>(n);
     std::vector<result_type> r = generate<result_type>(n);
@@ -62,15 +67,22 @@ int main() {
     }
     error = std::sqrt(error);
 
-    std::cout << std::setw(10) << n << "\t"
+    std::cout << std::setw(10) << P2P_BLOCK_SIZE << "\t"
+              << std::setw(10) << n << "\t"
               << std::setw(10) << error << "\t"
               << std::setw(10) << old_time << "\t"
               << std::setw(10) << new_time << "\t"
-              << P2P_BLOCK_SIZE << std::endl;
+              << std::endl;
+
+    //if (std::max(old_time, new_time) > 10) break;
   }
 
-  std::cout << "Symmetric Off-Diagonal" << std::endl;
-  for (unsigned n = 1; n < 2*N; n *= 2) {
+    break;
+
+    case 'O':
+
+  //std::cout << "Symmetric Off-Diagonal" << std::endl;
+  for (unsigned n = 64; n < N; n *= 1.1) {
     std::vector<source_type> s = generate<source_type>(n);
     std::vector<charge_type> c = generate<charge_type>(n);
     std::vector<result_type> r = generate<result_type>(n);
@@ -101,15 +113,21 @@ int main() {
     }
     error = std::sqrt(error);
 
-    std::cout << std::setw(10) << n/2 << "\t"
+    std::cout << std::setw(10) << P2P_BLOCK_SIZE << "\t"
+              << std::setw(10) << n << "\t"
               << std::setw(10) << error << "\t"
               << std::setw(10) << old_time << "\t"
               << std::setw(10) << new_time << "\t"
-              << P2P_BLOCK_SIZE << std::endl;
+              << std::endl;
+
+    //if (std::max(old_time, new_time) > 10) break;
   }
 
-  std::cout << "Asymmetric off-diagonal" << std::endl;
-  for (unsigned n = 1; n < N; n *= 2) {
+  break;
+    case 'A':
+
+  //std::cout << "Asymmetric off-diagonal" << std::endl;
+  for (unsigned n = 64; n < N; n *= 1.1) {
     std::vector<source_type> s = generate<source_type>(n);
     std::vector<target_type> t = generate<target_type>(n);
     std::vector<charge_type> c = generate<charge_type>(n);
@@ -143,10 +161,15 @@ int main() {
     }
     error = std::sqrt(error);
 
-    std::cout << std::setw(10) << n << "\t"
+    std::cout << std::setw(10) << P2P_BLOCK_SIZE << "\t"
+              << std::setw(10) << n << "\t"
               << std::setw(10) << error << "\t"
               << std::setw(10) << old_time << "\t"
               << std::setw(10) << new_time << "\t"
-              << P2P_BLOCK_SIZE << std::endl;
+              << std::endl;
+
+    //if (std::max(old_time, new_time) > 10) break;
+  }
+
   }
 }
