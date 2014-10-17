@@ -2,8 +2,8 @@
 #SBATCH --ntasks 4096         #Number of processes
 #SBATCH -t 03:00:00                #Runtime in minutes
 #SBATCH -p normal   	      #Partition to submit to
-#SBATCH -o data/stampedefull256k.out     	      #File to which standard out will be written
-#SBATCH -e data/stampedefull256k.err      	      #File to which standard err will be written
+#SBATCH -o data/stampedefull512k.out     	      #File to which standard out will be written
+#SBATCH -e data/stampedefull512k.err      	      #File to which standard err will be written
 
 module swap intel gcc/4.7.1
 
