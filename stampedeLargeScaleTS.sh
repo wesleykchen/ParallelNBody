@@ -15,16 +15,16 @@ make teamscatter XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 # Execute the run
 #
 
-mpirun -np 4096  ./teamscatter 256000  -c 1 #-nocheck
+ibrun -n 4096  ./teamscatter 256000  -c 1 #-nocheck
 
-mpirun -np 4096  ./teamscatter 256000  -c 2 #-nocheck
+ibrun -n 4096  ./teamscatter 256000  -c 2 #-nocheck
 
-mpirun -np 4096  ./teamscatter 256000  -c 4 #-nocheck
+ibrun -n 4096  ./teamscatter 256000  -c 4 #-nocheck
 
-mpirun -np 4096  ./teamscatter 256000  -c 8 #-nocheck
+ibrun -n 4096  ./teamscatter 256000  -c 8 #-nocheck
 
-mpirun -np 4096  ./teamscatter 256000  -c 16 #-nocheck
+ibrun -n 4096  ./teamscatter 256000  -c 16 #-nocheck
 
-mpirun -np 4096  ./teamscatter 256000  -c 32 #-nocheck
+ibrun -n 4096  ./teamscatter 256000  -c 32 #-nocheck
 
-mpirun -np 4096  ./teamscatter 256000  -c 64 #-nocheck
+ibrun -n 4096  ./teamscatter 256000  -c 64 #-nocheck

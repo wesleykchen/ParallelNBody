@@ -14,76 +14,100 @@ make symmetric XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 #
 # Execute the run
 #
-mpirun -np 64  ./symmetric 512000  -c 1 #-nocheck
+ibrun -n 1  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 64  ./symmetric 512000  -c 2 #-nocheck
+ibrun -n 2  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 64  ./symmetric 512000  -c 4 #-nocheck
+ibrun -n 4  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 64  ./symmetric 512000  -c 8 #-nocheck
+ibrun -n 4  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 128  ./symmetric 512000  -c 1 #-nocheck
+ibrun -n 8  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 128  ./symmetric 512000  -c 2 #-nocheck
+ibrun -n 8  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 128  ./symmetric 512000  -c 4 #-nocheck
+ibrun -n 16  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 128  ./symmetric 512000  -c 8 #-nocheck
+ibrun -n 16  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 256  ./symmetric 512000  -c 1 #-nocheck
+ibrun -n 16  ./symmetric 512000  -c 4 #-nocheck
 
-mpirun -np 256  ./symmetric 512000  -c 2 #-nocheck
+ibrun -n 32  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 256  ./symmetric 512000  -c 4 #-nocheck
+ibrun -n 32  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 256  ./symmetric 512000  -c 8 #-nocheck
+ibrun -n 32  ./symmetric 512000  -c 4 #-nocheck
 
-mpirun -np 256  ./symmetric 512000  -c 16 #-nocheck
+ibrun -n 64  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 512  ./symmetric 512000  -c 1 #-nocheck
+ibrun -n 64  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 512  ./symmetric 512000  -c 2 #-nocheck
+ibrun -n 64  ./symmetric 512000  -c 4 #-nocheck
 
-mpirun -np 512  ./symmetric 512000  -c 4 #-nocheck
+ibrun -n 64  ./symmetric 512000  -c 8 #-nocheck
 
-mpirun -np 512  ./symmetric 512000  -c 8 #-nocheck
+ibrun -n 128  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 512  ./symmetric 512000  -c 16 #-nocheck
+ibrun -n 128  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 1024  ./symmetric 512000  -c 1 #-nocheck
+ibrun -n 128  ./symmetric 512000  -c 4 #-nocheck
 
-mpirun -np 1024  ./symmetric 512000  -c 2 #-nocheck
+ibrun -n 128  ./symmetric 512000  -c 8 #-nocheck
 
-mpirun -np 1024  ./symmetric 512000  -c 4 #-nocheck
+ibrun -n 256  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 1024  ./symmetric 512000  -c 8 #-nocheck
+ibrun -n 256  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 1024  ./symmetric 512000  -c 16 #-nocheck
+ibrun -n 256  ./symmetric 512000  -c 4 #-nocheck
 
-mpirun -np 1024  ./symmetric 512000  -c 32 #-nocheck
+ibrun -n 256  ./symmetric 512000  -c 8 #-nocheck
 
-mpirun -np 2048  ./symmetric 512000  -c 1 #-nocheck
+ibrun -n 256  ./symmetric 512000  -c 16 #-nocheck
 
-mpirun -np 2048  ./symmetric 512000  -c 2 #-nocheck
+ibrun -n 512  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 2048  ./symmetric 512000  -c 4 #-nocheck
+ibrun -n 512  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 2048  ./symmetric 512000  -c 8 #-nocheck
+ibrun -n 512  ./symmetric 512000  -c 4 #-nocheck
 
-mpirun -np 2048  ./symmetric 512000  -c 16 #-nocheck
+ibrun -n 512  ./symmetric 512000  -c 8 #-nocheck
 
-mpirun -np 2048  ./symmetric 512000  -c 32 #-nocheck
+ibrun -n 512  ./symmetric 512000  -c 16 #-nocheck
 
-mpirun -np 4096  ./symmetric 512000  -c 1 #-nocheck
+ibrun -n 1024  ./symmetric 512000  -c 1 #-nocheck
 
-mpirun -np 4096  ./symmetric 512000  -c 2 #-nocheck
+ibrun -n 1024  ./symmetric 512000  -c 2 #-nocheck
 
-mpirun -np 4096  ./symmetric 512000  -c 4 #-nocheck
+ibrun -n 1024  ./symmetric 512000  -c 4 #-nocheck
 
-mpirun -np 4096  ./symmetric 512000  -c 8 #-nocheck
+ibrun -n 1024  ./symmetric 512000  -c 8 #-nocheck
 
-mpirun -np 4096  ./symmetric 512000  -c 16 #-nocheck
+ibrun -n 1024  ./symmetric 512000  -c 16 #-nocheck
 
-mpirun -np 4096  ./symmetric 512000  -c 32 #-nocheck
+ibrun -n 1024  ./symmetric 512000  -c 32 #-nocheck
 
-mpirun -np 4096  ./symmetric 512000  -c 64 #-nocheck
+ibrun -n 2048  ./symmetric 512000  -c 1 #-nocheck
+
+ibrun -n 2048  ./symmetric 512000  -c 2 #-nocheck
+
+ibrun -n 2048  ./symmetric 512000  -c 4 #-nocheck
+
+ibrun -n 2048  ./symmetric 512000  -c 8 #-nocheck
+
+ibrun -n 2048  ./symmetric 512000  -c 16 #-nocheck
+
+ibrun -n 2048  ./symmetric 512000  -c 32 #-nocheck
+
+ibrun -n 4096  ./symmetric 512000  -c 1 #-nocheck
+
+ibrun -n 4096  ./symmetric 512000  -c 2 #-nocheck
+
+ibrun -n 4096  ./symmetric 512000  -c 4 #-nocheck
+
+ibrun -n 4096  ./symmetric 512000  -c 8 #-nocheck
+
+ibrun -n 4096  ./symmetric 512000  -c 16 #-nocheck
+
+ibrun -n 4096  ./symmetric 512000  -c 32 #-nocheck
+
+ibrun -n 4096  ./symmetric 512000  -c 64 #-nocheck
