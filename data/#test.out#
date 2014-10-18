@@ -1,0 +1,9 @@
+	rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -o symmetric symmetric.o 
+
+[TACC]: Job submission is not allowed from this host. Please submit
+[TACC]: through one of the available login resources.
+

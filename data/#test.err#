@@ -1,26 +1,26 @@
-Loading module centos6/gmp-5.1.1.
-Loading module centos6/mpfr-3.1.2.
-Loading module centos6/mpc-1.0.1.
-Loading module centos6/gcc-4.8.0.
-Loading module centos6/openmpi-1.6.5_gcc-4.8.0.
+
+slurmd[c404-501]: *** JOB 4297673 CANCELLED AT 2014-10-17T09:09:29 DUE TO TIME \
+LIMIT ***
+[mpiexec@c404-501.stampede.tacc.utexas.edu] HYD_pmcd_pmiserv_send_signal (./pm/\
+pmiserv/pmiserv_cb.c:170): assert (!closed) failed
+[mpiexec@c404-501.stampede.tacc.utexas.edu] ui_cmd_cb (./pm/pmiserv/pmiserv_pmc\
+i.c:78): unable to send signal downstream
+[mpiexec@c404-501.stampede.tacc.utexas.edu] HYDT_dmxu_poll_wait_for_event (./to\
+ols/demux/demux_poll.c:77): callback returned error status
+[mpiexec@c404-501.stampede.tacc.utexas.edu] HYD_pmci_wait_for_completion (./pm/\
+pmiserv/pmiserv_pmci.c:196): error waiting for event
+[mpiexec@c404-501.stampede.tacc.utexas.edu] main (./ui/mpich/mpiexec.c:325): pr\
+ocess manager error waiting for completion
+
+
+Lmod has detected the following error: Swap failed: "intel" is not loaded.
+
 symmetric.cpp: In function ‘int main(int, char**)’:
-symmetric.cpp:322:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-     if (num_teams / teamsize - curr_iter - 1 != last_iter - 1) {
-                                                             ^
-symmetric.cpp:415:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-     if (num_teams/teamsize - curr_iter - iPrimeOffset != last_iter - 1) {
-                                                                      ^
-symmetric.cpp: In function ‘int main(int, char**)’:
-symmetric.cpp:322:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-     if (num_teams / teamsize - curr_iter - 1 != last_iter - 1) {
-                                                             ^
-symmetric.cpp:415:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-     if (num_teams/teamsize - curr_iter - iPrimeOffset != last_iter - 1) {
-                                                                      ^
-slurmstepd: error: Job 22103386 exceeded memory limit (877172 > 204800), being killed
-slurmstepd: error: Job 22103386 exceeded memory limit (877172 > 204800), being \
-killed
-lurmstepd: error: Job 22103386 exceeded memory limit (877172 > 204800), being \
-killed
-slurmstepd: error: *** JOB 22103386 CANCELLED AT 2014-10-15T06:47:13 *** on holy2a01202
-slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556586/job_22103386/step_batch: Device or resource busy
+symmetric.cpp:330:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:423:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+slurmd[c404-501]: *** JOB 4297673 CANCELLED AT 2014-10-17T09:09:29 DUE TO TIME LIMIT ***
+[mpiexec@c404-501.stampede.tacc.utexas.edu] HYD_pmcd_pmiserv_send_signal (./pm/pmiserv/pmiserv_cb.c:170): assert (!closed) failed
+[mpiexec@c404-501.stampede.tacc.utexas.edu] ui_cmd_cb (./pm/pmiserv/pmiserv_pmci.c:78): unable to send signal downstream
+[mpiexec@c404-501.stampede.tacc.utexas.edu] HYDT_dmxu_poll_wait_for_event (./tools/demux/demux_poll.c:77): callback returned error status
+[mpiexec@c404-501.stampede.tacc.utexas.edu] HYD_pmci_wait_for_completion (./pm/pmiserv/pmiserv_pmci.c:196): error waiting for event
+[mpiexec@c404-501.stampede.tacc.utexas.edu] main (./ui/mpich/mpiexec.c:325): process manager error waiting for completion

@@ -1,0 +1,7 @@
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) mvapich2/1.9a2
+
+symmetric.cpp: In function ‘int main(int, char**)’:
+symmetric.cpp:329:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:422:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
