@@ -2,8 +2,8 @@
 #SBATCH --ntasks 2048         #Number of processes
 #SBATCH -t 01:30:00                #Runtime in minutes
 #SBATCH -p normal   	      #Partition to submit to
-#SBATCH -o data/a_stampede256k.out     	      #File to which standard out will be written
-#SBATCH -e data/a_stampede256k.err      	      #File to which standard err will be written
+#SBATCH -o data/a_stampede256k_t2.out     	      #File to which standard out will be written
+#SBATCH -e data/a_stampede256k_t2.err      	      #File to which standard err will be written
 
 module swap intel gcc/4.7.1
 
