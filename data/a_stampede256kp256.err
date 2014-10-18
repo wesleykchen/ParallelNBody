@@ -1,0 +1,700 @@
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) mvapich2/1.9a2
+
+symmetric.cpp: In function ‘int main(int, char**)’:
+symmetric.cpp:329:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:422:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+[cli_13]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 13
+[cli_14]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 14
+[cli_11]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 11
+[cli_15]: [cli_10]: [cli_0]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 15
+[cli_7]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 10
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 0
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 7
+[cli_5]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 5
+[cli_8]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 8
+[cli_1]: [cli_6]: [cli_4]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 1
+[cli_2]: [cli_3]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 6
+[cli_12]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 4
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 2
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 3
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 12
+[cli_9]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 9
+[cli_155]: [cli_153]: [cli_149]: [cli_151]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 155
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 149
+[cli_158]: [cli_150]: [cli_159]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 151
+[cli_147]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 159
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 158
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 147
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 150
+[cli_156]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 153
+[cli_152]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 156
+[cli_157]: [cli_144]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 152
+[cli_145]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 144
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 157
+[cli_148]: [cli_146]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 145
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 146
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 148
+[cli_139]: [cli_135]: [cli_133]: [cli_129]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 139
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 129
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 135
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 133
+[cli_131]: [cli_138]: [cli_128]: [cli_132]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 131
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 138
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 128
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 132
+[cli_140]: [cli_141]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 140
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 141
+[cli_143]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 143
+[cli_130]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 130
+[cli_136]: [cli_137]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 136
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 137
+[cli_134]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 134
+[cli_142]: [cli_33]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 33
+[cli_47]: [cli_40]: [cli_42]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 47
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 40
+[cli_39]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 42
+[cli_44]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 39
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 44
+[cli_36]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 36
+[cli_32]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 32
+[cli_41]: [cli_35]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 41
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 35
+[cli_43]: [cli_46]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 43
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 46
+[cli_37]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 37
+[cli_45]: [cli_34]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 45
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 34
+[cli_38]: [cli_186]: [cli_190]: [cli_180]: [cli_183]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 186
+[cli_176]: [cli_191]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 190
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 180
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 183
+[cli_185]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 176
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 191
+[cli_189]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 185
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 189
+[cli_179]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 179
+[cli_182]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 182
+[cli_184]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 184
+[cli_188]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 188
+[cli_187]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 187
+[cli_126]: [cli_125]: [cli_114]: [cli_112]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 126
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 125
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 112
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 114
+[cli_113]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 113
+[cli_118]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 118
+[cli_119]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 119
+[cli_127]: [cli_122]: [cli_124]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 127
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 124
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 122
+[cli_121]: [cli_123]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 121
+[cli_115]: [cli_116]: [cli_117]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 115
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 117
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 123
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 116
+[cli_120]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 120
+[cli_177]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 177
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 142
+[cli_178]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 178
+[cli_101]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 101
+[cli_102]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 102
+[cli_104]: [cli_96]: [cli_107]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 104
+[cli_99]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 96
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 107
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 99
+[cli_97]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 97
+[cli_109]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 109
+[cli_98]: [cli_111]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 98
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 111
+[cli_108]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 108
+[cli_105]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 105
+[cli_106]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 106
+[cli_100]: [cli_103]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 100
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 103
+[cli_110]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 110
+[cli_181]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 181
+[cli_154]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 154
+[cli_77]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 77
+[cli_79]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 79
+[cli_74]: [cli_78]: [cli_72]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 74
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 78
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 72
+[cli_66]: [cli_70]: [cli_68]: [cli_69]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 69
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 68
+[cli_67]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 66
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 70
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 67
+[cli_75]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 75
+[cli_71]: [cli_65]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 71
+[cli_64]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 65
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 64
+[cli_73]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 73
+[cli_76]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 76
+[cli_255]: [cli_244]: [cli_248]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 244
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 255
+[cli_245]: [cli_242]: [cli_253]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 242
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 253
+[cli_246]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 248
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 245
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 246
+[cli_254]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 254
+[cli_251]: [cli_243]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 251
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 243
+[cli_252]: [cli_241]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 252
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 241
+[cli_247]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 247
+[cli_250]: [cli_249]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 250
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 249
+[cli_240]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 240
+[cli_18]: [cli_28]: [cli_20]: [cli_27]: [cli_16]: [cli_31]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 18
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 28
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 20
+[cli_25]: [cli_22]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 27
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 31
+[cli_17]: [cli_23]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 25
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 22
+[cli_24]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 17
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 24
+[cli_21]: [cli_19]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 23
+[cli_30]: [cli_29]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 21
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 19
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 16
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 30
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 29
+[cli_26]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 26
+[cli_82]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 82
+[cli_81]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 81
+[cli_88]: [cli_90]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 88
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 90
+[cli_86]: [cli_93]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 86
+[cli_92]: [cli_83]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 93
+[cli_95]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 92
+[cli_94]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 83
+[cli_84]: [cli_85]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 95
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 94
+[cli_87]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 84
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 85
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 87
+[cli_80]: [cli_89]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 80
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 89
+[cli_91]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 91
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 38
+[cli_58]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 58
+[cli_60]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 60
+[cli_50]: [cli_53]: [cli_62]: [cli_52]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 50
+[cli_57]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 62
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 52
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 53
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 57
+[cli_48]: [cli_63]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 48
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 63
+[cli_56]: [cli_54]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 56
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 54
+[cli_49]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 49
+[cli_55]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 55
+[cli_59]: [cli_51]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 59
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 51
+[cli_61]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 61
+[cli_237]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 237
+[cli_229]: [cli_230]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 230
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 229
+[cli_239]: [cli_227]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 239
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 227
+[cli_231]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 231
+[cli_234]: [cli_233]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 234
+[cli_225]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 233
+[cli_236]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 225
+[cli_238]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 236
+[cli_235]: [cli_224]: [cli_228]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 238
+[cli_226]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 235
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 228
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 224
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 226
+[cli_232]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 232
+[cli_199]: [cli_204]: [cli_198]: [cli_205]: [cli_195]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 198
+[cli_207]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 204
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 205
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 199
+[cli_192]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 195
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 207
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 192
+[cli_196]: [cli_194]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 196
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 194
+[cli_206]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 206
+[cli_197]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 197
+[cli_201]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 201
+[cli_202]: [cli_200]: [cli_203]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 202
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 200
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 203
+[cli_193]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 193
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][readline] Unexpected End-Of-File on file descriptor 12. MPI process died?
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[cli_166]: [cli_164]: [cli_172]: [cli_163]: [cli_167]: [cli_171]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 172
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 166
+[cli_168]: [cli_169]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 171
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 163
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 164
+[cli_160]: [cli_170]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 168
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 169
+[cli_175]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 170
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 167
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 160
+[cli_165]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 175
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 165
+[cli_162]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 162
+[cli_173]: [cli_161]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 173
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 161
+[cli_174]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 174
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][readline] Unexpected End-Of-File on file descriptor 17. MPI process died?
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][readline] Unexpected End-Of-File on file descriptor 19. MPI process died?
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][readline] Unexpected End-Of-File on file descriptor 14. MPI process died?
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][readline] Unexpected End-Of-File on file descriptor 14. MPI process died?
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][readline] Unexpected End-Of-File on file descriptor 7. MPI process died?
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][readline] Unexpected End-Of-File on file descriptor 17. MPI process died?
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[cli_209]: [cli_210]: [cli_219]: [cli_217]: [cli_223]: [cli_211]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 210
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 209
+[cli_208]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 219
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 223
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 217
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 211
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 208
+[cli_216]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 216
+[cli_220]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 220
+[cli_218]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 218
+[cli_221]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 221
+[cli_215]: [cli_213]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 215
+aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 213
+[cli_214]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 214
+[cli_212]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 212
+[cli_222]: aborting job:
+application called MPI_Abort(MPI_COMM_WORLD, -1) - process 222
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][readline] Unexpected End-Of-File on file descriptor 14. MPI process died?
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][readline] Unexpected End-Of-File on file descriptor 15. MPI process died?
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][readline] Unexpected End-Of-File on file descriptor 14. MPI process died?
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][readline] Unexpected End-Of-File on file descriptor 16. MPI process died?
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][readline] Unexpected End-Of-File on file descriptor 14. MPI process died?
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][readline] Unexpected End-Of-File on file descriptor 7. MPI process died?
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][readline] Unexpected End-Of-File on file descriptor 17. MPI process died?
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][readline] Unexpected End-Of-File on file descriptor 7. MPI process died?
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][readline] Unexpected End-Of-File on file descriptor 16. MPI process died?
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][mtpmi_processops] Error while reading PMI socket. MPI process died?
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 34, pid: 23470) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 207, pid: 44774) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 190, pid: 42262) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 77, pid: 44961) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 62, pid: 32584) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 135, pid: 41824) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 154, pid: 21626) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 162, pid: 128997) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 101, pid: 76239) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 4, pid: 121244) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 254, pid: 83683) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 92, pid: 94340) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 232, pid: 34452) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 30, pid: 43712) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 121, pid: 13728) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 35, pid: 23471) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 214, pid: 40746) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 195, pid: 44762) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 182, pid: 42254) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 67, pid: 44951) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 128, pid: 41817) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 48, pid: 32570) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 149, pid: 21621) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 167, pid: 129002) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 96, pid: 76234) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 121240) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 244, pid: 83673) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 80, pid: 94328) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 235, pid: 34455) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 24, pid: 43706) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 117, pid: 13724) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 33, pid: 23469) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 211, pid: 40743) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 193, pid: 44760) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 176, pid: 42248) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 64, pid: 44948) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 50, pid: 32572) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 129, pid: 41818) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 150, pid: 21622) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 168, pid: 129003) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 97, pid: 76235) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 121241) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 240, pid: 83669) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 82, pid: 94330) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 226, pid: 34446) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 16, pid: 43698) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 112, pid: 13719) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 36, pid: 23472) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 208, pid: 40740) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 194, pid: 44761) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 178, pid: 42250) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 65, pid: 44949) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 51, pid: 32573) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 130, pid: 41819) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 144, pid: 21616) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 161, pid: 128996) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 98, pid: 76236) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 121242) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 242, pid: 83671) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 83, pid: 94331) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 225, pid: 34445) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 18, pid: 43700) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 114, pid: 13721) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 32, pid: 23468) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 210, pid: 40742) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 192, pid: 44759) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 179, pid: 42251) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 66, pid: 44950) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 49, pid: 32571) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 131, pid: 41820) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 145, pid: 21617) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 163, pid: 128998) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 99, pid: 76237) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 121243) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 243, pid: 83672) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 81, pid: 94329) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 227, pid: 34447) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 19, pid: 43701) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 113, pid: 13720) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 37, pid: 23473) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 209, pid: 40741) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 196, pid: 44763) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 68, pid: 44952) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 177, pid: 42249) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 52, pid: 32574) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 132, pid: 41821) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 146, pid: 21618) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 160, pid: 128995) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 100, pid: 76238) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 241, pid: 83670) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 5, pid: 121245) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 84, pid: 94332) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 224, pid: 34444) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 17, pid: 43699) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 115, pid: 13722) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 38, pid: 23474) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 212, pid: 40744) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 197, pid: 44764) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 180, pid: 42252) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 69, pid: 44953) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 53, pid: 32575) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 147, pid: 21619) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 133, pid: 41822) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 164, pid: 128999) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 102, pid: 76240) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 245, pid: 83674) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 6, pid: 121246) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 85, pid: 94333) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 228, pid: 34448) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 20, pid: 43702) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 116, pid: 13723) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 39, pid: 23475) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 213, pid: 40745) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 198, pid: 44765) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 70, pid: 44954) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 181, pid: 42253) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 134, pid: 41823) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 54, pid: 32576) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 148, pid: 21620) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 165, pid: 129000) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 103, pid: 76241) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 7, pid: 121247) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 86, pid: 94334) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 246, pid: 83675) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 229, pid: 34449) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 21, pid: 43703) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 118, pid: 13725) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 40, pid: 23476) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 215, pid: 40747) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 199, pid: 44766) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 71, pid: 44955) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 183, pid: 42255) exited with status 255
+[c451-104.stampede.tacc.utexas.edu:mpispawn_9][child_handler] MPI process (rank: 151, pid: 21623) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 55, pid: 32577) exited with status 255
+[c450-904.stampede.tacc.utexas.edu:mpispawn_8][child_handler] MPI process (rank: 136, pid: 41825) exited with status 255
+[c451-203.stampede.tacc.utexas.edu:mpispawn_10][child_handler] MPI process (rank: 166, pid: 129001) exited with status 255
+[c450-801.stampede.tacc.utexas.edu:mpispawn_6][child_handler] MPI process (rank: 104, pid: 76242) exited with status 255
+[c449-503.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 8, pid: 121248) exited with status 255
+[c450-602.stampede.tacc.utexas.edu:mpispawn_5][child_handler] MPI process (rank: 87, pid: 94335) exited with status 255
+[c451-602.stampede.tacc.utexas.edu:mpispawn_15][child_handler] MPI process (rank: 247, pid: 83676) exited with status 255
+[c451-404.stampede.tacc.utexas.edu:mpispawn_14][child_handler] MPI process (rank: 230, pid: 34450) exited with status 255
+[c449-903.stampede.tacc.utexas.edu:mpispawn_1][child_handler] MPI process (rank: 22, pid: 43704) exited with status 255
+[c450-803.stampede.tacc.utexas.edu:mpispawn_7][child_handler] MPI process (rank: 119, pid: 13726) exited with status 255
+[c450-001.stampede.tacc.utexas.edu:mpispawn_2][child_handler] MPI process (rank: 41, pid: 23477) exited with status 255
+[c451-403.stampede.tacc.utexas.edu:mpispawn_13][child_handler] MPI process (rank: 216, pid: 40748) exited with status 255
+[c451-402.stampede.tacc.utexas.edu:mpispawn_12][child_handler] MPI process (rank: 200, pid: 44767) exited with status 255
+[c450-502.stampede.tacc.utexas.edu:mpispawn_4][child_handler] MPI process (rank: 72, pid: 44956) exited with status 255
+[c451-303.stampede.tacc.utexas.edu:mpispawn_11][child_handler] MPI process (rank: 184, pid: 42256) exited with status 255
+[c450-501.stampede.tacc.utexas.edu:mpispawn_3][child_handler] MPI process (rank: 56, pid: 32578) exited with status 255

@@ -1,0 +1,80 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -o symmetric symmetric.o 
+TACC: Starting up job 4306735
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	4.778754e-01	1.919608e-01	6.689827e-01	1.408948e+00	7.269687e-04
+Rank 0 Total Time: 2.821659e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.5461e-14
+Average relative error: 1.23245e-14
+Maximum relative error: 7.67164e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306735
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	4.672266e-01	1.292399e-01	1.019750e-01	3.393395e-01	3.935807e-03
+Rank 0 Total Time: 1.033728e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.41978e-14
+Average relative error: 1.13048e-14
+Maximum relative error: 6.86911e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306735
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	4.839495e-01	7.602452e-02	2.043864e-02	6.509838e-02	1.052674e-02
+Rank 0 Total Time: 6.435520e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.43442e-14
+Average relative error: 1.1447e-14
+Maximum relative error: 6.90572e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306735
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 8
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=8	5.726216e-01	5.225160e-02	1.255583e-02	1.334482e-02	1.187925e-02
+Rank 0 Total Time: 6.508100e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40332e-14
+Average relative error: 1.11984e-14
+Maximum relative error: 6.54356e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306735
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 16
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=16	9.368812e-01	3.473053e-02	7.812471e-03	0.000000e+00	1.739196e-02
+Rank 0 Total Time: 9.838620e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.39331e-14
+Average relative error: 1.1122e-14
+Maximum relative error: 6.47845e-14
+ 
+TACC: Shutdown complete. Exiting.

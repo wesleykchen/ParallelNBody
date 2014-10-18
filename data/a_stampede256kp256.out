@@ -1,0 +1,345 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -o symmetric symmetric.o 
+TACC: Starting up job 4306737
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	9.281017e-01	1.331842e-01	1.853711e-01	6.163692e-01	3.578906e-05
+Rank 0 Total Time: 1.874376e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.54725e-14
+Average relative error: 1.23342e-14
+Maximum relative error: 7.65906e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306737
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	9.374743e-01	7.129402e-02	4.501251e-02	1.470919e-01	1.524427e-02
+Rank 0 Total Time: 1.203075e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.41831e-14
+Average relative error: 1.12909e-14
+Maximum relative error: 6.70633e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306737
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	1.020902e+00	5.004335e-02	1.180321e-02	2.434240e-02	2.465668e-02
+Rank 0 Total Time: 1.116860e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44052e-14
+Average relative error: 1.149e-14
+Maximum relative error: 6.75226e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306737
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 8
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=8	1.377865e+00	3.693673e-02	1.009463e-02	4.958562e-03	3.476937e-02
+Rank 0 Total Time: 1.448464e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40714e-14
+Average relative error: 1.12262e-14
+Maximum relative error: 6.53741e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306737
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 16
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=16	1.842840e+00	2.759316e-02	7.055477e-03	0.000000e+00	6.503454e-02
+Rank 0 Total Time: 1.930457e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.39262e-14
+Average relative error: 1.11186e-14
+Maximum relative error: 6.47845e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306737
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 32
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+Quitting. The teamsize ^ 2 (c^2) must be less than or equal to the number of  processors (p).
+
+TACC: MPI job exited with code: 1
+ 
+TACC: Shutdown complete. Exiting.
