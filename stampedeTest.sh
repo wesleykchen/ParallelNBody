@@ -15,10 +15,10 @@ make symmetric XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 # Execute the run
 #
 
-ibrun -n 64  -o 0 ./symmetric 25600  -c 1 #-nocheck
+ibrun ./symmetric 25600  -c 1 #-nocheck
 
-ibrun -n 64  -o 0 ./symmetric 25600  -c 2 #-nocheck
+ibrun ./symmetric 25600  -c 2 #-nocheck
 
-ibrun -n 64  -o 0 ./symmetric 25600  -c 4 #-nocheck
+ibrun ./symmetric 25600  -c 4 #-nocheck
 
-ibrun -n 64  -o 0 ./symmetric 25600  -c 8 #-nocheck
+ibrun ./symmetric 25600  -c 8 #-nocheck
