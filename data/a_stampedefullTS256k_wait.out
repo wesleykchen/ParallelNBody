@@ -1,0 +1,623 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -MD -MF .deps/teamscatter.d -MP -I. -c -o teamscatter.o teamscatter.cpp
+/opt/apps/gcc4_7/mvapich2/1.9/bin/mpic++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -o teamscatter teamscatter.o 
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 1
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	2.341717e+02	1.710000e-03	6.515000e-03	7.470000e-04
+Rank 0 Total Time: 2.341877e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.69521e-14
+Average relative error: 1.29355e-14
+Maximum relative error: 9.02488e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 2
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	1.803289e+02	1.153550e-02	1.240550e-02	3.755200e-02
+Rank 0 Total Time: 1.803840e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.3316e-14
+Average relative error: 9.97682e-15
+Maximum relative error: 9.69487e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 4
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	1.059687e+02	1.586650e-02	3.053875e-02	1.136225e-02
+Rank 0 Total Time: 1.060136e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.47985e-14
+Average relative error: 1.0916e-14
+Maximum relative error: 8.45548e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 4
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	9.050251e+01	1.692950e-02	3.451000e-03	3.156577e+01
+Rank 0 Total Time: 1.220882e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.52902e-14
+Average relative error: 1.21965e-14
+Maximum relative error: 7.33012e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 8
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	5.693783e+01	1.889762e-02	3.178712e-02	8.282625e-03
+Rank 0 Total Time: 5.698006e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.52764e-14
+Average relative error: 1.14365e-14
+Maximum relative error: 8.70215e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 8
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	5.323044e+01	2.003025e-02	3.477800e-02	7.920557e+00
+Rank 0 Total Time: 6.122682e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.50403e-14
+Average relative error: 1.19776e-14
+Maximum relative error: 7.00508e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 16
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	2.946229e+01	2.009744e-02	3.250700e-02	7.368750e-04
+Rank 0 Total Time: 2.949918e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.5627e-14
+Average relative error: 1.18355e-14
+Maximum relative error: 8.39665e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 16
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	2.846979e+01	2.030294e-02	7.384875e-03	1.978082e+00
+Rank 0 Total Time: 3.045985e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.55644e-14
+Average relative error: 1.24486e-14
+Maximum relative error: 7.22995e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 16
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	2.670383e+01	2.093850e-02	1.927312e-03	4.047487e+00
+Rank 0 Total Time: 3.090982e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44845e-14
+Average relative error: 1.15714e-14
+Maximum relative error: 6.52207e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 32
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	1.498081e+01	2.245284e-02	2.822347e-02	1.129844e-03
+Rank 0 Total Time: 1.501437e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.58546e-14
+Average relative error: 1.2096e-14
+Maximum relative error: 8.3933e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 32
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	1.473292e+01	2.180184e-02	1.179887e-02	4.935441e-01
+Rank 0 Total Time: 1.524451e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.57333e-14
+Average relative error: 1.2572e-14
+Maximum relative error: 7.33794e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 32
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	1.423625e+01	2.102878e-02	2.951969e-03	9.976745e-01
+Rank 0 Total Time: 1.526896e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.45163e-14
+Average relative error: 1.15993e-14
+Maximum relative error: 6.82899e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 64
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	7.551037e+00	2.441636e-02	2.926333e-02	6.252031e-04
+Rank 0 Total Time: 7.592615e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.59761e-14
+Average relative error: 1.2247e-14
+Maximum relative error: 8.31485e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 64
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	7.490566e+00	2.319703e-02	1.476659e-02	1.184091e-01
+Rank 0 Total Time: 7.632381e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.58012e-14
+Average relative error: 1.26128e-14
+Maximum relative error: 7.86729e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 64
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	7.365519e+00	2.449247e-02	4.510859e-03	2.488152e-01
+Rank 0 Total Time: 7.628775e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44594e-14
+Average relative error: 1.15451e-14
+Maximum relative error: 7.02849e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 64
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	7.119305e+00	2.303916e-02	2.855516e-03	4.975143e-01
+Rank 0 Total Time: 7.626080e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40509e-14
+Average relative error: 1.12235e-14
+Maximum relative error: 6.5988e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 128
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	3.791559e+00	6.881248e-02	3.574188e-02	6.698438e-05
+Rank 0 Total Time: 3.880379e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.60406e-14
+Average relative error: 1.23271e-14
+Maximum relative error: 8.3079e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 128
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	3.775722e+00	4.554776e-02	1.331691e-02	2.736603e-02
+Rank 0 Total Time: 3.845320e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.5821e-14
+Average relative error: 1.26281e-14
+Maximum relative error: 7.52047e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 128
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	3.745733e+00	3.554639e-02	1.223898e-02	6.620971e-02
+Rank 0 Total Time: 3.844752e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44629e-14
+Average relative error: 1.15555e-14
+Maximum relative error: 6.7983e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 128
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	3.682836e+00	2.808597e-02	8.396047e-03	1.260490e-01
+Rank 0 Total Time: 3.829917e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40722e-14
+Average relative error: 1.12288e-14
+Maximum relative error: 6.84434e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	1.900202e+00	1.289640e-01	3.965652e-02	5.107813e-05
+Rank 0 Total Time: 2.061439e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.60752e-14
+Average relative error: 1.23713e-14
+Maximum relative error: 8.3079e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	1.895931e+00	7.085288e-02	1.053331e-02	6.505785e-03
+Rank 0 Total Time: 1.968227e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.58225e-14
+Average relative error: 1.26304e-14
+Maximum relative error: 7.1325e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	1.888024e+00	5.039824e-02	1.061134e-02	1.766586e-02
+Rank 0 Total Time: 1.951988e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44694e-14
+Average relative error: 1.15524e-14
+Maximum relative error: 6.63532e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	1.872568e+00	3.700666e-02	2.087252e-02	3.883668e-02
+Rank 0 Total Time: 1.980382e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40623e-14
+Average relative error: 1.12193e-14
+Maximum relative error: 6.62949e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 256
+Teamsize = 16
+Label	Computation	Split	Shift	Reduce
+c=16	1.841455e+00	2.778456e-02	1.292092e-02	6.919236e-02
+Rank 0 Total Time: 1.937154e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.39262e-14
+Average relative error: 1.11186e-14
+Maximum relative error: 6.47845e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	9.514283e-01	1.921624e-01	3.627141e-02	4.489219e-04
+Rank 0 Total Time: 1.172893e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.60947e-14
+Average relative error: 1.23997e-14
+Maximum relative error: 8.3079e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	9.501099e-01	1.285707e-01	1.069371e-02	1.256061e-03
+Rank 0 Total Time: 1.083054e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.58217e-14
+Average relative error: 1.26353e-14
+Maximum relative error: 7.64825e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	9.479885e-01	7.493535e-02	1.074165e-02	5.635465e-03
+Rank 0 Total Time: 1.040541e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44639e-14
+Average relative error: 1.15574e-14
+Maximum relative error: 6.75226e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	9.443560e-01	5.074952e-02	1.530611e-02	1.169061e-02
+Rank 0 Total Time: 1.022631e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40609e-14
+Average relative error: 1.12193e-14
+Maximum relative error: 6.66018e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 512
+Teamsize = 16
+Label	Computation	Split	Shift	Reduce
+c=16	9.362517e-01	3.460462e-02	9.555111e-03	1.853904e-02
+Rank 0 Total Time: 9.851700e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.39331e-14
+Average relative error: 1.1122e-14
+Maximum relative error: 6.47845e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 1024
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	4.761165e-01	3.351385e-01	4.337110e-02	2.119170e-04
+Rank 0 Total Time: 8.613660e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.61041e-14
+Average relative error: 1.24144e-14
+Maximum relative error: 8.3079e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 1024
+Teamsize = 2
+TACC: MPI job exited with code: 1
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 1024
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	4.751039e-01	1.340025e-01	1.112403e-02	2.786685e-03
+Rank 0 Total Time: 6.160510e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.4449e-14
+Average relative error: 1.15533e-14
+Maximum relative error: 6.69087e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 1024
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	4.739963e-01	7.346470e-02	1.375597e-02	4.129043e-03
+Rank 0 Total Time: 5.656560e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40582e-14
+Average relative error: 1.1219e-14
+Maximum relative error: 6.55276e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 1024
+Teamsize = 16
+Label	Computation	Split	Shift	Reduce
+c=16	4.720576e-01	4.980279e-02	1.120789e-02	5.309583e-03
+Rank 0 Total Time: 5.276920e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.39356e-14
+Average relative error: 1.11187e-14
+Maximum relative error: 6.44589e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 1024
+Teamsize = 32
+Label	Computation	Split	Shift	Reduce
+c=32	4.682027e-01	7.425028e-02	6.811607e-02	1.354420e-01
+Rank 0 Total Time: 7.356290e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.38898e-14
+Average relative error: 1.10892e-14
+Maximum relative error: 6.54356e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 2048
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	2.381111e-01	7.743794e-02	4.271607e-02	5.671973e-05
+Rank 0 Total Time: 3.696020e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.61088e-14
+Average relative error: 1.24225e-14
+Maximum relative error: 8.3079e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 2048
+Teamsize = 2
+TACC: MPI job exited with code: 1
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 2048
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	2.378391e-01	1.863782e-01	1.259243e-02	1.284240e-03
+Rank 0 Total Time: 4.311770e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.446e-14
+Average relative error: 1.15526e-14
+Maximum relative error: 6.69087e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 2048
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	2.375849e-01	1.402092e-01	1.508961e-02	2.757106e-03
+Rank 0 Total Time: 3.934870e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40651e-14
+Average relative error: 1.12181e-14
+Maximum relative error: 6.70622e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 2048
+Teamsize = 16
+Label	Computation	Split	Shift	Reduce
+c=16	2.370291e-01	7.840852e-02	1.158316e-02	2.360242e-03
+Rank 0 Total Time: 3.564900e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.3937e-14
+Average relative error: 1.11193e-14
+Maximum relative error: 6.56811e-14
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4306530
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+N = 256000
+P = 2048
+Teamsize = 32
+Label	Computation	Split	Shift	Reduce
+c=32	2.360530e-01	5.051222e-02	8.551058e-03	4.954452e-03
+Rank 0 Total Time: 3.010410e-01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.38952e-14
+Average relative error: 1.10889e-14
+Maximum relative error: 6.47603e-14
+ 
+TACC: Shutdown complete. Exiting.
