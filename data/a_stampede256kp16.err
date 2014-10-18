@@ -1,0 +1,103 @@
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) mvapich2/1.9a2
+
+symmetric.cpp: In function â€˜int main(int, char**)â€™:
+symmetric.cpp:329:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:422:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 120580) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 120581) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 120582) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 120583) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 4, pid: 120584) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 5, pid: 120585) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 6, pid: 120586) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 7, pid: 120587) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 8, pid: 120588) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 9, pid: 120589) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 10, pid: 120590) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 11, pid: 120591) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 12, pid: 120592) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 13, pid: 120593) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 14, pid: 120594) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 15, pid: 120595) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 120780) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 120781) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 120782) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 120783) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 4, pid: 120784) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 5, pid: 120785) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 6, pid: 120786) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 7, pid: 120787) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 8, pid: 120788) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 9, pid: 120789) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 10, pid: 120790) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 11, pid: 120791) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 12, pid: 120792) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 13, pid: 120793) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 14, pid: 120794) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 15, pid: 120795) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 120980) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆ"©1 (2)
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 120981) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 120982) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 120983) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 4, pid: 120984) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 5, pid: 120985) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 6, pid: 120986) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 7, pid: 120987) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 8, pid: 120988) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 9, pid: 120989) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 10, pid: 120990) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 11, pid: 120991) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 12, pid: 120992) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 13, pid: 120993) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 14, pid: 120994) exited with status 1
+[c407-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 15, pid: 120995) exited with status 1

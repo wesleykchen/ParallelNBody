@@ -1,0 +1,12 @@
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) mvapich2/1.9a2
+
+symmetric.cpp: In function ‘int main(int, char**)’:
+symmetric.cpp:329:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:422:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.o: file not recognized: File truncated
+collect2: error: ld returned 1 exit status
+make: *** [symmetric] Error 1
+[c405-104.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() '/home1/03222/tg825207/parallelnbody/symmetric': �°1 (13)
+[c405-104.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 27065) exited with status 1

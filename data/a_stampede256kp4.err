@@ -1,0 +1,23 @@
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) mvapich2/1.9a2
+
+symmetric.cpp: In function â€˜int main(int, char**)â€™:
+symmetric.cpp:329:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:422:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 10054) exited with status 1
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 10055) exited with status 1
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 10056) exited with status 1
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 10057) exited with status 1
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 10242) exited with status 1
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': ˆât: (2)
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 10243) exited with status 1
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 10244) exited with status 1
+[c405-902.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 10245) exited with status 1

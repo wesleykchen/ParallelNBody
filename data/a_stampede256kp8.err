@@ -1,0 +1,39 @@
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) mvapich2/1.9a2
+
+symmetric.cpp: In function ‚Äòint main(int, char**)‚Äô:
+symmetric.cpp:329:61: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+symmetric.cpp:422:70: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 68174) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 68175) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 68176) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 68177) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 4, pid: 68178) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 5, pid: 68179) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 6, pid: 68180) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 7, pid: 68181) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 68366) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][spawn_processes] Failed to execvp() './symmetric': à‚¿? (2)
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 1, pid: 68367) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 2, pid: 68368) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 3, pid: 68369) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 4, pid: 68370) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 5, pid: 68371) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 6, pid: 68372) exited with status 1
+[c406-301.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 7, pid: 68373) exited with status 1
