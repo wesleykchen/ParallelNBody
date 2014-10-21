@@ -130,6 +130,10 @@ int main(int argc, char** argv)
     exit(0);
   }
 
+  /***********/
+  /** SETUP **/
+  /***********/
+
   unsigned num_teams = P / teamsize;
   // Determine coordinates in processor team grid
   unsigned team  = rank / teamsize;
@@ -141,20 +145,24 @@ int main(int argc, char** argv)
   MPI_Comm row_comm;
   MPI_Comm_split(MPI_COMM_WORLD, trank, rank, &row_comm);
 
+  /*********************/
+  /** BROADCAST STAGE **/
+  /*********************/
+
   // Declare data for the block computations
   std::vector<source_type> xJ(idiv_up(N,num_teams));
   std::vector<charge_type> cJ(idiv_up(N,num_teams));
 
   // Scatter data from master to team leaders
   if (trank == MASTER) {
-    splitTimer.start();
+    //splitTimer.start();
     MPI_Scatter(source.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
                 MASTER, row_comm);
     MPI_Scatter(charge.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 cJ.data(), sizeof(charge_type) * cJ.size(), MPI_CHAR,
                 MASTER, row_comm);
-    totalSplitTime += splitTimer.elapsed();
+    //totalSplitTime += splitTimer.elapsed();
   }
 
   // Team leaders broadcast to team
@@ -172,7 +180,6 @@ int main(int argc, char** argv)
 
   // Perform initial offset by teamrank
   shiftTimer.start();
-
   int dst = (team + trank + num_teams) % num_teams;
   int src = (team - trank + num_teams) % num_teams;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
@@ -182,6 +189,13 @@ int main(int argc, char** argv)
                        src, 0, dst, 0,
                        row_comm, &status);
   totalShiftTime += shiftTimer.elapsed();
+
+  /**********************/
+  /** ZEROTH ITERATION **/
+  /**********************/
+
+  int last_iter = idiv_up(P, teamsize*teamsize) - 1;
+  int curr_iter = 0;   // Ranges from [0,last_iter]
 
   if (trank == MASTER) {
     // If this is the team leader, compute the symmetric diagonal block
@@ -197,11 +211,15 @@ int main(int argc, char** argv)
     totalCompTime += compTimer.elapsed();
   }
 
+  /********************/
+  /** ALL ITERATIONS **/
+  /********************/
+
   // Looping process to shift the data between the teams
-  int ceilPC2 = idiv_up(P, teamsize*teamsize);
-  for (int shiftCount = 1; shiftCount < ceilPC2; ++shiftCount) {
+  for (++curr_iter; curr_iter <= last_iter; ++curr_iter) {
+
+    // Shift data to the next process to compute the next block
     shiftTimer.start();
-    // Add num_teams to prevent negative numbers
     int src = (team + teamsize + num_teams) % num_teams;
     int dst = (team - teamsize + num_teams) % num_teams;
     MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
@@ -215,7 +233,7 @@ int main(int argc, char** argv)
     // Compute on the last iteration only if
     // 1) The teamsize divides the number of teams (everyone computes)
     // 2) Your team rank is one of the remainders
-    if (shiftCount < ceilPC2-1
+    if (curr_iter < last_iter
         || (num_teams % teamsize == 0 || trank < num_teams % teamsize)) {
       compTimer.start();
       p2p(K,
@@ -224,6 +242,10 @@ int main(int argc, char** argv)
       totalCompTime += compTimer.elapsed();
     }
   }
+
+  /********************/
+  /*** REDUCE STAGE ***/
+  /********************/
 
   // Allocate teamrI on team leaders
   std::vector<result_type> teamrI;
@@ -246,19 +268,15 @@ int main(int argc, char** argv)
 
   // Gather team leader answers to master
   if (trank == MASTER) {
-    reduceTimer.start();
+    //reduceTimer.start();
     MPI_Gather(teamrI.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
                result.data(), sizeof(result_type) * teamrI.size(), MPI_CHAR,
                MASTER, row_comm);
-    totalReduceTime += reduceTimer.elapsed();
+    //totalReduceTime += reduceTimer.elapsed();
   }
 
 
   double time = timer.elapsed();
-  /* Old timing code to display
-  printf("[%d] CommTimer: %e\n", rank, totalShiftTime + totalSplitTime + totalReduceTime);
-  printf("[%d] CompTimer: %e\n", rank, totalCompTime);
-  */
 
   // Collect times to MASTER
 

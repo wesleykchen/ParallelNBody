@@ -228,7 +228,6 @@ int main(int argc, char** argv)
 
   // Perform initial offset by teamrank
   shiftTimer.start();
-  // Add num_teams to prevent negative numbers
   int src = (team + trank + num_teams) % num_teams;
   int dst = (team - trank + num_teams) % num_teams;
   MPI_Sendrecv_replace(xJ.data(), sizeof(source_type) * xJ.size(), MPI_CHAR,
@@ -358,7 +357,6 @@ int main(int argc, char** argv)
 
   // Reduce answers to the team leader
   reduceTimer.start();
-
   // TODO: Generalize
   static_assert(std::is_same<result_type, double>::value,
                 "Need result_type == double for now");
