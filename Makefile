@@ -8,7 +8,7 @@
 DEPSDIR := $(shell mkdir -p .deps; echo .deps)
 
 # Define the C compiler to use
-CXX := $(shell which mpic++) -std=c++11
+CXX := g++ -std=c++11
 LINK := $(CXX)
 
 # Define any compile-time flags
@@ -25,7 +25,7 @@ endif
 DEPCFLAGS = -MD -MF $(DEPSDIR)/$*.d -MP
 
 # Other in-code flags
-#CFLAGS += $(shell mpic++ -compile_info)
+CFLAGS += $(shell mpic++ -showme:compile)
 
 # define any directories containing header files other than /usr/include
 #   include directories like -Ipath/to/files
@@ -33,7 +33,7 @@ INCLUDES = -I.
 
 # define any libraries to link into executable
 #   To link in libraries (libXXX.so or libXXX.a) use -lXXX options
-#LDFLAGS += $(shell mpic++ -link_info)
+LDFLAGS += $(shell mpic++ -showme:link)
 
 ##################
 # The following part of the makefile is generic; it can be used to
