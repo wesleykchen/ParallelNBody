@@ -251,7 +251,7 @@ int main(int argc, char** argv)
     p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
     totalCompTime += compTimer.elapsed();
 
-    r_dst = rank;
+    r_dst = MPI_PROC_NULL;
   } else {
     // Compute the symmetric iteration and rank
     std::tie(i_dst,r_dst) = transposer(curr_iter, team, trank);
@@ -273,7 +273,7 @@ int main(int argc, char** argv)
       totalCompTime += compTimer.elapsed();
 
       // No destination for the symmetric send
-      r_dst = rank;
+      r_dst = MPI_PROC_NULL;
     }
   }
 
@@ -287,13 +287,12 @@ int main(int argc, char** argv)
 
     // The iteration of the block we would recv
     i_src = num_teams/teamsize - (curr_iter-1) - iPrimeOffset;
+    // Compute the rank to receive from
+    std::tie(std::ignore, r_src) = transposer(i_src, team, trank);
 
-    // If the data we'd recv is from our last iteration, ignore it
-    if (i_src != last_iter)
-      // Compute the rank to receive from
-      std::tie(std::ignore, r_src) = transposer(i_src, team, trank);
-    else
-      r_src = rank;
+    // If the data we'd recv is from our last iteration or ourself, ignore it
+    if (i_src == last_iter || r_src == rank)
+      r_src = MPI_PROC_NULL;
 
     // Send/Recv the symmetric data from the last iteration
     sendRecvTimer.start();
@@ -305,7 +304,7 @@ int main(int argc, char** argv)
     totalSendRecvTime += sendRecvTimer.elapsed();
 
     // Accumulate temp_rI to current answer
-    if (r_src != rank)
+    if (r_src != MPI_PROC_NULL)
       for (auto r = rI.begin(), tr = temp_rI.begin(); r != rI.end(); ++r, ++tr)
         *r += *tr;
 
@@ -346,7 +345,7 @@ int main(int argc, char** argv)
           xI.begin(), xI.end(), rI.begin());
       totalCompTime += compTimer.elapsed();
 
-      r_dst = rank;
+      r_dst = MPI_PROC_NULL;
     }
 
   }  //  end for iteration
