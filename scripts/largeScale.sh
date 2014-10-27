@@ -5,8 +5,8 @@
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/newp256n256k.out     	      #File to which standard out will be written
-#SBATCH -e data/newp256n256k.err      	      #File to which standard err will be written
+#SBATCH -o newp256n256k.out     	      #File to which standard out will be written
+#SBATCH -e newp256n256k.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment

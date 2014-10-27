@@ -5,8 +5,8 @@
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/newfullOneNode256k.out     	      #File to which standard out will be written
-#SBATCH -e data/newfullOneNode256k.err      	      #File to which standard err will be written
+#SBATCH -o newfullOneNode256k.out     	      #File to which standard out will be written
+#SBATCH -e newfullOneNode256k.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
