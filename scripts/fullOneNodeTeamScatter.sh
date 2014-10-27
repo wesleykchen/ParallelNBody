@@ -1,20 +1,18 @@
 #!/bin/bash
 #SBATCH --ntasks 64                #Number of processes
 #SBATCH --nodes 1                  #Number of nodes
-#SBATCH --exclusive
 #SBATCH -t 300                 #Runtime in minutes
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/fullOneNodeTS256k.out     	      #File to which standard out will be written
-#SBATCH -e data/fullOneNodeTS256k.err      	      #File to which standard err will be written
+#SBATCH -o data/newfullOneNodeTS256k.out     	      #File to which standard out will be written
+#SBATCH -e data/newfullOneNodeTS256k.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
 #
 . /etc/profile
-#module load centos6/openmpi-1.7.2_intel-13.0.079
-#module load centos6/fftw-3.3.3_openmpi-1.6.4_gcc-4.8.0
+
 module load centos6/openmpi-1.6.5_gcc-4.8.0 
 
 make clean

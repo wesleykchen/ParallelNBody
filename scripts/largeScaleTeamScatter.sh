@@ -1,13 +1,12 @@
 #!/bin/bash
-#SBATCH --ntasks 1024                #Number of processes
-#SBATCH --nodes 16                  #Number of nodes
-#SBATCH --exclusive
+#SBATCH --ntasks 256                #Number of processes
+#SBATCH --nodes 4                  #Number of nodes
 #SBATCH -t 300                 #Runtime in minutes
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o data/largeScaleTS128k.out     	      #File to which standard out will be written
-#SBATCH -e data/largeScaleTS128k.err      	      #File to which standard err will be written
+#SBATCH -o data/newp256n256kTS.out     	      #File to which standard out will be written
+#SBATCH -e data/newp256n256kTS.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
@@ -24,14 +23,14 @@ make teamscatter XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 # Execute the run
 #
 
-mpirun -np 1024  ./teamscatter 128000  -c 1 #-nocheck
+mpirun -np 256  ./teamscatter 256000  -c 1 #-nocheck
 
-mpirun -np 1024  ./teamscatter 128000  -c 2 #-nocheck
+mpirun -np 256  ./teamscatter 256000  -c 2 #-nocheck
 
-mpirun -np 1024  ./teamscatter 128000  -c 4 #-nocheck
+mpirun -np 256  ./teamscatter 256000  -c 4 #-nocheck
 
-mpirun -np 1024  ./teamscatter 128000  -c 8 #-nocheck
+mpirun -np 256  ./teamscatter 256000  -c 8 #-nocheck
 
-mpirun -np 1024  ./teamscatter 128000  -c 16 #-nocheck
+mpirun -np 256  ./teamscatter 256000  -c 16 #-nocheck
 
-mpirun -np 1024  ./teamscatter 128000  -c 32 #-nocheck
+#mpirun -np 256  ./teamscatter 256000  -c 32 #-nocheck
