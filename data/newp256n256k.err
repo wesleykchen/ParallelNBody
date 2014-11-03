@@ -1,0 +1,17 @@
+Loading module centos6/gmp-5.1.1.
+Loading module centos6/mpfr-3.1.2.
+Loading module centos6/mpc-1.0.1.
+Loading module centos6/gcc-4.8.0.
+Loading module centos6/openmpi-1.6.5_gcc-4.8.0.
+--------------------------------------------------------------------------
+The OpenFabrics stack has reported a network error event.  Open MPI
+will try to continue, but your job may end up failing.
+
+  Local host:        holy2a01201.rc.fas.harvard.edu
+  MPI process PID:   63791
+  Error number:      3 (IBV_EVENT_QP_ACCESS_ERR)
+
+This error may indicate connectivity problems within the fabric;
+please contact your system administrator.
+--------------------------------------------------------------------------
+slurmstepd: error: _slurm_cgroup_destroy: problem deleting step cgroup path /cgroup/freezer/slurm/uid_556586/job_23393448/step_batch: Device or resource busy
