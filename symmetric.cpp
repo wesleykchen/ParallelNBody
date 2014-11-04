@@ -137,14 +137,14 @@ int main(int argc, char** argv)
   timer.start();
 
   // Broadcast the size of the problem to all processes
-  splitTimer.start();
+  //splitTimer.start();
   MPI_Bcast(&N, sizeof(N), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  totalSplitTime += splitTimer.elapsed();
+  //totalSplitTime += splitTimer.elapsed();
 
   // Broadcast the teamsize to all processes
-  splitTimer.start();
+  //splitTimer.start();
   MPI_Bcast(&teamsize, sizeof(teamsize), MPI_CHAR, MASTER, MPI_COMM_WORLD);
-  totalSplitTime += splitTimer.elapsed();
+  //totalSplitTime += splitTimer.elapsed();
 
   // TODO: How to generalize?
   if (N % P != 0) {
