@@ -246,12 +246,13 @@ int main(int argc, char** argv)
   int curr_iter = 0;   // Ranges from [0,last_iter]
 
   if (trank == MASTER) {
+    // No destination for the symmetric send
+    r_dst = MPI_PROC_NULL;
+
     // First iteration masters are computing the symmetric diagonal
     compTimer.start();
     p2p(K, xJ.begin(), xJ.end(), cJ.begin(), rI.begin());
     totalCompTime += compTimer.elapsed();
-
-    r_dst = MPI_PROC_NULL;
   } else {
     // Compute the symmetric iteration and rank
     std::tie(i_dst,r_dst) = transposer(curr_iter, team, trank);
@@ -265,15 +266,15 @@ int main(int argc, char** argv)
           xI.begin(), xI.end(), cI.begin(), rI.begin());
       totalCompTime += compTimer.elapsed();
     } else {
+      // No destination for the symmetric send
+      r_dst = MPI_PROC_NULL;
+
       // Compute asymmetric off-diagonal
       compTimer.start();
       p2p(K,
           xJ.begin(), xJ.end(), cJ.begin(),
           xI.begin(), xI.end(), rI.begin());
       totalCompTime += compTimer.elapsed();
-
-      // No destination for the symmetric send
-      r_dst = MPI_PROC_NULL;
     }
   }
 
@@ -338,6 +339,9 @@ int main(int argc, char** argv)
           xI.begin(), xI.end(), cI.begin(), rI.begin());
       totalCompTime += compTimer.elapsed();
     } else {
+      // No destination for the symmetric send
+      r_dst = MPI_PROC_NULL;
+
       // Compute asymmetric off-diagonal
       compTimer.start();
       p2p(K,
@@ -392,23 +396,21 @@ int main(int argc, char** argv)
   // Could use all reduce here to get the averaged data to all the processors
   MPI_Reduce(&totalCompTime, &avgCompTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
-  avgCompTime /= P;
-
   MPI_Reduce(&totalSplitTime, &avgSplitTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
-  avgSplitTime /= P;
-
   MPI_Reduce(&totalShiftTime, &avgShiftTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
-  avgShiftTime /= P;
-
   MPI_Reduce(&totalSendRecvTime, &avgSendRecvTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
-  avgSendRecvTime /= P;
-
   MPI_Reduce(&totalReduceTime, &avgReduceTime, 1, MPI_DOUBLE,
              MPI_SUM, MASTER, MPI_COMM_WORLD);
-  avgReduceTime /= P;
+
+  avgCompTime     /= P;
+  avgSplitTime    /= P;
+  avgShiftTime    /= P;
+  avgSendRecvTime /= P;
+  avgReduceTime   /= P;
+
 
   // format output well
   if (rank == MASTER) {
