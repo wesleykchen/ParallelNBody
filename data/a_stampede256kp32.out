@@ -1,0 +1,21 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs  -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+TACC: Starting up job 4982470
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4982470
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+TACC: MPI job exited with code: 1
+ 
+TACC: Shutdown complete. Exiting.
+TACC: Starting up job 4982470
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+TACC: MPI job exited with code: 1
+ 
+TACC: Shutdown complete. Exiting.
