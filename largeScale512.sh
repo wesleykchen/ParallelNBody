@@ -5,8 +5,8 @@
 #SBATCH -p general   	      #Partition to submit to
 
 #SBATCH --mem-per-cpu=200     #Memory per cpu in MB (see also --mem)
-#SBATCH -o newp512n256kTS.out     	      #File to which standard out will be written
-#SBATCH -e newp512n256kTS.err      	      #File to which standard err will be written
+#SBATCH -o newp512n256k.out     	      #File to which standard out will be written
+#SBATCH -e newp512n256k.err      	      #File to which standard err will be written
  
 #
 # Use modules to setup the runtime environment
@@ -18,17 +18,17 @@ module load centos6/openmpi-1.6.5_gcc-4.8.0
 
 make clean
 
-make teamscatter XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
+make symmetric XFLAGS='-DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0'
 #
 # Execute the run
 #
 
-mpirun -np 512  ./teamscatter 256000  -c 1 #-nocheck
+mpirun -np 512  ./symmetric 256000  -c 1 #-nocheck
 
-mpirun -np 512  ./teamscatter 256000  -c 2 #-nocheck
+mpirun -np 512  ./symmetric 256000  -c 2 #-nocheck
 
-mpirun -np 512  ./teamscatter 256000  -c 4 #-nocheck
+mpirun -np 512  ./symmetric 256000  -c 4 #-nocheck
 
-mpirun -np 512  ./teamscatter 256000  -c 8 #-nocheck
+mpirun -np 512  ./symmetric 256000  -c 8 #-nocheck
 
-mpirun -np 512  ./teamscatter 256000  -c 16 #-nocheck
+mpirun -np 512  ./symmetric 256000  -c 16 #-nocheck
