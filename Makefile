@@ -33,7 +33,7 @@ INCLUDES = -I.
 
 # define any libraries to link into executable
 #   To link in libraries (libXXX.so or libXXX.a) use -lXXX options
-# LDFLAGS += $(shell mpic++ -showme:link)
+ LDFLAGS += $(shell mpic++ -showme:link)
 
 ##################
 # The following part of the makefile is generic; it can be used to
