@@ -5,7 +5,7 @@
 #SBATCH -o data/a_stampede256kp512.out     	      #File to which standard out will be written
 #SBATCH -e data/a_stampede256kp512.err      	      #File to which standard err will be written
 
-module swap intel gcc/4.7.1
+module load intel gcc/4.7.1
 
 make clean
 
