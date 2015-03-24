@@ -1,0 +1,55 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -MD -MF .deps/teamscatter.d -MP -I. -c -o teamscatter.o teamscatter.cpp
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o teamscatter teamscatter.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 256000
+P = 256
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	2.625808e+00	5.668990e-01	1.630541e+01	1.118750e-05
+Rank 0 Total Time: 2.729294e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.69651e-14
+Average relative error: 1.30492e-14
+Maximum relative error: 9.28995e-14
+N = 256000
+P = 256
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	2.921173e+00	1.965316e+00	4.486947e+00	3.072872e-01
+Rank 0 Total Time: 1.216996e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.53428e-14
+Average relative error: 1.21956e-14
+Maximum relative error: 7.49806e-14
+N = 256000
+P = 256
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	2.836367e+00	1.470276e+00	2.097860e+00	5.013354e-01
+Rank 0 Total Time: 8.150500e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44731e-14
+Average relative error: 1.15641e-14
+Maximum relative error: 7.19284e-14
+N = 256000
+P = 256
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	3.071364e+00	9.397499e-01	1.060351e+00	8.567307e-01
+Rank 0 Total Time: 7.132603e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40458e-14
+Average relative error: 1.12323e-14
+Maximum relative error: 6.61645e-14
+N = 256000
+P = 256
+Teamsize = 16
+Label	Computation	Split	Shift	Reduce
+c=16	2.954128e+00	1.124406e+00	1.349957e-01	1.034284e+00
+Rank 0 Total Time: 6.352155e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.39042e-14
+Average relative error: 1.11202e-14
+Maximum relative error: 6.50105e-14

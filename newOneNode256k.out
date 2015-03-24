@@ -1,0 +1,165 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -MD -MF .deps/teamscatter.d -MP -I. -c -o teamscatter.o teamscatter.cpp
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o teamscatter teamscatter.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 256000
+P = 1
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	7.313875e+02	1.000000e-05	1.286800e-02	7.980000e-04
+Rank 0 Total Time: 7.314245e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 0
+Average relative error: 0
+Maximum relative error: 0
+N = 256000
+P = 2
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	4.050721e+02	3.478300e-02	3.449030e-01	3.315000e-04
+Rank 0 Total Time: 4.055286e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.47165e-14
+Average relative error: 8.32744e-15
+Maximum relative error: 9.16781e-14
+N = 256000
+P = 4
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	1.512212e+02	5.016525e-02	3.764606e+01	1.325000e-04
+Rank 0 Total Time: 2.018108e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.64283e-14
+Average relative error: 1.13743e-14
+Maximum relative error: 9.16781e-14
+N = 256000
+P = 4
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	1.225790e+02	5.789525e-02	1.003375e-02	1.717592e+01
+Rank 0 Total Time: 1.669559e+02
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.46455e-14
+Average relative error: 1.17364e-14
+Maximum relative error: 7.36439e-14
+N = 256000
+P = 8
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	5.863191e+01	6.013500e-02	1.678235e+00	4.900000e-05
+Rank 0 Total Time: 6.040032e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.68035e-14
+Average relative error: 1.24425e-14
+Maximum relative error: 9.15127e-14
+N = 256000
+P = 8
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	5.634610e+01	6.943575e-02	1.246974e-01	1.269986e+00
+Rank 0 Total Time: 5.805041e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.51995e-14
+Average relative error: 1.2102e-14
+Maximum relative error: 7.40506e-14
+N = 256000
+P = 16
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	3.846005e+01	6.752769e-02	9.453536e+00	3.218750e-05
+Rank 0 Total Time: 4.904832e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.69357e-14
+Average relative error: 1.28463e-14
+Maximum relative error: 9.15127e-14
+N = 256000
+P = 16
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	3.418535e+01	7.085363e-02	5.474347e+00	4.452703e+00
+Rank 0 Total Time: 4.833194e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.52778e-14
+Average relative error: 1.21842e-14
+Maximum relative error: 7.28227e-14
+N = 256000
+P = 16
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	3.842287e+01	8.141587e-02	1.519319e-02	9.633547e+00
+Rank 0 Total Time: 5.858585e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.43861e-14
+Average relative error: 1.15137e-14
+Maximum relative error: 7.07806e-14
+N = 256000
+P = 32
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	2.257646e+01	6.422516e-02	1.897615e+01	2.315625e-05
+Rank 0 Total Time: 4.429700e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.6954e-14
+Average relative error: 1.29795e-14
+Maximum relative error: 9.11913e-14
+N = 256000
+P = 32
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	1.851657e+01	9.627284e-02	5.249089e+00	7.791393e-01
+Rank 0 Total Time: 2.526616e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.52988e-14
+Average relative error: 1.2189e-14
+Maximum relative error: 7.805e-14
+N = 256000
+P = 32
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	2.158150e+01	8.206012e-02	1.201122e+00	6.076790e+00
+Rank 0 Total Time: 3.274289e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44568e-14
+Average relative error: 1.15523e-14
+Maximum relative error: 7.11653e-14
+N = 256000
+P = 64
+Teamsize = 1
+Label	Computation	Split	Shift	Reduce
+c=1	1.203672e+01	1.308942e-01	1.005108e+01	1.523438e-05
+Rank 0 Total Time: 2.294317e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.69681e-14
+Average relative error: 1.30372e-14
+Maximum relative error: 8.76733e-14
+N = 256000
+P = 64
+Teamsize = 2
+Label	Computation	Split	Shift	Reduce
+c=2	1.220228e+01	8.990078e-02	5.437417e+00	1.746399e+00
+Rank 0 Total Time: 2.037535e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.52889e-14
+Average relative error: 1.21898e-14
+Maximum relative error: 7.59672e-14
+N = 256000
+P = 64
+Teamsize = 4
+Label	Computation	Split	Shift	Reduce
+c=4	1.184855e+01	1.021139e-01	3.011877e+00	2.967685e+00
+Rank 0 Total Time: 1.922019e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.44603e-14
+Average relative error: 1.15606e-14
+Maximum relative error: 7.12233e-14
+N = 256000
+P = 64
+Teamsize = 8
+Label	Computation	Split	Shift	Reduce
+c=8	1.306541e+01	1.439839e-01	8.296323e-02	4.324580e+00
+Rank 0 Total Time: 1.818540e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40333e-14
+Average relative error: 1.12286e-14
+Maximum relative error: 6.52028e-14

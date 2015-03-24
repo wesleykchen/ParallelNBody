@@ -1,0 +1,55 @@
+rm -f *.o *~ */*~
+rm -f serial broadcast scatter teamscatter symmetric profile_p2p
+rm -f -r .deps
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -MD -MF .deps/symmetric.d -MP -I. -c -o symmetric.o symmetric.cpp
+g++ -std=c++11 -DP2P_NUM_THREADS=0 -DP2P_DECAY_ITERATOR=0 -fopenmp -O3 -funroll-loops -Wextra -Wno-unused-local-typedefs -I/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/include -pthread -o symmetric symmetric.o -pthread -L/lsf/7.0/linux2.6-glibc2.3-x86_64/lib -L/n/sw/centos6/openmpi-1.6.5_gcc-4.8.0/lib -lmpi_cxx -lmpi -lrdmacm -libverbs -lrt -lnsl -lutil -lm -lbat -llsf -ldl -lm -Wl,--export-dynamic -lrt -lnsl -lutil -lm -ldl
+N = 256000
+P = 256
+Teamsize = 1
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=1	1.944890e+00	1.582031e-06	4.483419e+00	1.671632e+01	1.764453e-05
+Rank 0 Total Time: 2.992405e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.55041e-14
+Average relative error: 1.22926e-14
+Maximum relative error: 7.54483e-14
+N = 256000
+P = 256
+Teamsize = 2
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=2	2.143875e+00	1.408367e+00	1.313722e+00	3.847058e+00	6.729871e-02
+Rank 0 Total Time: 1.118893e+01
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.46153e-14
+Average relative error: 1.16655e-14
+Maximum relative error: 6.65017e-14
+N = 256000
+P = 256
+Teamsize = 4
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=4	1.930829e+00	1.058687e+00	1.035398e+00	8.410730e-01	2.814361e-01
+Rank 0 Total Time: 6.967013e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.4228e-14
+Average relative error: 1.13785e-14
+Maximum relative error: 6.65066e-14
+N = 256000
+P = 256
+Teamsize = 8
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=8	2.362155e+00	5.131698e-01	5.300434e-01	2.203386e-01	4.519171e-01
+Rank 0 Total Time: 5.783779e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.40216e-14
+Average relative error: 1.1215e-14
+Maximum relative error: 6.73185e-14
+N = 256000
+P = 256
+Teamsize = 16
+Label	Computation	Split	Shift	SendReceive	Reduce
+C=16	3.090301e+00	3.287704e-01	1.321467e-01	0.000000e+00	9.113961e-01
+Rank 0 Total Time: 6.637362e+00
+Reading result from data/invsq_n256000_s1337.txt
+Vector  relative error: 1.39042e-14
+Average relative error: 1.11202e-14
+Maximum relative error: 6.50105e-14
